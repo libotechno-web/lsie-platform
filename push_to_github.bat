@@ -1,11 +1,10 @@
 @echo off
-chcp 65001 > nul
 echo ==============================================
-echo   جاري رفع المشروع بالكامل إلى GitHub...
+echo Uploading project to GitHub...
 echo ==============================================
 git push -u origin main --force
 echo.
 echo ==============================================
-echo اكتملت العملية!
+echo Completed!
 echo ==============================================
 pause
