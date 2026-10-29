@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.full_name }} | دليل الابتكار{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- الشريط الجانبي للملف -->
+        <div class="col-lg-4">
+            <div class="card card-custom p-4 text-center">
+                <div class="mx-auto mb-3">
+                    {% if user.avatar %}
+                        <img src="{{ url_for('static', filename=user.avatar) }}" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; font-size: 3rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h4 class="fw-bold text-dark mb-1">{{ user.full_name }}</h4>
+                <p class="text-primary fw-bold small mb-2">{{ user.headline or user.primary_role_title }}</p>
+                <div class="text-muted small mb-3"><i class="bi bi-geo-alt ms-1"></i>{{ user.city or 'ليبيا' }}</div>
+                
+                {% if user.is_verified %}
+                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-3">
+                        <i class="bi bi-patch-check-fill ms-1"></i>حساب موثق رسمياً
+                    </span>
+                {% endif %}
+
+                {% if current_user.is_authenticated and current_user.id != user.id %}
+                    <a href="{{ url_for('public.connect_request', recipient_id=user.id) }}" class="btn btn-primary w-100 mb-3">
+                        <i class="bi bi-chat-dots ms-1"></i>إرسال طلب تواصل / تشبيك
+                    </a>
+                {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-outline-primary w-100 mb-3">
+                        سجل دخول للتواصل
+                    </a>
+                {% endif %}
+
+                <!-- روابط التواصل المهنية -->
+                {% if user.profile %}
+                    <div class="d-flex justify-content-center gap-2 pt-3 border-top">
+                        {% if user.profile.linkedin_url %}
+                            <a href="{{ user.profile.linkedin_url }}" target="_blank" class="btn btn-light btn-sm text-primary" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        {% endif %}
+                        {% if user.profile.github_url %}
+                            <a href="{{ user.profile.github_url }}" target="_blank" class="btn btn-light btn-sm text-dark" title="GitHub"><i class="bi bi-github"></i></a>
+                        {% endif %}
+                        {% if user.profile.website_url %}
+                            <a href="{{ user.profile.website_url }}" target="_blank" class="btn btn-light btn-sm text-success" title="موقع شخصي"><i class="bi bi-globe"></i></a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- تفاصيل الملف والمشاريع -->
+        <div class="col-lg-8">
+            <!-- النبذة -->
+            <div class="card card-custom p-4 mb-4">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">نبذة تعريفية</h5>
+                <p class="text-secondary leading-relaxed mb-0">
+                    {{ user.bio or 'لا توجد نبذة مضافة حتى الآن.' }}
+                </p>
+            </div>
+
+            <!-- المهارات والخبرات -->
+            {% if user.profile and (user.profile.skills or user.profile.specialization) %}
+                <div class="card card-custom p-4 mb-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">المهارات والتخصص</h5>
+                    {% if user.profile.specialization %}
+                        <div class="mb-3">
+                            <span class="text-muted small">التخصص الدقيق:</span>
+                            <span class="fw-bold text-dark ms-2">{{ user.profile.specialization }}</span>
+                        </div>
+                    {% endif %}
+                    {% if user.profile.skills %}
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for sk in user.profile.skills.split(',') %}
+                                <span class="badge bg-light text-dark border p-2">{{ sk.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- المشاريع المبتكرة المنشورة -->
+            <div class="card card-custom p-4">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">المشاريع المعتمدة في المنظومة</h5>
+                <div class="row g-3">
+                    {% for p in public_projects %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <h6 class="fw-bold text-dark mb-1">{{ p.title }}</h6>
+                                <p class="text-muted small mb-2">{{ p.summary[:90] }}...</p>
+                                <span class="badge bg-primary bg-opacity-10 text-primary">{{ p.sector }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-muted small py-2">لا توجد مشاريع منشورة للعامة حالياً.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

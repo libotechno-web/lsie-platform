@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}{% endblock %}</title>
+    
+    <!-- خط Cairo العربي الحديث -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- إطار العمل Bootstrap 5.3 RTL وأيقونات Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- الأيقونة المفضلة (Favicon) -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    
+    <!-- تنسيقات المنصة المخصصة والديناميكية -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --brand-primary: {{ site_settings.get('primary_color', '#0d6e3f') }};
+            --brand-secondary: {{ site_settings.get('secondary_color', '#133b66') }};
+            --brand-accent: {{ site_settings.get('accent_color', '#e5a93c') }};
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- الشريط العلوي والتنقل الرئيسي -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container">
+            <!-- الشعار الرسمي للجمعية -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('public.index') }}">
+                <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="{{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}">
+                <div class="d-none d-sm-block">
+                    <span class="d-block fw-bold text-dark fs-6 lh-1">{{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}</span>
+                    <span class="d-block text-muted small mt-1" style="font-size: 0.75rem;">{{ site_settings.get('site_name_en', 'Libyan Society for Innovation & Entrepreneurship') }}</span>
+                </div>
+            </a>
+
+            <!-- زر التبديل للشاشات الصغيرة -->
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="تبديل القائمة">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- عناصر القائمة والمستخدم -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    {% if header_nav %}
+                        {% for nav in header_nav %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.path == nav.url %}active{% endif %}" href="{{ nav.url }}" {% if nav.is_external %}target="_blank"{% endif %}>
+                                    {% if nav.icon %}<i class="bi {{ nav.icon }} ms-1"></i>{% endif %}
+                                    {{ nav.title_ar }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.index') }}">الرئيسية</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.about') }}">عن الجمعية</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.services') }}">خدماتنا</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.opportunities') }}">الفرص والمنح</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.directory') }}">دليل الابتكار</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.training') }}">التدريب</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.news') }}">الأخبار</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('public.contact') }}">تواصل معنا</a></li>
+                    {% endif %}
+                </ul>
+
+                <!-- أزرار الإجراءات والمستخدم -->
+                <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-accent btn-sm shadow-sm d-flex align-items-center gap-1">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>قدّم فكرتك</span>
+                    </a>
+
+                    {% if current_user.is_authenticated %}
+                        <!-- تنبيهات المستخدم -->
+                        <a href="{{ url_for('dashboard.notifications') }}" class="btn btn-light position-relative btn-sm rounded-circle p-2" title="الإشعارات">
+                            <i class="bi bi-bell fs-6"></i>
+                            {% if unread_notifications > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                    {{ unread_notifications }}
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- القائمة المنسدلة لحساب المستخدم -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i>
+                                <span>{{ current_user.full_name.split()[0] }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li class="px-3 py-2 border-bottom">
+                                    <div class="fw-bold">{{ current_user.full_name }}</div>
+                                    <div class="text-muted small">{{ current_user.primary_role_title }}</div>
+                                </li>
+                                {% if current_user.is_reviewer or current_user.is_admin %}
+                                    <li><a class="dropdown-item py-2 text-primary fw-bold" href="{{ url_for('admin.index') }}"><i class="bi bi-speedometer2 ms-2"></i>لوحة الإدارة</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item py-2" href="{{ url_for('dashboard.index') }}"><i class="bi bi-columns-gap ms-2"></i>لوحة التحكم الشخصية</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ url_for('dashboard.projects') }}"><i class="bi bi-collection ms-2"></i>مشاريعي وأفكاري</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ url_for('auth.profile') }}"><i class="bi bi-person-gear ms-2"></i>الملف الشخصي</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2 text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right ms-2"></i>تسجيل الخروج</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm">تسجيل الدخول</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">انضم إلينا</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- رسائل التنبيه الفورية (Flash Messages) -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2" role="alert">
+                        {% if category == 'success' %}
+                            <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                        {% elif category == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill fs-5 text-danger"></i>
+                        {% elif category == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill fs-5 text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill fs-5 text-info"></i>
+                        {% endif %}
+                        <div>{{ message }}</div>
+                        <button type="button" class="btn-close me-auto ms-0" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- المحتوى المتغير لكل صفحة -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- التذييل الرسمي (Official Footer) -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row g-4">
+                <!-- نبذة عن الجمعية -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" style="height: 58px; background: #fff; border-radius: 50%; padding: 3px;">
+                        <div>
+                            <div class="text-white fw-bold fs-6">{{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}</div>
+                            <small class="text-warning">{{ site_settings.get('site_acronym', 'L.S.I.E') }} - EST. 2026 LIBYA</small>
+                        </div>
+                    </div>
+                    <p class="text-secondary small leading-relaxed mb-3">
+                        {{ site_settings.get('official_mission', 'تمكين المبتكرين ورواد الأعمال الليبيين عبر توفير بيئة حاضنة ومتكاملة تجمع بين التدريب والتوجيه والتشبيك.')[:200] }}...
+                    </p>
+                    <div class="small text-secondary mb-3">
+                        <i class="bi bi-geo-alt text-warning ms-1"></i> {{ site_settings.get('headquarters', 'المقر الرئيسي: جامعة غريان، غريان، ليبيا') }}
+                    </div>
+                    <div class="small text-secondary">
+                        <i class="bi bi-award text-warning ms-1"></i> إشهار رقم: <strong>525/2026</strong> | ترخيص: <strong>{{ site_settings.get('certificate_number', 'LARS-SCS-2026-042') }}</strong>
+                    </div>
+                </div>
+
+                <!-- روابط سريعة -->
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-heading">روابط هامة</div>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('public.about') }}"><i class="bi bi-chevron-left small ms-1"></i>عن الجمعية</a></li>
+                        <li><a href="{{ url_for('public.services') }}"><i class="bi bi-chevron-left small ms-1"></i>بوابة الخدمات</a></li>
+                        <li><a href="{{ url_for('public.programs') }}"><i class="bi bi-chevron-left small ms-1"></i>البرامج والمبادرات</a></li>
+                        <li><a href="{{ url_for('public.opportunities') }}"><i class="bi bi-chevron-left small ms-1"></i>الفرص والمنح</a></li>
+                        <li><a href="{{ url_for('public.directory') }}"><i class="bi bi-chevron-left small ms-1"></i>دليل الابتكار</a></li>
+                    </ul>
+                </div>
+
+                <!-- مسارات المستخدم -->
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-heading">بوابات المنصة</div>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('dashboard.submit_project') }}"><i class="bi bi-chevron-left small ms-1"></i>تقديم فكرة مشروع</a></li>
+                        <li><a href="{{ url_for('public.training') }}"><i class="bi bi-chevron-left small ms-1"></i>الأكاديمية الرقمية</a></li>
+                        <li><a href="{{ url_for('public.events') }}"><i class="bi bi-chevron-left small ms-1"></i>الفعاليات والملتقيات</a></li>
+                        <li><a href="{{ url_for('public.news') }}"><i class="bi bi-chevron-left small ms-1"></i>أخبار وقصص نجاح</a></li>
+                        <li><a href="{{ url_for('public.contact') }}"><i class="bi bi-chevron-left small ms-1"></i>اتصل بإدارة الجمعية</a></li>
+                    </ul>
+                </div>
+
+                <!-- التواصل والشبكات الاجتماعية الرسمية -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-heading">قنوات التواصل والمنصات</div>
+                    <p class="text-secondary small mb-3">تابع قنوات الجمعية الرسمية للاطلاع على أحدث برامج المنح والاحتضان والفعاليات الريادية.</p>
+                    
+                    <div class="social-icons mb-4">
+                        {% if site_settings.get('facebook_url') %}
+                            <a href="{{ site_settings.get('facebook_url') }}" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        {% endif %}
+                        {% if site_settings.get('instagram_url') %}
+                            <a href="{{ site_settings.get('instagram_url') }}" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        {% endif %}
+                        {% if site_settings.get('twitter_x_url') %}
+                            <a href="{{ site_settings.get('twitter_x_url') }}" target="_blank" title="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+                        {% endif %}
+                        {% if site_settings.get('linkedin_url') %}
+                            <a href="{{ site_settings.get('linkedin_url') }}" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        {% endif %}
+                        {% if site_settings.get('youtube_url') %}
+                            <a href="{{ site_settings.get('youtube_url') }}" target="_blank" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        {% endif %}
+                    </div>
+
+                    <div class="small text-secondary">
+                        <div class="mb-1"><i class="bi bi-envelope text-warning ms-1"></i> {{ site_settings.get('contact_email', 'info@lsie.ly') }}</div>
+                        <div><i class="bi bi-telephone text-warning ms-1"></i> {{ site_settings.get('contact_phone', '+218 21 000 0000') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريط الحقوق وسياسات الخصوصية -->
+            <div class="border-top border-secondary border-opacity-25 pt-4 mt-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-secondary">
+                <div>
+                    جميع الحقوق محفوظة &copy; {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }} 2026م.
+                </div>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('public.dynamic_page', slug='privacy-policy') }}" class="text-secondary text-decoration-none">سياسة الخصوصية</a>
+                    <span>|</span>
+                    <a href="{{ url_for('public.dynamic_page', slug='terms-of-service') }}" class="text-secondary text-decoration-none">شروط الاستخدام</a>
+                    <span>|</span>
+                    <a href="{{ url_for('auth.login') }}" class="text-secondary text-decoration-none">دخول المشرفين</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- نصوص برمجية: Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

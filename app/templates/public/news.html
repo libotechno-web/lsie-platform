@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}الأخبار والمقالات | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
+    <div class="container py-3">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">المركز الإعلامي</span>
+        <h1 class="fw-bold mb-2">الأخبار والمقالات والتقارير</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">تابع أنشطة الجمعية الرسمية، إعلانات البرامج، وقصص نجاح رواد الأعمال في ليبيا.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{{ url_for('public.news') }}" class="btn btn-sm {% if not current_category %}btn-primary{% else %}btn-outline-secondary{% endif %}">الكل</a>
+        <a href="{{ url_for('public.news', category='announcement') }}" class="btn btn-sm {% if current_category == 'announcement' %}btn-primary{% else %}btn-outline-secondary{% endif %}">إعلانات رسمية</a>
+        <a href="{{ url_for('public.news', category='news') }}" class="btn btn-sm {% if current_category == 'news' %}btn-primary{% else %}btn-outline-secondary{% endif %}">أخبار الأنشطة</a>
+        <a href="{{ url_for('public.news', category='success_story') }}" class="btn btn-sm {% if current_category == 'success_story' %}btn-primary{% else %}btn-outline-secondary{% endif %}">قصص نجاح</a>
+        <a href="{{ url_for('public.news', category='article') }}" class="btn btn-sm {% if current_category == 'article' %}btn-primary{% else %}btn-outline-secondary{% endif %}">مقالات وتحليلات</a>
+    </div>
+
+    <div class="row g-4">
+        {% for art in articles %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card card-custom h-100 d-flex flex-column">
+                    <div class="p-4 flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ art.category_label_ar }}</span>
+                            <small class="text-muted">{{ art.published_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">
+                            <a href="{{ url_for('public.news_detail', slug=art.slug) }}" class="text-decoration-none text-dark hover-primary">{{ art.title }}</a>
+                        </h5>
+                        <p class="text-muted small leading-relaxed mb-3">{{ art.summary[:130] }}...</p>
+                    </div>
+                    <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted"><i class="bi bi-person ms-1"></i>{{ art.author_name or 'إدارة الجمعية' }}</small>
+                        <a href="{{ url_for('public.news_detail', slug=art.slug) }}" class="btn btn-outline-primary btn-sm">قراءة الخبر</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5 text-muted">
+                <i class="bi bi-newspaper fs-1 d-block mb-3"></i>
+                <h5 class="fw-bold">لا توجد أخبار في هذا التصنيف</h5>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

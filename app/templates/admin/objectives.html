@@ -1,0 +1,97 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}الأهداف الاستراتيجية والقيم{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- الأهداف الاستراتيجية -->
+    <div class="col-lg-6">
+        <div class="card card-custom p-4 shadow-sm h-100">
+            <h4 class="fw-bold text-dark border-bottom pb-3 mb-3">الأهداف الاستراتيجية</h4>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+                {% for obj in objectives %}
+                    <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-start gap-2">
+                        <div class="d-flex gap-2">
+                            <i class="bi {{ obj.icon }} text-primary fs-5"></i>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">{{ obj.title }}</h6>
+                                <p class="text-secondary small mb-0">{{ obj.description }}</p>
+                            </div>
+                        </div>
+                        <span class="badge bg-light text-dark border">#{{ obj.order_index }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- نموذج إضافة هدف -->
+            <div class="border-top pt-3">
+                <h6 class="fw-bold text-dark mb-2">إضافة هدف استراتيجي جديد</h6>
+                <form method="POST" action="{{ url_for('admin.new_objective') }}">
+                    {{ obj_form.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ obj_form.title(class="form-control form-control-sm", placeholder="عنوان الهدف...") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ obj_form.description(class="form-control form-control-sm", rows=2, placeholder="تفاصيل وشرح الهدف...") }}
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            {{ obj_form.icon(class="form-control form-control-sm", placeholder="أيقونة bi-bullseye") }}
+                        </div>
+                        <div class="col-6">
+                            {{ obj_form.order_index(class="form-control form-control-sm", placeholder="الترتيب") }}
+                        </div>
+                    </div>
+                    {{ obj_form.submit(class="btn btn-primary btn-sm w-100") }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- القيم المؤسسية -->
+    <div class="col-lg-6">
+        <div class="card card-custom p-4 shadow-sm h-100">
+            <h4 class="fw-bold text-dark border-bottom pb-3 mb-3">القيم المؤسسية</h4>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+                {% for val in values %}
+                    <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-start gap-2">
+                        <div class="d-flex gap-2">
+                            <i class="bi {{ val.icon }} text-warning fs-5"></i>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">{{ val.title }}</h6>
+                                <p class="text-secondary small mb-0">{{ val.description }}</p>
+                            </div>
+                        </div>
+                        <span class="badge bg-light text-dark border">#{{ val.order_index }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- نموذج إضافة قيمة -->
+            <div class="border-top pt-3">
+                <h6 class="fw-bold text-dark mb-2">إضافة قيمة مؤسسية جديدة</h6>
+                <form method="POST" action="{{ url_for('admin.new_value') }}">
+                    {{ val_form.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ val_form.title(class="form-control form-control-sm", placeholder="اسم القيمة...") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ val_form.description(class="form-control form-control-sm", rows=2, placeholder="تفاصيل وشرح القيمة...") }}
+                    </div>
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            {{ val_form.icon(class="form-control form-control-sm", placeholder="أيقونة bi-gem") }}
+                        </div>
+                        <div class="col-6">
+                            {{ val_form.order_index(class="form-control form-control-sm", placeholder="الترتيب") }}
+                        </div>
+                    </div>
+                    {{ val_form.submit(class="btn btn-warning btn-sm w-100 text-dark fw-bold") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

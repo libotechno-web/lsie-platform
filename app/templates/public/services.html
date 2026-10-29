@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}بوابة الخدمات الإلكترونية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
+    <div class="container py-3">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">الخدمات الرقمية المتكاملة</span>
+        <h1 class="fw-bold mb-2">بوابة الخدمات الإلكترونية</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">حزمة متكاملة من الخدمات الرقمية الموجهة للمبتكرين والشركات الناشئة والمستثمرين والموجهين في ليبيا.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- خدمة 1: استقبال وتقييم الأفكار -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-lightbulb-fill"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">استقبال وتقييم الأفكار</h4>
+                <p class="text-muted small leading-relaxed mb-4">بوابة رقمية آمنة تتيح للمبتكرين إيداع أفكارهم، والحصول على تقييم فني وتجاري من لجان خبراء متخصصة مع الحفاظ التام على حقوق الملكية الفكرية.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-outline-primary w-100">قدّم فكرتك الآن</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- خدمة 2: دليل الشركات والابتكار -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-compass-fill"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">دليل الابتكار الليبي</h4>
+                <p class="text-muted small leading-relaxed mb-4">قاعدة بيانات وطنية موحدة للشركات الناشئة والمبتكرين والخبراء والمستثمرين في ليبيا، تدعم البحث والتصفية بحسب المدينة والقطاع ومرحلة النضج.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.directory') }}" class="btn btn-outline-primary w-100">تصفح الدليل الوطني</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- خدمة 3: التدريب والأكاديمية -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-mortarboard-fill"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">التدريب والأكاديمية الرقمية</h4>
+                <p class="text-muted small leading-relaxed mb-4">دورات تدريبية متخصصة، وورش عمل تطبيقية، ومعسكرات ابتكار يقودها نخبة من المدربين والخبراء لتطوير مهارات ريادة الأعمال ونماذج العمل.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.training') }}" class="btn btn-outline-primary w-100">استكشف البرامج التدريبية</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- خدمة 4: بوابة الفرص والتمويل -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-cash-coin"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">بوابة الفرص والمنح</h4>
+                <p class="text-muted small leading-relaxed mb-4">منصة مركزية تنشر أحدث فرص المنح المالية، مسابقات الابتكار، وبرامج الاحتضان والتسريع المحلية والدولية مع إمكانية التقديم المباشر.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary w-100">عرض المنح والفرص</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- خدمة 5: التشبيك والإرشاد -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-people-fill"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">منظومة الإرشاد والتشبيك</h4>
+                <p class="text-muted small leading-relaxed mb-4">ربط المبتكرين مع الموجهين المتمرسين في مختلف التخصصات، وفتح قنوات تواصل مباشرة مع المستثمرين والشركاء التجاريين والأكاديميين.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.directory', tab='experts') }}" class="btn btn-outline-primary w-100">طلب موجه أو مستثمر</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- خدمة 6: العضوية الرسمية -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom h-100 p-4">
+                <div class="quick-path-icon mb-3"><i class="bi bi-award-fill"></i></div>
+                <h4 class="fw-bold fs-5 mb-2">عضوية الجمعية العلمية</h4>
+                <p class="text-muted small leading-relaxed mb-4">الحصول على صفة العضوية الرسمية بالجمعية الصادرة بقرار الهيئة الليبية للبحث العلمي، والمشاركة في اللجان التخصصية وصنع القرارات الريادية.</p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">سجل عضويتك الآن</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

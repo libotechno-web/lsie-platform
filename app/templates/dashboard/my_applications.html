@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}طلبات المنح والفرص | لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">طلبات التقديم على المنح والفرص</h3>
+            <p class="text-muted small mb-0">متابعة ملفات تقديمك لبرامج التمويل والمسابقات</p>
+        </div>
+        <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary btn-sm">تصفح الفرص المتاحة</a>
+    </div>
+
+    <div class="row g-4">
+        {% for app in applications %}
+            <div class="col-md-6">
+                <div class="card card-custom p-4 border-start border-4 border-warning">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning bg-opacity-10 text-warning">{{ app.opportunity.type_label_ar }}</span>
+                        <small class="text-muted">{{ app.submitted_at.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">{{ app.opportunity.title }}</h5>
+                    <p class="text-muted small mb-3">{{ app.proposal_summary[:140] }}...</p>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="badge bg-info bg-opacity-10 text-info">قيد المراجعة الفنية</span>
+                        <a href="{{ url_for('public.opportunity_detail', slug=app.opportunity.slug) }}" class="btn btn-sm btn-outline-primary">صفحة الفرصة</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5 bg-white rounded-3 border text-muted">
+                <i class="bi bi-gift fs-1 d-block mb-3"></i>
+                <h5 class="fw-bold text-dark">لم تتقدم لأي منحة أو مسابقة بعد</h5>
+                <a href="{{ url_for('public.opportunities') }}" class="btn btn-primary btn-sm mt-2">استكشف الفرص المتاحة</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

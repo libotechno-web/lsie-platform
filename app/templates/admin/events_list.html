@@ -1,0 +1,126 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}إدارة الفعاليات والملتقيات{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">إدارة الفعاليات والمؤتمرات</h3>
+        <p class="text-muted small mb-0">نشر فعاليات الجمعية، تفعيلها وتعطيلها، مراقبة حجز المقاعد وتصدير قوائم الحضور</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.export_report', report_type='event_registrations') }}" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-file-earmark-excel"></i>
+            <span>تصدير كافة الحضور (Excel)</span>
+        </a>
+        <a href="{{ url_for('admin.new_event') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-plus-lg"></i>
+            <span>إضافة فعالية جديدة</span>
+        </a>
+    </div>
+</div>
+
+<div class="card card-custom shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small">
+                <tr>
+                    <th>عنوان الفعالية</th>
+                    <th>النوع والمدينة</th>
+                    <th>المكان / الرابط</th>
+                    <th>التاريخ والوقت</th>
+                    <th>المسجلون / السعة</th>
+                    <th>الحالة والنشر</th>
+                    <th class="text-center" style="min-width: 220px;">الإجراءات والعمليات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ev in events %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ ev.title }}</td>
+                        <td>
+                            <div><span class="badge bg-light text-dark border">{{ ev.event_type }}</span></div>
+                            <small class="text-muted"><i class="bi bi-geo-alt ms-1 text-danger"></i>{{ ev.city }}</small>
+                        </td>
+                        <td class="small">{{ ev.location_name }}</td>
+                        <td class="small">{{ ev.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="badge bg-{% if ev.registered_count >= ev.capacity %}danger{% else %}info bg-opacity-10 text-info border border-info border-opacity-25{% endif %}">
+                                    {{ ev.registered_count }}/{{ ev.capacity }}
+                                </span>
+                                {% if ev.registered_count >= ev.capacity %}
+                                    <span class="badge bg-danger small">مكتمل السعة</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                {% if ev.is_published %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-eye ms-1"></i>منشور ومتاح</span>
+                                {% else %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25"><i class="bi bi-eye-slash ms-1"></i>معطّل ومخفي</span>
+                                {% endif %}
+                                {% if ev.is_registration_open %}
+                                    <small class="text-success" style="font-size: 0.72rem;"><i class="bi bi-unlock ms-1"></i>الحجز مفتوح</small>
+                                {% else %}
+                                    <small class="text-danger" style="font-size: 0.72rem;"><i class="bi bi-lock ms-1"></i>الحجز مغلق</small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
+                                <!-- زر تعديل -->
+                                <a href="{{ url_for('admin.edit_event', event_id=ev.id) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="تعديل الفعالية">
+                                    <i class="bi bi-pencil-square ms-1"></i>تعديل
+                                </a>
+
+                                <!-- زر تفعيل / تعطيل -->
+                                <form method="POST" action="{{ url_for('admin.toggle_event_active', event_id=ev.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if ev.is_published %}
+                                        <button type="submit" class="btn btn-sm btn-outline-warning py-1 px-2" title="تعطيل وإخفاء الفعالية">
+                                            <i class="bi bi-pause-fill ms-1"></i>تعطيل
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2" title="تفعيل ونشر الفعالية">
+                                            <i class="bi bi-play-fill ms-1"></i>تفعيل
+                                        </button>
+                                    {% endif %}
+                                </form>
+
+                                <!-- زر عرض الحضور المسجلين -->
+                                <a href="{{ url_for('admin.event_registrations', event_id=ev.id) }}" class="btn btn-sm btn-outline-info py-1 px-2" title="عرض المسجلين">
+                                    <i class="bi bi-people ms-1"></i>المسجلون
+                                </a>
+
+                                <!-- زر تصدير Excel للحضور -->
+                                <a href="{{ url_for('admin.export_event_registrations', event_id=ev.id) }}" class="btn btn-sm btn-outline-success py-1 px-2" title="تصدير كملف Excel (.xlsx)">
+                                    <i class="bi bi-file-earmark-excel"></i>
+                                </a>
+
+                                <!-- زر معاينة -->
+                                <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2" title="معاينة في الموقع">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <!-- زر حذف -->
+                                <form method="POST" action="{{ url_for('admin.delete_event', event_id=ev.id) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد تماماً من حذف فعالية \'{{ ev.title }}\' وجميع تذاكرها المسجلة؟');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="حذف الفعالية">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">لا توجد فعاليات مضافة حالياً. اضغط على "إضافة فعالية جديدة" لنشر فعالية.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}الملف الشخصي والإعدادات{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- القائمة الجانبية للحساب -->
+        <div class="col-lg-3">
+            <div class="card card-custom p-3 text-center mb-4">
+                <div class="mx-auto mb-2">
+                    {% if current_user.avatar %}
+                        <img src="{{ url_for('static', filename=current_user.avatar) }}" class="rounded-circle shadow-sm" style="width: 90px; height: 90px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mx-auto" style="width: 90px; height: 90px; font-size: 2.5rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h6 class="fw-bold text-dark mb-1">{{ current_user.full_name }}</h6>
+                <div class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ current_user.primary_role_title }}</div>
+                <small class="text-muted d-block">{{ current_user.email }}</small>
+            </div>
+
+            <div class="list-group shadow-sm border-0">
+                <a href="{{ url_for('dashboard.index') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-columns-gap ms-2"></i>لوحة التحكم الشخصية</a>
+                <a href="{{ url_for('dashboard.projects') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-collection ms-2"></i>مشاريعي وأفكاري</a>
+                <a href="{{ url_for('dashboard.my_courses') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-mortarboard ms-2"></i>دوراتي التدريبية</a>
+                <a href="{{ url_for('dashboard.my_events') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-calendar-check ms-2"></i>فعالياتي</a>
+                <a href="{{ url_for('dashboard.networking_requests') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-people ms-2"></i>طلبات التشبيك</a>
+                <a href="{{ url_for('auth.profile') }}" class="list-group-item list-group-item-action active py-3"><i class="bi bi-person-gear ms-2"></i>تعديل الملف الشخصي</a>
+            </div>
+        </div>
+
+        <!-- نموذج تعديل الملف -->
+        <div class="col-lg-9">
+            <div class="card card-custom p-4 shadow-sm">
+                <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
+                    <i class="bi bi-person-gear text-primary ms-2"></i>تعديل الملف الشخصي
+                </h4>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.full_name.label }}</label>
+                            {{ form.full_name(class="form-control") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.phone.label }}</label>
+                            {{ form.phone(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.city.label }}</label>
+                            {{ form.city(class="form-control") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.headline.label }}</label>
+                            {{ form.headline(class="form-control", placeholder="مثال: مهندس ذكاء اصطناعي ومؤسس مشروع ناشئ") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.bio.label }}</label>
+                        {{ form.bio(class="form-control", rows=3, placeholder="نبذة مختصرة عن مسيرتك المهنية واهتماماتك...") }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.avatar.label }}</label>
+                        {{ form.avatar(class="form-control") }}
+                    </div>
+
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">المهارات والبيانات التخصصية</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.skills.label }}</label>
+                            {{ form.skills(class="form-control", placeholder="مثال: بايثون، تخطيط مالي، تسويق رقمي") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.interests.label }}</label>
+                            {{ form.interests(class="form-control", placeholder="مثال: التقنيات المالية، الطاقة، الذكاء الاصطناعي") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.specialization.label }}</label>
+                            {{ form.specialization(class="form-control") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.experience_years.label }}</label>
+                            {{ form.experience_years(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">الروابط المهنية وتفضيلات الخصوصية</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.linkedin_url.label }}</label>
+                            {{ form.linkedin_url(class="form-control", placeholder="https://linkedin.com/in/...") }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.github_url.label }}</label>
+                            {{ form.github_url(class="form-control", placeholder="https://github.com/...") }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.website_url.label }}</label>
+                            {{ form.website_url(class="form-control", placeholder="https://...") }}
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 mb-4">
+                        <div class="form-check mb-2">
+                            {{ form.is_public_in_directory(class="form-check-input") }}
+                            <label class="form-check-label fw-bold text-dark" for="is_public_in_directory">
+                                {{ form.is_public_in_directory.label.text }}
+                            </label>
+                            <small class="text-muted d-block">إظهار ملفك العام في دليل الابتكار الليبي لإتاحة فرص التشبيك.</small>
+                        </div>
+                        <div class="form-check">
+                            {{ form.available_for_mentoring(class="form-check-input") }}
+                            <label class="form-check-label fw-bold text-dark" for="available_for_mentoring">
+                                {{ form.available_for_mentoring.label.text }}
+                            </label>
+                            <small class="text-muted d-block">السماح بتلقي طلبات إرشاد وتوجيه من أصحاب الأفكار والمبتكرين.</small>
+                        </div>
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary px-4 py-2") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

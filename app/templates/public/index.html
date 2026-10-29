@@ -1,0 +1,364 @@
+{% extends 'base.html' %}
+
+{% block title %}الرئيسية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}{% endblock %}
+
+{% block content %}
+<!-- 1. قسم الهيرو (Hero Section) -->
+<section class="hero-section text-center text-lg-start">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-20 mb-3 text-warning small fw-bold">
+                    <i class="bi bi-patch-check-fill"></i>
+                    <span>بموجب قرار إشهار رسمي رقم 525 لسنة 2026م</span>
+                </div>
+                <h1 class="hero-title">
+                    {{ site_settings.get('hero_title', 'من الفكرة إلى مشروع يصنع المستقبل') }}
+                </h1>
+                <p class="hero-subtitle mb-4">
+                    {{ site_settings.get('hero_subtitle', 'المنصة الوطنية الموحدة لتمكين المبتكرين ورواد الأعمال وأصحاب الشركات الناشئة في ليبيا، وبناء جسور التعاون بين البحث العلمي والسوق الاقتصادي.') }}
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-accent btn-lg shadow d-flex align-items-center gap-2">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>قدّم فكرتك الآن</span>
+                    </a>
+                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-light btn-lg d-flex align-items-center gap-2">
+                        <i class="bi bi-gift"></i>
+                        <span>اكتشف فرص الدعم</span>
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg d-flex align-items-center gap-2">
+                        <i class="bi bi-people-fill"></i>
+                        <span>انضم لمجتمع الابتكار</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <div class="position-relative d-inline-block">
+                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" class="img-fluid rounded-circle shadow-lg" style="max-height: 360px; background: rgba(255, 255, 255, 0.95); padding: 15px; border: 4px solid var(--brand-accent);">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. قسم الوصول السريع حسب احتياج المستخدم (Fast Paths) -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold mb-2">مسارات مخصصة</span>
+            <h2 class="fw-bold text-dark">كيف يمكن للمنصة مساعدتك اليوم؟</h2>
+            <p class="text-muted">اختر المسار الذي يناسب هدفك للانطلاق مباشرة في بيئة الابتكار</p>
+        </div>
+
+        <div class="row g-4 row-cols-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
+            <!-- مسار 1 -->
+            <div class="col">
+                <a href="{{ url_for('dashboard.submit_project') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-lightbulb"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">لدي فكرة مبتكرة</h5>
+                    <small class="text-muted">قدّم فكرتك للتقييم والدعم والاحتضان</small>
+                </a>
+            </div>
+            <!-- مسار 2 -->
+            <div class="col">
+                <a href="{{ url_for('public.directory', tab='startups') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-rocket-takeoff"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">لدي شركة ناشئة</h5>
+                    <small class="text-muted">انضم للدليل واستفد من فرص التوسع</small>
+                </a>
+            </div>
+            <!-- مسار 3 -->
+            <div class="col">
+                <a href="{{ url_for('public.directory', tab='investors') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-cash-stack"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">أبحث عن مستثمر</h5>
+                    <small class="text-muted">تواصل مع جهات التمويل والاستثمار الجريء</small>
+                </a>
+            </div>
+            <!-- مسار 4 -->
+            <div class="col">
+                <a href="{{ url_for('public.directory', tab='experts') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-person-check"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">أبحث عن خبير أو موجه</h5>
+                    <small class="text-muted">احصل على جلسات إرشاد متخصصة</small>
+                </a>
+            </div>
+            <!-- مسار 5 -->
+            <div class="col">
+                <a href="{{ url_for('public.training') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-mortarboard"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">أريد تطوير مهاراتي</h5>
+                    <small class="text-muted">التحق بورش ومعسكرات الأكاديمية</small>
+                </a>
+            </div>
+            <!-- مسار 6 -->
+            <div class="col">
+                <a href="{{ url_for('public.programs') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-diagram-3"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">أبحث عن شراكة</h5>
+                    <small class="text-muted">شبّك مع الجامعات ومراكز الأبحاث والشركات</small>
+                </a>
+            </div>
+            <!-- مسار 7 -->
+            <div class="col">
+                <a href="{{ url_for('auth.register') }}" class="quick-path-card">
+                    <div class="quick-path-icon"><i class="bi bi-person-plus"></i></div>
+                    <h5 class="fw-bold fs-6 mb-1">الانضمام للجمعية</h5>
+                    <small class="text-muted">سجل عضويتك الرسمية في الجمعية العلمية</small>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. قسم مؤشرات الأثر الحقيقية (Real DB Metrics) -->
+<section class="py-5" style="background-color: #f1f5f9;">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill fw-bold mb-2">أثر ملموس وبيانات حقيقية</span>
+            <h3 class="fw-bold text-dark">مؤشرات منظومة الابتكار الوطنية</h3>
+            <p class="text-muted small">أرقام حقيقية مستخرجة ومحدثة مباشرة من قاعدة بيانات المنصة</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.members_count }}</div>
+                    <div class="stat-label">عضو مسجل</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.projects_count }}</div>
+                    <div class="stat-label">فكرة ومشروع</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.accepted_projects_count }}</div>
+                    <div class="stat-label">مشروع معتمد</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.startups_count }}</div>
+                    <div class="stat-label">شركة ومؤسسة</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.training_courses_count }}</div>
+                    <div class="stat-label">برنامج تدريبي</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.opportunities_count }}</div>
+                    <div class="stat-label">فرصة دعم نشطة</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. قسم أحدث الفرص والمنح (Active Opportunities) -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+            <div>
+                <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-bold mb-2">التمويل والاحتضان</span>
+                <h2 class="fw-bold text-dark mb-0">أحدث الفرص والمنح المتاحة</h2>
+            </div>
+            <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <span>تصفح كافة الفرص</span>
+                <i class="bi bi-arrow-left"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% if opportunities %}
+                {% for opp in opportunities %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-custom h-100 d-flex flex-column">
+                            <div class="p-4 flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ opp.type_label_ar }}</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success"><i class="bi bi-clock ms-1"></i>{{ opp.status_label_ar }}</span>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-2">
+                                    <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" class="text-decoration-none text-dark hover-primary">{{ opp.title }}</a>
+                                </h5>
+                                <div class="small text-muted mb-3"><i class="bi bi-building ms-1"></i>{{ opp.provider_name }}</div>
+                                <p class="text-muted small leading-relaxed">{{ opp.summary[:140] }}...</p>
+                            </div>
+                            <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
+                                <div class="small text-muted">
+                                    <i class="bi bi-calendar-event ms-1"></i>الموعد: <strong>{{ opp.deadline.strftime('%Y-%m-%d') }}</strong>
+                                </div>
+                                <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" class="btn btn-primary btn-sm">التفاصيل والتقديم</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+                    لا توجد فرص جديدة معلنة حالياً. ترقبوا الإعلان عن دورات المنح القادمة قريباً.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- 5. قسم دليل الابتكار الليبي (Showcase) -->
+<section class="py-5" style="background-color: #f8fafc;">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+            <div>
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold mb-2">بيئة الابتكار</span>
+                <h2 class="fw-bold text-dark mb-0">نماذج من دليل الابتكار الليبي</h2>
+            </div>
+            <a href="{{ url_for('public.directory') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <span>استكشف الدليل الوطني بالكامل</span>
+                <i class="bi bi-arrow-left"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% if featured_projects %}
+                {% for proj in featured_projects %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card card-custom h-100">
+                            <div class="p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary">{{ proj.sector }}</span>
+                                    <span class="badge bg-info bg-opacity-10 text-info"><i class="bi bi-geo-alt ms-1"></i>{{ proj.city }}</span>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-2">{{ proj.title }}</h5>
+                                <p class="text-muted small leading-relaxed mb-3">{{ proj.summary[:130] }}...</p>
+                                <div class="small text-muted mb-2"><i class="bi bi-person ms-1"></i>صاحب المشروع: <strong>{{ proj.owner.full_name }}</strong></div>
+                                <div class="small text-muted"><i class="bi bi-flag ms-1"></i>المرحلة: <span class="badge bg-light text-dark border">{{ proj.stage_label_ar }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="bi bi-shield-lock fs-3 d-block mb-2"></i>
+                    المشاريع المعتمدة تظهر في الدليل بعد موافقة أصحابها واللجنة الفنية بالجمعية.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- 6. قسم الأخبار والفعاليات (News & Events) -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row g-5">
+            <!-- الأخبار -->
+            <div class="col-lg-7">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-dark mb-0">أخبار وأنشطة الجمعية</h3>
+                    <a href="{{ url_for('public.news') }}" class="btn btn-link text-primary text-decoration-none p-0">المزيد من الأخبار</a>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for art in latest_news %}
+                        <div class="card card-custom p-3">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary w-auto align-self-start">{{ art.category_label_ar }}</span>
+                                <small class="text-muted"><i class="bi bi-clock ms-1"></i>{{ art.published_at.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                            <h5 class="fw-bold mb-2">
+                                <a href="{{ url_for('public.news_detail', slug=art.slug) }}" class="text-decoration-none text-dark hover-primary">{{ art.title }}</a>
+                            </h5>
+                            <p class="text-muted small mb-0">{{ art.summary[:140] }}...</p>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">لا توجد أخبار منشورة حالياً.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- الفعاليات القادمة -->
+            <div class="col-lg-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-dark mb-0">الفعاليات القادمة</h3>
+                    <a href="{{ url_for('public.events') }}" class="btn btn-link text-primary text-decoration-none p-0">كل الفعاليات</a>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for ev in upcoming_events %}
+                        <div class="card card-custom p-3 border-start border-4 border-success">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-success bg-opacity-10 text-success">{{ ev.city }}</span>
+                                <small class="text-muted">{{ ev.start_time.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <h6 class="fw-bold mb-1">
+                                <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="text-decoration-none text-dark hover-primary">{{ ev.title }}</a>
+                            </h6>
+                            <p class="text-muted small mb-2">{{ ev.summary[:90] }}...</p>
+                            <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="btn btn-outline-primary btn-sm align-self-start">التسجيل في الفعالية</a>
+                        </div>
+                    {% else %}
+                        <div class="p-4 bg-light rounded text-center text-muted">
+                            <i class="bi bi-calendar-check fs-3 d-block mb-2"></i>
+                            ترقبوا إعلان موعد الملتقى الوطني الأول للابتكار قريباً.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. قسم رسالة الجمعية ونبذة التعريف (Mission & Teaser) -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, #0a1f33 100%);">
+    <div class="container py-3">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">الرسالة الرسمية المعتمدة</span>
+                <blockquote class="fs-5 leading-loose fst-italic mb-4 text-light">
+                    "{{ site_settings.get('official_mission', 'تمكين المبتكرين ورواد الأعمال الليبيين عبر توفير بيئة حاضنة ومتكاملة تجمع بين التدريب، التوجيه، والتشبيك. نحن نسعى لجس الفجوة بين الأفكار الإبداعية والواقع السوقي، من خلال بناء شراكات استراتيجية تضمن تحويل التحديات المحلية إلى فرص اقتصادية ناجحة.') }}"
+                </blockquote>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('public.about') }}" class="btn btn-outline-light">اقرأ المزيد عن الجمعية ورؤيتها وأهدافها</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-accent">سجل كعضو في الجمعية</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="p-4 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <i class="bi bi-building-check text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="fw-bold mt-3 mb-1">المقر الرئيسي</h5>
+                    <p class="text-light small mb-0">{{ site_settings.get('headquarters', 'غريان - جامعة غريان') }}</p>
+                    <hr class="border-light opacity-25">
+                    <small class="text-warning">بإشراف الهيئة الليبية للبحث العلمي</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. قسم الشركاء والمؤسسات الداعمة (Partners) -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-dark">شركاء النجاح والمنظومة الوطنية</h4>
+            <p class="text-muted small">شراكات استراتيجية مع الجامعات والمراكز البحثية والجهات الراعية</p>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-4 g-4 align-items-center justify-content-center text-center">
+            {% for p in partners %}
+                <div class="col">
+                    <div class="p-3 border rounded-3 bg-light shadow-sm">
+                        <div class="fw-bold text-dark fs-6">{{ p.name }}</div>
+                        <small class="text-muted">{{ p.description or 'شريك استراتيجي' }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

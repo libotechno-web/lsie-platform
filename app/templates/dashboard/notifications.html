@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}الإشعارات والتنبيهات | لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                    <h4 class="fw-bold text-dark mb-0"><i class="bi bi-bell-fill text-primary ms-2"></i>مركز التنبيهات والإشعارات</h4>
+                    <span class="badge bg-light text-muted border">{{ notifications|length }} إشعار</span>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for n in notifications %}
+                        <div class="p-3 rounded-3 border bg-light d-flex align-items-start gap-3">
+                            <div class="p-2 rounded-circle bg-primary bg-opacity-10 text-primary fs-5">
+                                <i class="bi {{ n.icon or 'bi-bell' }}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold text-dark mb-0">{{ n.title }}</h6>
+                                    <small class="text-muted">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                                <p class="text-secondary small mb-2">{{ n.message }}</p>
+                                {% if n.link %}
+                                    <a href="{{ n.link }}" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.8rem;">الانتقال للتفاصيل</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                            <h6 class="fw-bold">لا توجد إشعارات حالياً</h6>
+                            <p class="small">ستظهر هنا كافة تحديثات مشاريعك وطلبات التشبيك.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

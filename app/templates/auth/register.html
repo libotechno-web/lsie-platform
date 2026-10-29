@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}إنشاء حساب جديد | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-2">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-7">
+            <div class="card card-custom p-4 p-md-5 shadow">
+                <!-- الشعار في صفحة إنشاء الحساب -->
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" style="height: 70px; background: #fff; border-radius: 50%; padding: 4px;" class="shadow-sm mb-3">
+                    <h3 class="fw-bold text-dark">انضم إلى مجتمع الابتكار الليبي</h3>
+                    <p class="text-muted small">أنشئ حسابك للاستفادة من برامج التمويل، الاحتضان، والتوجيه</p>
+                </div>
+
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.full_name.label }} *</label>
+                            {{ form.full_name(class="form-control", placeholder="الاسم الثلاثي أو الرباعي") }}
+                            {% for err in form.full_name.errors %}
+                                <div class="text-danger small mt-1">{{ err }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.email.label }} *</label>
+                            {{ form.email(class="form-control", placeholder="name@example.com") }}
+                            {% for err in form.email.errors %}
+                                <div class="text-danger small mt-1">{{ err }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.phone.label }} *</label>
+                            {{ form.phone(class="form-control", placeholder="091XXXXXXX") }}
+                            {% for err in form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ err }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.city.label }} *</label>
+                            {{ form.city(class="form-select") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.account_type.label }} *</label>
+                        {{ form.account_type(class="form-select") }}
+                        <small class="text-muted">حدد مسارك للاستفادة من الخدمات والفرص المخصصة لنوع حسابك.</small>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.password.label }} *</label>
+                            {{ form.password(class="form-control", placeholder="8 أحرف على الأقل") }}
+                            {% for err in form.password.errors %}
+                                <div class="text-danger small mt-1">{{ err }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.confirm_password.label }} *</label>
+                            {{ form.confirm_password(class="form-control", placeholder="أعد إدخال كلمة المرور") }}
+                            {% for err in form.confirm_password.errors %}
+                                <div class="text-danger small mt-1">{{ err }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form.terms(class="form-check-input") }}
+                            <label class="form-check-label small text-muted" for="terms">
+                                أوافق على <a href="{{ url_for('public.dynamic_page', slug='terms-of-service') }}" target="_blank">الشروط والأحكام</a> و <a href="{{ url_for('public.dynamic_page', slug='privacy-policy') }}" target="_blank">سياسة الخصوصية</a> الخاصة بالجمعية.
+                            </label>
+                        </div>
+                        {% for err in form.terms.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary w-100 py-2 fs-6 fw-bold mb-3") }}
+
+                    <div class="text-center small text-muted">
+                        لديك حساب بالفعل؟
+                        <a href="{{ url_for('auth.login') }}" class="text-primary fw-bold text-decoration-none">تسجيل الدخول</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

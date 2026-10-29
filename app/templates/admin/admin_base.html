@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}لوحة الإدارة الشاملة{% endblock %} | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}</title>
+    
+    <!-- خط Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- إطار العمل Bootstrap 5.3 RTL وأيقونات Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- الأيقونة المفضلة -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    
+    <!-- تنسيقات المنصة -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --brand-primary: {{ site_settings.get('primary_color', '#0d6e3f') }};
+            --brand-secondary: {{ site_settings.get('secondary_color', '#133b66') }};
+            --brand-accent: {{ site_settings.get('accent_color', '#e5a93c') }};
+        }
+        .admin-sidebar {
+            background-color: #0b1a2d;
+            color: #cbd5e1;
+            min-height: 100vh;
+        }
+        .admin-sidebar .nav-link {
+            color: #94a3b8 !important;
+            padding: 0.6rem 1rem !important;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.2rem;
+            transition: var(--transition);
+        }
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
+            background-color: var(--brand-primary);
+            color: #ffffff !important;
+        }
+        .admin-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+        }
+        .admin-main {
+            background-color: #f8fafc;
+            min-height: calc(100vh - 65px);
+            padding: 1.75rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- الشريط الجانبي للإدارة (Sidebar) -->
+    <aside class="admin-sidebar d-none d-lg-block p-3" style="width: 270px; flex-shrink: 0;">
+        <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom border-secondary border-opacity-25 px-2">
+            <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" style="height: 44px; background: #fff; border-radius: 50%; padding: 2px;">
+            <div>
+                <span class="d-block fw-bold text-white small lh-1">لوحة الإدارة والتحكم</span>
+                <span class="text-warning small" style="font-size: 0.75rem;">{{ site_settings.get('site_acronym', 'L.S.I.E') }} Admin</span>
+            </div>
+        </div>
+
+        <nav class="nav flex-column">
+            <!-- 1. الرئيسية والمؤشرات -->
+            <a class="nav-link {% if request.endpoint == 'admin.index' %}active{% endif %}" href="{{ url_for('admin.index') }}">
+                <i class="bi bi-speedometer2"></i><span>لوحة المؤشرات</span>
+            </a>
+
+            <!-- 2. المستخدمون والأدوار -->
+            {% if current_user.is_admin %}
+                <a class="nav-link {% if request.endpoint in ['admin.users', 'admin.edit_user'] %}active{% endif %}" href="{{ url_for('admin.users') }}">
+                    <i class="bi bi-people"></i><span>إدارة المستخدمين والأدوار</span>
+                </a>
+            {% endif %}
+
+            <!-- 3. الأفكار والمشاريع -->
+            <a class="nav-link {% if request.endpoint in ['admin.projects', 'admin.review_project'] %}active{% endif %}" href="{{ url_for('admin.projects') }}">
+                <i class="bi bi-lightbulb"></i><span>إدارة الأفكار والمشاريع</span>
+            </a>
+
+            <!-- 4. الشركات الناشئة -->
+            <a class="nav-link {% if request.endpoint == 'admin.organizations' %}active{% endif %}" href="{{ url_for('admin.organizations') }}">
+                <i class="bi bi-rocket-takeoff"></i><span>الشركات الناشئة والحاضنات</span>
+            </a>
+
+            <!-- 5. الفرص والمنح -->
+            <a class="nav-link {% if request.endpoint in ['admin.opportunities', 'admin.new_opportunity', 'admin.edit_opportunity', 'admin.opportunity_applications'] %}active{% endif %}" href="{{ url_for('admin.opportunities') }}">
+                <i class="bi bi-gift"></i><span>الفرص والمنح والمسابقات</span>
+            </a>
+
+            <!-- 6. الدورات والتدريب -->
+            <a class="nav-link {% if request.endpoint in ['admin.training', 'admin.new_course', 'admin.course_enrollments'] %}active{% endif %}" href="{{ url_for('admin.training') }}">
+                <i class="bi bi-mortarboard"></i><span>الدورات والأكاديمية</span>
+            </a>
+
+            <!-- 7. الفعاليات -->
+            <a class="nav-link {% if request.endpoint in ['admin.events', 'admin.new_event'] %}active{% endif %}" href="{{ url_for('admin.events') }}">
+                <i class="bi bi-calendar-event"></i><span>الفعاليات والملتقيات</span>
+            </a>
+
+            <!-- 8. الأخبار والمقالات -->
+            <a class="nav-link {% if request.endpoint in ['admin.articles', 'admin.new_article'] %}active{% endif %}" href="{{ url_for('admin.articles') }}">
+                <i class="bi bi-newspaper"></i><span>الأخبار والمقالات</span>
+            </a>
+
+            <!-- 9. الشركاء والرعاة -->
+            <a class="nav-link {% if request.endpoint in ['admin.partners', 'admin.new_partner'] %}active{% endif %}" href="{{ url_for('admin.partners') }}">
+                <i class="bi bi-patch-check"></i><span>الشركاء والجهات الداعمة</span>
+            </a>
+
+            <!-- 10. الصفحات والقوائم -->
+            <a class="nav-link {% if request.endpoint in ['admin.pages', 'admin.new_page', 'admin.edit_page'] %}active{% endif %}" href="{{ url_for('admin.pages') }}">
+                <i class="bi bi-file-earmark-text"></i><span>الصفحات الثابتة (CMS)</span>
+            </a>
+            {% if current_user.is_admin %}
+                <a class="nav-link {% if request.endpoint == 'admin.navigation' %}active{% endif %}" href="{{ url_for('admin.navigation') }}">
+                    <i class="bi bi-menu-button-wide"></i><span>إدارة القوائم والروابط</span>
+                </a>
+            {% endif %}
+
+            <!-- 11. الأهداف والقيم -->
+            {% if current_user.is_admin %}
+                <a class="nav-link {% if request.endpoint == 'admin.objectives' %}active{% endif %}" href="{{ url_for('admin.objectives') }}">
+                    <i class="bi bi-bullseye"></i><span>الرسالة والرؤية والأهداف</span>
+                </a>
+            {% endif %}
+
+            <!-- 12. الإعدادات والشعار -->
+            {% if current_user.is_admin %}
+                <a class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}" href="{{ url_for('admin.settings') }}">
+                    <i class="bi bi-sliders"></i><span>الشعار والألوان والإعدادات</span>
+                </a>
+            {% endif %}
+
+            <!-- 13. سجل التدقيق والنسخ الاحتياطي -->
+            {% if current_user.is_admin %}
+                <a class="nav-link {% if request.endpoint == 'admin.audit_logs' %}active{% endif %}" href="{{ url_for('admin.audit_logs') }}">
+                    <i class="bi bi-journal-text"></i><span>سجل التدقيق والأنشطة</span>
+                </a>
+                <a class="nav-link {% if request.endpoint == 'admin.backups' %}active{% endif %}" href="{{ url_for('admin.backups') }}">
+                    <i class="bi bi-database-down"></i><span>النسخ الاحتياطي والاستعادة</span>
+                </a>
+            {% endif %}
+
+            <!-- 14. مركز التقارير وتصدير البيانات -->
+            <a class="nav-link {% if request.endpoint in ['admin.reports', 'admin.export_report'] %}active{% endif %}" href="{{ url_for('admin.reports') }}">
+                <i class="bi bi-file-earmark-spreadsheet"></i><span>التقارير وتصدير البيانات</span>
+            </a>
+
+            <div class="border-top border-secondary border-opacity-25 my-3 pt-2">
+                <a class="nav-link text-warning" href="{{ url_for('public.index') }}" target="_blank">
+                    <i class="bi bi-box-arrow-up-left"></i><span>معاينة الموقع العام</span>
+                </a>
+                <a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">
+                    <i class="bi bi-box-arrow-right"></i><span>تسجيل الخروج</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- مساحة العمل الإدارية الرئيسية -->
+    <div class="flex-grow-1" style="min-width: 0;">
+        <!-- الشريط العلوي للإدارة -->
+        <header class="admin-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <!-- زر القائمة للهواتف -->
+                <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminMobileSidebar">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div class="fw-bold text-dark fs-6 d-none d-sm-block">نظام إدارة الجمعية الليبية للابتكار</div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('admin.index') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-speedometer2 ms-1"></i>الرئيسية</a>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="text-end d-none d-md-block">
+                        <div class="fw-bold text-dark small lh-1">{{ current_user.full_name }}</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">{{ current_user.primary_role_title }}</small>
+                    </div>
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-light rounded-circle p-2" title="تعديل حسابي">
+                        <i class="bi bi-person"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- رسائل الفلاش -->
+        <div class="container-fluid px-4 pt-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2" role="alert">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <div>{{ message }}</div>
+                            <button type="button" class="btn-close me-auto ms-0" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- المحتوى الداخلي للصفحة -->
+        <main class="admin-main">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<!-- القائمة الجانبية للشاشات الصغيرة (Offcanvas) -->
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="adminMobileSidebar" style="width: 280px;">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title fw-bold text-warning">لوحة الإدارة</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-3">
+        <nav class="nav flex-column">
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.index') }}"><i class="bi bi-speedometer2 ms-2"></i>لوحة المؤشرات</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.users') }}"><i class="bi bi-people ms-2"></i>المستخدمون والأدوار</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.projects') }}"><i class="bi bi-lightbulb ms-2"></i>الأفكار والمشاريع</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.organizations') }}"><i class="bi bi-rocket ms-2"></i>الشركات والحاضنات</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.opportunities') }}"><i class="bi bi-gift ms-2"></i>الفرص والمنح</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.training') }}"><i class="bi bi-mortarboard ms-2"></i>التدريب</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.articles') }}"><i class="bi bi-newspaper ms-2"></i>الأخبار والمقالات</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.events') }}"><i class="bi bi-calendar-event ms-2"></i>الفعاليات</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.settings') }}"><i class="bi bi-sliders ms-2"></i>الإعدادات والشعار</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.backups') }}"><i class="bi bi-database ms-2"></i>النسخ الاحتياطي</a>
+            <a class="nav-link text-white py-2" href="{{ url_for('admin.reports') }}"><i class="bi bi-file-earmark-spreadsheet ms-2"></i>التقارير وتصدير البيانات</a>
+            <hr class="border-secondary">
+            <a class="nav-link text-warning py-2" href="{{ url_for('public.index') }}" target="_blank"><i class="bi bi-globe ms-2"></i>الموقع العام</a>
+            <a class="nav-link text-danger py-2" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right ms-2"></i>تسجيل الخروج</a>
+        </nav>
+    </div>
+</div>
+
+<!-- نصوص Bootstrap JS ومكتبة Chart.js للرسوم البيانية -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

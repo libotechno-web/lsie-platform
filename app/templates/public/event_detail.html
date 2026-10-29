@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} | الفعاليات{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ event.city }}</span>
+                    <span class="badge bg-success bg-opacity-10 text-success fs-6">{{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+
+                <h2 class="fw-bold text-dark mb-3">{{ event.title }}</h2>
+                <div class="text-muted small mb-4">
+                    <i class="bi bi-geo-alt ms-1 text-danger"></i> المكان: <strong>{{ event.location_name }}</strong>
+                    <span class="mx-2">|</span>
+                    <i class="bi bi-people ms-1 text-primary"></i> المقاعد المسجلة: <strong>{{ event.registered_count }}/{{ event.capacity }}</strong>
+                </div>
+
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">عن الفعالية وجدول الأعمال</h5>
+                <p class="text-secondary leading-relaxed mb-4" style="white-space: pre-line;">{{ event.description }}</p>
+            </div>
+
+            <!-- نموذج تسجيل الحضور بالفعالية -->
+            <div class="card card-custom p-4 shadow-sm border-top border-4 border-primary" id="register-section">
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-ticket-perforated text-primary ms-2"></i>حجز مقعد وحضور الفعالية</h4>
+
+                {% if is_registered %}
+                    <div class="alert alert-success d-flex align-items-center gap-2 mb-0">
+                        <i class="bi bi-check-circle-fill fs-4"></i>
+                        <div>تم تأكيد حجز مقعدك في الفعالية! سنرسل لك تذكرة الحضور ورابط البث (إن كان مدمجاً).</div>
+                    </div>
+                {% elif is_full %}
+                    <div class="alert alert-danger d-flex align-items-center gap-3 mb-0 p-3 border-2">
+                        <i class="bi bi-exclamation-octagon-fill fs-3 text-danger"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">اكتمل العدد المحدد للتسجيل</h6>
+                            <p class="mb-0 small">عذراً، نعتذر منك! لقد اكتملت السعة القصوى للمقاعد المخصصة لهذه الفعالية وتم إغلاق الحجز.</p>
+                        </div>
+                    </div>
+                {% elif is_closed %}
+                    <div class="alert alert-secondary d-flex align-items-center gap-3 mb-0 p-3">
+                        <i class="bi bi-lock-fill fs-3 text-secondary"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">الحجز مغلق حالياً</h6>
+                            <p class="mb-0 small">التسجيل في هذه الفعالية مغلق حالياً من قِبل المنظمين.</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark">{{ form.full_name.label }}</label>
+                                {{ form.full_name(class="form-control", value=current_user.full_name if current_user.is_authenticated else '') }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark">{{ form.email.label }}</label>
+                                {{ form.email(class="form-control", value=current_user.email if current_user.is_authenticated else '') }}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark">{{ form.phone.label }}</label>
+                                {{ form.phone(class="form-control", value=current_user.phone if current_user.is_authenticated and current_user.phone else '') }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark">{{ form.organization.label }}</label>
+                                {{ form.organization(class="form-control", placeholder="الجامعة، الشركة، أو الكيان التابع له") }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">{{ form.notes.label }}</label>
+                            {{ form.notes(class="form-control", rows=2, placeholder="أي استفسارات أو ملاحظات ترغب في توجيهها للمنظمين...") }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-check2-circle ms-1"></i>تأكيد حجز التذكرة
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-custom p-4">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">بطاقة الفعالية</h5>
+                <ul class="list-unstyled small d-flex flex-column gap-3 mb-4">
+                    <li>
+                        <div class="text-muted">المدينة:</div>
+                        <div class="fw-bold text-dark">{{ event.city }}</div>
+                    </li>
+                    <li>
+                        <div class="text-muted">طريقة الانعقاد:</div>
+                        <div class="fw-bold text-dark">
+                            {% if event.location_type == 'in_person' %}حضوري بالمقر{% elif event.location_type == 'online' %}افتراضي عن بُعد{% else %}مدمج (حضوري وافتراضي){% endif %}
+                        </div>
+                    </li>
+                    <li>
+                        <div class="text-muted">رسوم الدخول:</div>
+                        <div class="fw-bold text-success fs-6">دخول مجاني بتسجيل مسبق</div>
+                    </li>
+                    <li>
+                        <div class="text-muted">حالة الحجز والمقاعد:</div>
+                        <div class="fw-bold">
+                            {% if is_full %}
+                                <span class="badge bg-danger fs-6"><i class="bi bi-x-circle ms-1"></i>اكتمل العدد المحدد للتسجيل</span>
+                            {% elif is_closed %}
+                                <span class="badge bg-secondary fs-6"><i class="bi bi-lock ms-1"></i>الحجز مغلق</span>
+                            {% else %}
+                                <span class="text-primary fs-6">{{ event.capacity - (actual_reg_count or 0) }} مقعد متبقي من أصل {{ event.capacity }}</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+
+                {% if is_registered %}
+                    <button class="btn btn-success w-100" disabled><i class="bi bi-check2-circle ms-1"></i>أنت مسجل بالفعل</button>
+                {% elif is_full %}
+                    <button class="btn btn-danger w-100" disabled><i class="bi bi-x-circle ms-1"></i>اكتمل العدد المحدد للتسجيل</button>
+                {% elif is_closed %}
+                    <button class="btn btn-secondary w-100" disabled><i class="bi bi-lock ms-1"></i>الحجز مغلق</button>
+                {% else %}
+                    <a href="#register-section" class="btn btn-primary w-100">احجز مقعدك الآن</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

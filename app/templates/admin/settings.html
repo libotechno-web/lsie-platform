@@ -1,0 +1,192 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}إدارة الإعدادات والهوية والشعار{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card card-custom p-4 p-md-5 shadow-sm">
+            <div class="border-bottom pb-3 mb-4">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2">Data-Driven Configuration</span>
+                <h3 class="fw-bold text-dark mb-1">إعدادات المنصة والهوية البصرية</h3>
+                <p class="text-muted small mb-0">التحكم الشامل في نصوص الموقع، الشعار، الألوان، البيانات الرسمية، وقنوات التواصل دون تعديل الكود.</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <!-- 1. الأسماء والشعار والعناوين الرئيسية -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                    <i class="bi bi-palette text-primary ms-1"></i>1. الهوية الرسمية والشعار
+                </h5>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.site_name.label }}</label>
+                        {{ form.site_name(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.site_name_en.label }}</label>
+                        {{ form.site_name_en(class="form-control") }}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bold text-dark">{{ form.site_acronym.label }}</label>
+                        {{ form.site_acronym(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.logo.label }}</label>
+                        {{ form.logo(class="form-control") }}
+                        <small class="text-muted">ارفع شعاراً جديداً ليتم استبداله تلقائياً في كافة صفحات المنصة دون تعديل القوالب.</small>
+                    </div>
+                    <div class="col-md-6 text-center text-md-start">
+                        <span class="text-muted small d-block mb-1">الشعار الحالي:</span>
+                        <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="الشعار الحالي" style="height: 60px; background: #fff; border-radius: 50%; padding: 3px;" class="border shadow-sm">
+                    </div>
+                </div>
+
+                <!-- 2. لوحة الألوان المعتمدة (Primary, Secondary, Accent) -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-eyedropper text-success ms-1"></i>2. لوحة الألوان المعتمدة من الشعار
+                </h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.primary_color.label }}</label>
+                        <div class="input-group">
+                            {{ form.primary_color(class="form-control", type="color") }}
+                            <span class="input-group-text bg-white small">{{ site_settings.get('primary_color', '#0d6e3f') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.secondary_color.label }}</label>
+                        <div class="input-group">
+                            {{ form.secondary_color(class="form-control", type="color") }}
+                            <span class="input-group-text bg-white small">{{ site_settings.get('secondary_color', '#133b66') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.accent_color.label }}</label>
+                        <div class="input-group">
+                            {{ form.accent_color(class="form-control", type="color") }}
+                            <span class="input-group-text bg-white small">{{ site_settings.get('accent_color', '#e5a93c') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. نصوص الصفحة الرئيسية (Hero) -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-window text-info ms-1"></i>3. نصوص واجهة الصفحة الرئيسية (Hero)
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.hero_title.label }}</label>
+                    {{ form.hero_title(class="form-control") }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">{{ form.hero_subtitle.label }}</label>
+                    {{ form.hero_subtitle(class="form-control", rows=2) }}
+                </div>
+
+                <!-- 4. النبذة والرسالة والرؤية والبيانات القانونية الرسمية -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-file-earmark-check text-warning ms-1"></i>4. النبذة والرسالة والرؤية الرسمية (القسم 3)
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.about_intro.label }}</label>
+                    {{ form.about_intro(class="form-control", rows=4) }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.official_mission.label }}</label>
+                    {{ form.official_mission(class="form-control", rows=3) }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.official_vision.label }}</label>
+                    {{ form.official_vision(class="form-control", rows=3, placeholder="أدخل الرؤية الرسمية المعتمدة...") }}
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.establishment_decree.label }}</label>
+                        {{ form.establishment_decree(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.headquarters.label }}</label>
+                        {{ form.headquarters(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.certificate_number.label }}</label>
+                        {{ form.certificate_number(class="form-control") }}
+                    </div>
+                </div>
+
+                <!-- 5. بيانات التواصل -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-telephone text-primary ms-1"></i>5. بيانات الاتصال الرسمية
+                </h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.contact_email.label }}</label>
+                        {{ form.contact_email(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.contact_phone.label }}</label>
+                        {{ form.contact_phone(class="form-control") }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">{{ form.contact_address.label }}</label>
+                        {{ form.contact_address(class="form-control") }}
+                    </div>
+                </div>
+
+                <!-- 6. شبكات التواصل الاجتماعي (Section 16: Facebook, Instagram, X, LinkedIn) -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-share text-secondary ms-1"></i>6. منصات التواصل الاجتماعي الرسمية (القسم 16)
+                </h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.facebook_url.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-facebook text-primary"></i></span>
+                            {{ form.facebook_url(class="form-control", placeholder="https://facebook.com/...") }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.instagram_url.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-instagram text-danger"></i></span>
+                            {{ form.instagram_url(class="form-control", placeholder="https://instagram.com/...") }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.twitter_x_url.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-twitter-x text-dark"></i></span>
+                            {{ form.twitter_x_url(class="form-control", placeholder="https://x.com/...") }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.linkedin_url.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-linkedin text-info"></i></span>
+                            {{ form.linkedin_url(class="form-control", placeholder="https://linkedin.com/...") }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-top text-end">
+                    {{ form.submit(class="btn btn-primary px-5 py-2 fs-6 fw-bold") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

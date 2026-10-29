@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}لوحة التحكم الشخصية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- الشريط الجانبي -->
+        <div class="col-lg-3">
+            <div class="card card-custom p-3 text-center mb-4">
+                <div class="mx-auto mb-2">
+                    {% if current_user.avatar %}
+                        <img src="{{ url_for('static', filename=current_user.avatar) }}" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 2.2rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h5 class="fw-bold text-dark mb-1">{{ current_user.full_name }}</h5>
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ current_user.primary_role_title }}</span>
+                <small class="text-muted d-block">{{ current_user.city }}</small>
+            </div>
+
+            <div class="list-group shadow-sm border-0">
+                <a href="{{ url_for('dashboard.index') }}" class="list-group-item list-group-item-action active py-3"><i class="bi bi-columns-gap ms-2"></i>لوحة التحكم الشخصية</a>
+                <a href="{{ url_for('dashboard.submit_project') }}" class="list-group-item list-group-item-action py-3 text-success fw-bold"><i class="bi bi-plus-circle ms-2"></i>تقديم فكرة جديدة</a>
+                <a href="{{ url_for('dashboard.projects') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-collection ms-2"></i>مشاريعي وأفكاري</a>
+                <a href="{{ url_for('dashboard.my_courses') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-mortarboard ms-2"></i>دوراتي التدريبية</a>
+                <a href="{{ url_for('dashboard.my_events') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-calendar-check ms-2"></i>فعالياتي</a>
+                <a href="{{ url_for('dashboard.my_applications') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-gift ms-2"></i>طلبات المنح والفرص</a>
+                <a href="{{ url_for('dashboard.networking_requests') }}" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-people ms-2"></i>طلبات التشبيك</span>
+                    {% if pending_networking > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ pending_networking }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('auth.profile') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-person-gear ms-2"></i>تعديل الملف الشخصي</a>
+                {% if current_user.is_reviewer or current_user.is_admin %}
+                    <a href="{{ url_for('admin.index') }}" class="list-group-item list-group-item-action py-3 text-primary fw-bold bg-light"><i class="bi bi-speedometer2 ms-2"></i>الانتقال للوحة الإدارة</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- المحتوى والملخص -->
+        <div class="col-lg-9">
+            <!-- بطاقة الترحيب -->
+            <div class="card card-custom p-4 mb-4 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h4 class="fw-bold mb-1">أهلاً بك، {{ current_user.full_name }}!</h4>
+                        <p class="text-light opacity-90 small mb-0">لوحة المتابعة الشخصية لمشاريعك الريادية وتطبيقاتك في الجمعية الليبية للابتكار.</p>
+                    </div>
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-accent btn-sm shadow-sm d-flex align-items-center gap-1 text-nowrap">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>تقديم فكرة مشروع</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- إحصاءات المستخدم السريعة -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="card card-custom p-3 text-center">
+                        <div class="fs-3 fw-bold text-primary">{{ my_projects|length }}</div>
+                        <div class="text-muted small">أفكار ومشاريع</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card card-custom p-3 text-center">
+                        <div class="fs-3 fw-bold text-success">{{ my_courses|length }}</div>
+                        <div class="text-muted small">دورات ملتحق بها</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card card-custom p-3 text-center">
+                        <div class="fs-3 fw-bold text-warning">{{ my_events|length }}</div>
+                        <div class="text-muted small">فعاليات مسجل بها</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card card-custom p-3 text-center">
+                        <div class="fs-3 fw-bold text-secondary">{{ my_applications|length }}</div>
+                        <div class="text-muted small">تقديمات على المنح</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أحدث المشاريع المقدمة -->
+            <div class="card card-custom p-4 mb-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                    <h5 class="fw-bold text-dark mb-0">مشاريعي وأفكاري</h5>
+                    <a href="{{ url_for('dashboard.projects') }}" class="btn btn-link text-primary text-decoration-none p-0 small">عرض الكل</a>
+                </div>
+
+                {% if my_projects %}
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light small">
+                                <tr>
+                                    <th>عنوان المشروع</th>
+                                    <th>القطاع</th>
+                                    <th>المرحلة</th>
+                                    <th>الحالة</th>
+                                    <th>تاريخ التقديم</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in my_projects %}
+                                    <tr>
+                                        <td class="fw-bold text-dark">{{ p.title }}</td>
+                                        <td class="small">{{ p.sector }}</td>
+                                        <td class="small">{{ p.stage_label_ar }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ p.status_badge_class }}">
+                                                {{ p.status_label_ar }}
+                                            </span>
+                                        </td>
+                                        <td class="small text-muted">{{ p.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('dashboard.project_detail', project_id=p.id) }}" class="btn btn-sm btn-outline-primary">متابعة الطلب</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-lightbulb fs-2 d-block mb-2"></i>
+                        <p class="small mb-3">لم تقم بتقديم أي أفكار أو مشاريع بعد.</p>
+                        <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary btn-sm">قدّم فكرتك الأولى الآن</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

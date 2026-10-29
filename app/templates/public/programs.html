@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}البرامج والمبادرات الوطنية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-primary) 0%, #0a3b22 100%);">
+    <div class="container py-3">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">المبادرات الاستراتيجية</span>
+        <h1 class="fw-bold mb-2">البرامج والمبادرات الوطنية</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">مبادرات مؤسسية صُممت لبناء بيئة ريادية مستدامة ونقل البحوث العلمية إلى السوق الاقتصادي الليبي.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- برنامج 1 -->
+        <div class="col-lg-6">
+            <div class="card card-custom p-4 h-100 border-start border-4 border-success">
+                <span class="badge bg-success bg-opacity-10 text-success align-self-start mb-2">برنامج سنوي</span>
+                <h4 class="fw-bold text-dark mb-2">برنامج تجسير البحث العلمي بالسوق (Science-to-Market)</h4>
+                <p class="text-muted leading-relaxed small mb-3">
+                    مبادرة مشتركة بين الجمعية والجامعات والمراكز البحثية الليبية، تهدف إلى فرز براءات الاختراع والبحوث الأكاديمية التطبيقية، وتحويلها إلى نماذج أعمال تجارية وتأسيس شركات منبثقة (Spin-offs) قابلة للنمو.
+                </p>
+                <div class="small text-secondary mb-3">
+                    <i class="bi bi-check-circle-fill text-success ms-1"></i> استشارات حماية ملكية فكرية وتسجيل البراءات.
+                    <br>
+                    <i class="bi bi-check-circle-fill text-success ms-1"></i> توفير دعم أولي لتصنيع النموذج التجريبي (Prototyping).
+                </div>
+                <div class="mt-auto">
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary btn-sm">تقديم بحث أو اختراع تجاري</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- برنامج 2 -->
+        <div class="col-lg-6">
+            <div class="card card-custom p-4 h-100 border-start border-4 border-warning">
+                <span class="badge bg-warning bg-opacity-10 text-warning align-self-start mb-2">مبادرة وطنية</span>
+                <h4 class="fw-bold text-dark mb-2">شبكة المستثمرين الملائكيين الليبيين (Libya Angel Network)</h4>
+                <p class="text-muted leading-relaxed small mb-3">
+                    مبادرة رائدة تهدف إلى حشد وتأهيل المستثمرين الأفراد ورجال الأعمال في ليبيا، لتمويل المشاريع الناشئة الواعدة في مراحلها المبكرة (Seed Stage) وتقليل مخاطر الاستثمار من خلال آليات تقييم موحدة.
+                </p>
+                <div class="small text-secondary mb-3">
+                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> جلسات عروض دورية (Demo Days) للمشاريع المعتمدة.
+                    <br>
+                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> عقود استثمار معيارية متوافقة مع القوانين الليبية.
+                </div>
+                <div class="mt-auto">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm">الانضمام كجهة استثمارية</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- برنامج 3 -->
+        <div class="col-lg-6">
+            <div class="card card-custom p-4 h-100 border-start border-4 border-primary">
+                <span class="badge bg-primary bg-opacity-10 text-primary align-self-start mb-2">حاضنة رقمية</span>
+                <h4 class="fw-bold text-dark mb-2">مسرعة ومخيم الابتكار التقني (LSIE Tech Accelerator)</h4>
+                <p class="text-muted leading-relaxed small mb-3">
+                    برنامج مكثف يمتد لـ 16 أسبوعاً، يستهدف الشركات التقنية الناشئة في مجالات FinTech، EdTech، HealthTech، والحلول الذكية، لتسريع نموها وزيادة قاعدة عملائها.
+                </p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary btn-sm">متابعة مواعيد الدورة القادمة</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- برنامج 4 -->
+        <div class="col-lg-6">
+            <div class="card card-custom p-4 h-100 border-start border-4 border-info">
+                <span class="badge bg-info bg-opacity-10 text-info align-self-start mb-2">شباب وجامعات</span>
+                <h4 class="fw-bold text-dark mb-2">أندية الابتكار الجامعية (Campus Innovation Hubs)</h4>
+                <p class="text-muted leading-relaxed small mb-3">
+                    تأسيس فروع وأندية ابتكار طلابية داخل الكليات والجامعات الليبية لنشر التفكير الريادي، وتنظيم هاكاثونات ومسابقات برمجية محلية تدعم روح المبادرة لدى الطلاب.
+                </p>
+                <div class="mt-auto">
+                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-primary btn-sm">طلب تأسيس نادٍ جامعي</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

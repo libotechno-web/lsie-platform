@@ -1,0 +1,65 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">{{ title }}</h4>
+
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.title.label }} *</label>
+                    {{ form.title(class="form-control") }}
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.category.label }}</label>
+                        {{ form.category(class="form-select") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.author_name.label }}</label>
+                        {{ form.author_name(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.summary.label }} *</label>
+                    {{ form.summary(class="form-control", rows=3, placeholder="ملخص يظهر في بطاقة الخبر...") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">{{ form.content_html.label }} *</label>
+                    {{ form.content_html(class="form-control", rows=8, placeholder="المحتوى الكامل للمقال (يدعم وسوم HTML)...") }}
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ form.featured_image.label }}</label>
+                        {{ form.featured_image(class="form-control") }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-dark">{{ form.status.label }}</label>
+                        {{ form.status(class="form-select") }}
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check mt-4 pt-2">
+                            {{ form.is_featured(class="form-check-input") }}
+                            <label class="form-check-label fw-bold text-dark" for="is_featured">{{ form.is_featured.label.text }}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <a href="{{ url_for('admin.articles') }}" class="btn btn-light">إلغاء والعودة</a>
+                    {{ form.submit(class="btn btn-primary px-4") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}عن الجمعية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}{% endblock %}
+
+{% block content %}
+<!-- رأس الصفحة التعريفية -->
+<div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);">
+    <div class="container py-3">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">النبذة الرسمية والتأسيس</span>
+                <h1 class="fw-bold mb-2">{{ site_settings.get('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال') }}</h1>
+                <p class="fs-6 text-light opacity-90 mb-0">{{ site_settings.get('site_name_en', 'Libyan Society for Innovation & Entrepreneurship') }} ({{ site_settings.get('site_acronym', 'L.S.I.E') }})</p>
+            </div>
+            <div class="col-lg-4 text-lg-end text-center mt-4 mt-lg-0">
+                <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-shield-check text-success ms-1"></i>قرار إشهار رسمي رقم 525 لسنة 2026م
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- المحتوى الرئيسي -->
+        <div class="col-lg-8">
+            <!-- 1. نبذة عن الجمعية (نص المقدمة الرسمي) -->
+            <div class="card card-custom p-4 mb-4">
+                <h3 class="fw-bold text-dark border-bottom pb-3 mb-3">
+                    <i class="bi bi-info-circle text-primary ms-2"></i>نبذة تعريفية عن الجمعية
+                </h3>
+                <p class="fs-6 leading-loose text-secondary" style="font-size: 1.1rem !important;">
+                    {{ site_settings.get('about_intro', 'الجمعية الليبية للابتكار وريادة الأعمال هي جمعية تُعنى بدعم الابتكار وتعزيز ثقافة ريادة الأعمال في ليبيا، والعمل على إيجاد بيئة حاضنة تساعد المبتكرين ورواد الأعمال على تطوير أفكارهم وتحويلها إلى مشاريع قابلة للتطبيق والنمو. أُنشئت الجمعية بموجب قرار صادر عن رئيس الهيئة الليبية للبحث العلمي، وتسعى إلى بناء جسور التعاون بين المبتكرين والشركات والجامعات والمستثمرين والخبراء والجهات الداعمة، بما يسهم في تنمية الاقتصاد الوطني وتعزيز دور المعرفة والتكنولوجيا في معالجة التحديات المحلية.') }}
+                </p>
+            </div>
+
+            <!-- 2. الرسالة الرسمية للجمعية (نص الرسالة المعتمد دون تغيير) -->
+            <div class="card card-custom p-4 mb-4 border-start border-4 border-success" style="background-color: #f0fdf4;">
+                <h4 class="fw-bold text-success mb-3">
+                    <i class="bi bi-compass ms-2"></i>الرسالة الرسمية للجمعية
+                </h4>
+                <blockquote class="fs-5 leading-loose mb-0 text-dark" style="font-style: normal; font-weight: 500;">
+                    "{{ site_settings.get('official_mission', 'تمكين المبتكرين ورواد الأعمال الليبيين عبر توفير بيئة حاضنة ومتكاملة تجمع بين التدريب، التوجيه، والتشبيك. نحن نسعى لجس الفجوة بين الأفكار الإبداعية والواقع السوقي، من خلال بناء شراكات استراتيجية تضمن تحويل التحديات المحلية إلى فرص اقتصادية ناجحة.') }}"
+                </blockquote>
+            </div>
+
+            <!-- 3. الرؤية الرسمية (قابلة للتعديل من الإدارة) -->
+            {% if site_settings.get('official_vision') %}
+                <div class="card card-custom p-4 mb-4 border-start border-4 border-warning" style="background-color: #fffbeb;">
+                    <h4 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-eye ms-2 text-warning"></i>الرؤية الاستراتيجية
+                    </h4>
+                    <p class="fs-6 leading-loose text-secondary mb-0">
+                        {{ site_settings.get('official_vision') }}
+                    </p>
+                </div>
+            {% endif %}
+
+            <!-- 4. الأهداف الاستراتيجية -->
+            <div class="card card-custom p-4 mb-4">
+                <h3 class="fw-bold text-dark border-bottom pb-3 mb-4">
+                    <i class="bi bi-bullseye text-primary ms-2"></i>الأهداف الاستراتيجية
+                </h3>
+                <div class="row g-4">
+                    {% for obj in objectives %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary fs-4">
+                                    <i class="bi {{ obj.icon or 'bi-check2-circle' }}"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold fs-6 mb-1">{{ obj.title }}</h5>
+                                    <p class="text-muted small leading-relaxed mb-0">{{ obj.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">الأهداف الاستراتيجية قيد الإعداد.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 5. القيم المؤسسية -->
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-dark border-bottom pb-3 mb-4">
+                    <i class="bi bi-stars text-primary ms-2"></i>القيم والمبادئ الحاكمة
+                </h3>
+                <div class="row g-4">
+                    {% for val in values %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning fs-4">
+                                    <i class="bi {{ val.icon or 'bi-star-fill' }}"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold fs-6 mb-1">{{ val.title }}</h5>
+                                    <p class="text-muted small leading-relaxed mb-0">{{ val.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">القيم المؤسسية قيد الإعداد.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- الشريط الجانبي والبيانات الرسمية -->
+        <div class="col-lg-4">
+            <!-- البطاقة القانونية والاعتماد -->
+            <div class="card card-custom p-4 mb-4 shadow-sm">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                    <i class="bi bi-patch-check text-success ms-1"></i>البيانات والاعتمادات الرسمية
+                </h5>
+                <ul class="list-unstyled small d-flex flex-column gap-3 mb-0">
+                    <li>
+                        <div class="text-muted">السلطة المرخصة والمشرفة:</div>
+                        <div class="fw-bold text-dark">{{ site_settings.get('authority_name', 'الهيئة الليبية للبحث العلمي - وزارة التعليم العالي والبحث العلمي') }}</div>
+                    </li>
+                    <li>
+                        <div class="text-muted">قرار الإشهار:</div>
+                        <div class="fw-bold text-dark">{{ site_settings.get('establishment_decree', 'قرار إشهار رقم (525) لسنة 2026م') }}</div>
+                    </li>
+                    <li>
+                        <div class="text-muted">رقم شهادة مزاولة النشاط:</div>
+                        <div class="fw-bold text-primary">{{ site_settings.get('certificate_number', 'LARS-SCS-2026-042') }}</div>
+                    </li>
+                    <li>
+                        <div class="text-muted">المقر الرئيسي:</div>
+                        <div class="fw-bold text-dark">{{ site_settings.get('headquarters', 'غريان - جامعة غريان') }}</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- بطاقة الانضمام -->
+            <div class="card card-custom p-4 text-center bg-light">
+                <i class="bi bi-person-badge text-primary" style="font-size: 2.5rem;"></i>
+                <h5 class="fw-bold mt-2 mb-2">عضوية الجمعية</h5>
+                <p class="text-muted small mb-3">كن جزءاً من الجمعية العلمية الرسمية وشارك في اللجان المتخصصة والفعاليات الريادية الوطنية.</p>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary w-100 mb-2">طلب الانضمام كعضو</a>
+                <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-outline-primary w-100">تقديم فكرة مشروع</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

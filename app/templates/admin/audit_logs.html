@@ -1,0 +1,47 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}سجل التدقيق والأنشطة الإدارية{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">سجل التدقيق والرقابة الإدارية (Audit Logs)</h3>
+        <p class="text-muted small mb-0">توثيق كافة العمليات الإدارية الحساسة ومحاولات الدخول والتعديلات</p>
+    </div>
+</div>
+
+<div class="card card-custom shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small">
+                <tr>
+                    <th>المعرف</th>
+                    <th>المستخدم</th>
+                    <th>العملية (Action)</th>
+                    <th>نوع السجل</th>
+                    <th>التفاصيل</th>
+                    <th>عنوان IP</th>
+                    <th>التاريخ والوقت</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td class="text-muted small">#{{ log.id }}</td>
+                        <td class="small fw-bold">{{ log.user_email }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ log.action }}</span></td>
+                        <td class="small text-muted">{{ log.resource_type or '-' }}</td>
+                        <td class="small text-secondary">{{ log.details or '-' }}</td>
+                        <td class="small text-muted"><code>{{ log.ip_address }}</code></td>
+                        <td class="small text-muted">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">لا توجد سجلات تدقيق مسجلة حتى الآن.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

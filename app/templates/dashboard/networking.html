@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}طلبات التشبيك والتوجيه | لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark mb-1">منظومة التشبيك والتواصل المباشر</h3>
+        <p class="text-muted small mb-0">إدارة طلبات التوجيه والإرشاد والشراكات والاستثمار الواردة والصادرة</p>
+    </div>
+
+    <!-- تبويبات الطلبات الواردة والصادرة -->
+    <ul class="nav nav-pills mb-4 gap-2 border-bottom pb-3" id="networkingTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="received-tab" data-bs-toggle="pill" data-bs-target="#received-content" type="button">
+                <i class="bi bi-inbox ms-1"></i>الطلبات الواردة إليك ({{ received|length }})
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="sent-tab" data-bs-toggle="pill" data-bs-target="#sent-content" type="button">
+                <i class="bi bi-send ms-1"></i>الطلبات الصادرة منك ({{ sent|length }})
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="networkingTabsContent">
+        <!-- الطلبات الواردة -->
+        <div class="tab-pane fade show active" id="received-content" role="tabpanel">
+            <div class="row g-4">
+                {% for r in received %}
+                    <div class="col-lg-6">
+                        <div class="card card-custom p-4 h-100 border-start border-4 border-{% if r.status == 'accepted' %}success{% elif r.status == 'declined' %}danger{% else %}warning{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary">{{ r.type_label_ar }}</span>
+                                <span class="badge bg-{% if r.status == 'accepted' %}success{% elif r.status == 'declined' %}danger{% else %}warning text-dark{% endif %}">
+                                    {{ r.status_label_ar }}
+                                </span>
+                            </div>
+
+                            <h5 class="fw-bold text-dark mb-1">{{ r.subject }}</h5>
+                            <div class="small text-muted mb-3">المرسل: <strong>{{ r.sender.full_name }}</strong> ({{ r.sender.primary_role_title }}) - {{ r.created_at.strftime('%Y-%m-%d') }}</div>
+
+                            <div class="p-3 bg-light rounded-3 small text-secondary mb-3 leading-relaxed">
+                                {{ r.message }}
+                            </div>
+
+                            {% if r.status == 'accepted' %}
+                                <div class="alert alert-success small mb-0 py-2">
+                                    <i class="bi bi-check-circle-fill ms-1"></i>بيانات الاتصال المشتركة:
+                                    <br>البريد: <strong>{{ r.sender_contact_email }}</strong> | الهاتف: <strong>{{ r.sender_contact_phone or 'غير متوفر' }}</strong>
+                                </div>
+                            {% elif r.status == 'pending' %}
+                                <form method="POST" action="{{ url_for('dashboard.respond_networking', req_id=r.id) }}" class="mt-auto pt-2 border-top">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <div class="mb-2">
+                                        <input type="text" name="response_note" class="form-control form-control-sm" placeholder="ملاحظة أو موعد مقترح للطرف الآخر (اختياري)...">
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" name="action" value="accept" class="btn btn-success btn-sm flex-grow-1">
+                                            <i class="bi bi-check-lg ms-1"></i>قبول ومشاركة الاتصال
+                                        </button>
+                                        <button type="submit" name="action" value="decline" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-x-lg ms-1"></i>اعتذار
+                                        </button>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center py-5 bg-white rounded-3 border text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        <h6 class="fw-bold">لا توجد طلبات تشبيك واردة حالياً</h6>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- الطلبات الصادرة -->
+        <div class="tab-pane fade" id="sent-content" role="tabpanel">
+            <div class="row g-4">
+                {% for s in sent %}
+                    <div class="col-lg-6">
+                        <div class="card card-custom p-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary">{{ s.type_label_ar }}</span>
+                                <span class="badge bg-{% if s.status == 'accepted' %}success{% elif s.status == 'declined' %}danger{% else %}warning text-dark{% endif %}">
+                                    {{ s.status_label_ar }}
+                                </span>
+                            </div>
+
+                            <h5 class="fw-bold text-dark mb-1">{{ s.subject }}</h5>
+                            <div class="small text-muted mb-2">المرسل إليه: <strong>{{ s.recipient.full_name }}</strong></div>
+                            <p class="text-secondary small leading-relaxed mb-3">{{ s.message }}</p>
+
+                            {% if s.status == 'accepted' %}
+                                <div class="alert alert-success small mb-0 py-2">
+                                    <i class="bi bi-check-circle-fill ms-1"></i>تمت الموافقة! يمكنك التواصل مع الطرف الآخر.
+                                    {% if s.response_note %}
+                                        <br>رد الطرف الآخر: <em>{{ s.response_note }}</em>
+                                    {% endif %}
+                                </div>
+                            {% elif s.status == 'declined' %}
+                                <div class="alert alert-secondary small mb-0 py-2">
+                                    اعتذر الطرف الآخر عن قبول الطلب في الوقت الحالي.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center py-5 bg-white rounded-3 border text-muted">
+                        <i class="bi bi-send fs-1 d-block mb-2"></i>
+                        <h6 class="fw-bold">لم ترسل أي طلبات تشبيك بعد</h6>
+                        <a href="{{ url_for('public.directory') }}" class="btn btn-outline-primary btn-sm mt-2">تصفح دليل الابتكار وأرسل طلباً</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

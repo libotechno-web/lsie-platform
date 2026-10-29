@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.title }} | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+
+{% block content %}
+<div class="py-4 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
+    <div class="container py-2">
+        <h1 class="fw-bold fs-3 mb-1">{{ page.title }}</h1>
+        {% if page.summary %}
+            <p class="text-light opacity-90 small mb-0">{{ page.summary }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="card card-custom p-4 p-md-5 shadow-sm">
+        <div class="page-content leading-loose text-secondary" style="line-height: 2;">
+            {{ page.content_html|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}

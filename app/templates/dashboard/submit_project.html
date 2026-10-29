@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}تقديم فكرة ومشروع جديد | الجمعية الليبية للابتكار{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card card-custom p-4 p-md-5 shadow">
+                <div class="border-bottom pb-3 mb-4">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2">استقبال الأفكار والمشاريع</span>
+                    <h3 class="fw-bold text-dark mb-1">تقديم فكرة / مشروع ريادي</h3>
+                    <p class="text-muted small mb-0">املأ النموذج أدناه بدقة متناهية ليتم تحويل مشروعك للفرز والمراجعة من قبل اللجنة الفنية بالجمعية.</p>
+                </div>
+
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-4 small">
+                    <i class="bi bi-shield-lock-fill fs-5"></i>
+                    <div>
+                        <strong>حماية تامة للملكية الفكرية:</strong> كافة البيانات الفنية ونماذج الأعمال المودعة تخضع لاتفاقيات سرية حازمة ولا تتاح إلا لأعضاء لجنة التقييم المعتمدين.
+                    </div>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <!-- معلومات المشروع الأساسية -->
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">1. البيانات الأساسية للفكرة</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.title.label }} *</label>
+                        {{ form.title(class="form-control", placeholder="مثال: منصة رقمية لإدارة النفايات وإعادة التدوير الذكي...") }}
+                        {% for err in form.title.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.tagline.label }}</label>
+                        {{ form.tagline(class="form-control", placeholder="وصف مكثف في جملة واحدة تلخص القيمة المضافة") }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.sector.label }} *</label>
+                            {{ form.sector(class="form-select") }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.city.label }} *</label>
+                            {{ form.city(class="form-select") }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark">{{ form.stage.label }} *</label>
+                            {{ form.stage(class="form-select") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.summary.label }} *</label>
+                        {{ form.summary(class="form-control", rows=3, placeholder="اشرح فكرة المشروع بشكل عام وأهدافه...") }}
+                        {% for err in form.summary.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- تفاصيل التحدي والحل -->
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">2. المشكلة والحل والقيمة المضافة</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.problem_statement.label }} *</label>
+                        {{ form.problem_statement(class="form-control", rows=3, placeholder="ما هي المشكلة المحددة التي يعاني منها السوق أو المجتمع المحلي؟") }}
+                        {% for err in form.problem_statement.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.proposed_solution.label }} *</label>
+                        {{ form.proposed_solution(class="form-control", rows=3, placeholder="كيف يعالج مشروعك هذه المشكلة بطريقة ابتكارية غير تقليدية؟") }}
+                        {% for err in form.proposed_solution.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.target_market.label }}</label>
+                            {{ form.target_market(class="form-control", placeholder="من هم العملاء أو المستفيدون المستهدفون؟") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.needed_support.label }}</label>
+                            {{ form.needed_support(class="form-control", placeholder="مثال: تمويل بذري، احتضان فني، شراكة تقنية...") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.business_model.label }}</label>
+                        {{ form.business_model(class="form-control", rows=2, placeholder="كيف سيحقق المشروع أرباحاً وتدفقات مالية تضمن استدامته؟") }}
+                    </div>
+
+                    <!-- الفريق والروابط والملفات -->
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">3. فريق العمل والمرفقات</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.team_description.label }}</label>
+                        {{ form.team_description(class="form-control", rows=2, placeholder="أسماء وتخصصات أعضاء الفريق والخبرات المتوفرة...") }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.demo_url.label }}</label>
+                            {{ form.demo_url(class="form-control", placeholder="https://...") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.video_url.label }}</label>
+                            {{ form.video_url(class="form-control", placeholder="https://youtube.com/...") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.pitch_deck.label }}</label>
+                            {{ form.pitch_deck(class="form-control") }}
+                            <small class="text-muted">ملف العرض التقديمي للمشروع (PDF أو Presentation).</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.cover_image.label }}</label>
+                            {{ form.cover_image(class="form-control") }}
+                            <small class="text-muted">صورة أو شعار معبر عن المشروع.</small>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 mb-4">
+                        <div class="form-check mb-2">
+                            {{ form.is_public_in_directory(class="form-check-input") }}
+                            <label class="form-check-label fw-bold text-dark" for="is_public_in_directory">
+                                {{ form.is_public_in_directory.label.text }}
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            {{ form.terms(class="form-check-input") }}
+                            <label class="form-check-label text-dark small" for="terms">
+                                {{ form.terms.label.text }} *
+                            </label>
+                        </div>
+                        {% for err in form.terms.errors %}
+                            <div class="text-danger small mt-1">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('dashboard.projects') }}" class="btn btn-light">إلغاء والعودة</a>
+                        {{ form.submit(class="btn btn-primary px-5 py-2 fs-6 fw-bold") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
