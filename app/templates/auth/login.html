@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}تسجيل الدخول | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('تسجيل الدخول', 'Sign In') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="container py-5 my-3">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-5">
             <div class="card card-custom p-4 p-md-5 shadow">
-                <!-- الشعار في صفحة الدخول كما هو مطلوب في القسم 4 -->
+                <!-- الشعار في صفحة الدخول -->
                 <div class="text-center mb-4">
-                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" style="height: 75px; background: #fff; border-radius: 50%; padding: 4px;" class="shadow-sm mb-3">
-                    <h3 class="fw-bold text-dark">تسجيل الدخول</h3>
-                    <p class="text-muted small">الدخول إلى المنصة الوطنية للابتكار وريادة الأعمال</p>
+                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="{{ _('شعار الجمعية', 'Society Logo') }}" style="height: 75px; background: #fff; border-radius: 50%; padding: 4px;" class="shadow-sm mb-3">
+                    <h3 class="fw-bold text-dark">{{ _('تسجيل الدخول', 'Sign In') }}</h3>
+                    <p class="text-muted small">{{ _('الدخول إلى المنصة الوطنية للابتكار وريادة الأعمال', 'Access the National Innovation & Entrepreneurship Platform') }}</p>
                 </div>
 
                 <form method="POST">
                     {{ form.hidden_tag() }}
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.email.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.email.label.text, 'Email Address') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope text-muted"></i></span>
                             {{ form.email(class="form-control border-start-0", placeholder="name@example.com") }}
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.password.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.password.label.text, 'Password') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock text-muted"></i></span>
                             {{ form.password(class="form-control border-start-0", placeholder="••••••••") }}
@@ -42,15 +42,15 @@
                     <div class="d-flex justify-content-between align-items-center mb-4 small">
                         <div class="form-check">
                             {{ form.remember_me(class="form-check-input") }}
-                            <label class="form-check-label text-muted" for="remember_me">تذكرني في هذه الجلسة</label>
+                            <label class="form-check-label text-muted" for="remember_me">{{ _('تذكرني في هذه الجلسة', 'Remember me') }}</label>
                         </div>
                     </div>
 
-                    {{ form.submit(class="btn btn-primary w-100 py-2 fs-6 fw-bold mb-3") }}
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-6 fw-bold mb-3">{{ _('تسجيل الدخول', 'Sign In') }}</button>
 
                     <div class="text-center small text-muted">
-                        ليس لديك حساب حتى الآن؟
-                        <a href="{{ url_for('auth.register') }}" class="text-primary fw-bold text-decoration-none">إنشاء حساب جديد</a>
+                        {{ _('ليس لديك حساب حتى الآن؟', "Don't have an account yet?") }}
+                        <a href="{{ url_for('auth.register') }}" class="text-primary fw-bold text-decoration-none">{{ _('إنشاء حساب جديد', 'Create New Account') }}</a>
                     </div>
                 </form>
             </div>

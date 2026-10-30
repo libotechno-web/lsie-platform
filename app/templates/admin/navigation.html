@@ -1,22 +1,22 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}إدارة القوائم والتنقل{% endblock %}
+{% block title %}{{ _('إدارة القوائم والتنقل', 'Navigation & Menu Management') }}{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card card-custom p-4 shadow-sm">
-            <h4 class="fw-bold text-dark border-bottom pb-3 mb-3">عناصر القائمة العلوية والتذييل</h4>
+            <h4 class="fw-bold text-dark border-bottom pb-3 mb-3">{{ _('عناصر القائمة العلوية والتذييل', 'Navbar & Footer Menu Items') }}</h4>
             
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light small">
                         <tr>
-                            <th>الترتيب</th>
-                            <th>العنوان بالعربية</th>
-                            <th>المسار / الرابط</th>
-                            <th>الموضع</th>
-                            <th>الحالة</th>
+                            <th>{{ _('الترتيب', 'Order') }}</th>
+                            <th>{{ _('العنوان', 'Title') }}</th>
+                            <th>{{ _('المسار / الرابط', 'URL / Path') }}</th>
+                            <th>{{ _('الموضع', 'Location') }}</th>
+                            <th>{{ _('الحالة', 'Status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,12 +28,12 @@
                                     {{ item.title_ar }}
                                 </td>
                                 <td><code>{{ item.url }}</code></td>
-                                <td><span class="badge bg-light text-dark border">{{ item.location }}</span></td>
+                                <td><span class="badge bg-light text-dark border">{{ _(item.location) }}</span></td>
                                 <td>
                                     {% if item.is_active %}
-                                        <span class="badge bg-success bg-opacity-10 text-success">مفعّل</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success">{{ _('مفعّل', 'Active') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">معطل</span>
+                                        <span class="badge bg-secondary">{{ _('معطل', 'Inactive') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -47,43 +47,43 @@
     <!-- إضافة عنصر جديد -->
     <div class="col-lg-4">
         <div class="card card-custom p-4 shadow-sm">
-            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">إضافة رابط جديد للقائمة</h5>
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('إضافة رابط جديد للقائمة', 'Add New Menu Link') }}</h5>
             
             <form method="POST" action="{{ url_for('admin.new_navigation_item') }}">
                 {{ form.hidden_tag() }}
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-dark">{{ form.title_ar.label }} *</label>
+                    <label class="form-label small fw-bold text-dark">{{ _(form.title_ar.label.text, 'Title (Arabic)') }} *</label>
                     {{ form.title_ar(class="form-control form-control-sm") }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-dark">{{ form.url.label }} *</label>
-                    {{ form.url(class="form-control form-control-sm", placeholder="مثال: /services") }}
+                    <label class="form-label small fw-bold text-dark">{{ _(form.url.label.text, 'URL / Path') }} *</label>
+                    {{ form.url(class="form-control form-control-sm", placeholder=_('مثال: /services', 'e.g. /services')) }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-dark">{{ form.icon.label }}</label>
-                    {{ form.icon(class="form-control form-control-sm", placeholder="مثال: bi-house") }}
+                    <label class="form-label small fw-bold text-dark">{{ _(form.icon.label.text, 'Bootstrap Icon') }}</label>
+                    {{ form.icon(class="form-control form-control-sm", placeholder=_('مثال: bi-house', 'e.g. bi-house')) }}
                 </div>
 
                 <div class="row g-2 mb-3">
                     <div class="col-6">
-                        <label class="form-label small fw-bold text-dark">{{ form.order_index.label }}</label>
+                        <label class="form-label small fw-bold text-dark">{{ _(form.order_index.label.text, 'Order') }}</label>
                         {{ form.order_index(class="form-control form-control-sm") }}
                     </div>
                     <div class="col-6">
-                        <label class="form-label small fw-bold text-dark">{{ form.location.label }}</label>
+                        <label class="form-label small fw-bold text-dark">{{ _(form.location.label.text, 'Location') }}</label>
                         {{ form.location(class="form-select form-select-sm") }}
                     </div>
                 </div>
 
                 <div class="form-check mb-3">
                     {{ form.is_active(class="form-check-input") }}
-                    <label class="form-check-label small text-dark" for="is_active">{{ form.is_active.label.text }}</label>
+                    <label class="form-check-label small text-dark" for="is_active">{{ _(form.is_active.label.text, 'Active') }}</label>
                 </div>
 
-                {{ form.submit(class="btn btn-primary btn-sm w-100") }}
+                <button type="submit" class="btn btn-primary btn-sm w-100">{{ _('حفظ الرابط', 'Save Link') }}</button>
             </form>
         </div>
     </div>

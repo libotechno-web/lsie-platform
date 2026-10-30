@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}البرامج والمبادرات الوطنية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('البرامج والمبادرات الوطنية', 'National Programs & Initiatives') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-primary) 0%, #0a3b22 100%);">
     <div class="container py-3">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">المبادرات الاستراتيجية</span>
-        <h1 class="fw-bold mb-2">البرامج والمبادرات الوطنية</h1>
-        <p class="fs-6 text-light opacity-90 mb-0">مبادرات مؤسسية صُممت لبناء بيئة ريادية مستدامة ونقل البحوث العلمية إلى السوق الاقتصادي الليبي.</p>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">{{ _('المبادرات الاستراتيجية', 'Strategic Initiatives') }}</span>
+        <h1 class="fw-bold mb-2">{{ _('البرامج والمبادرات الوطنية', 'National Programs & Initiatives') }}</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">{{ _('مبادرات مؤسسية صُممت لبناء بيئة ريادية مستدامة ونقل البحوث العلمية إلى السوق الاقتصادي الليبي.', 'Institutional initiatives designed to cultivate a sustainable entrepreneurial ecosystem and bridge scientific research with the Libyan economic marketplace.') }}</p>
     </div>
 </div>
 
@@ -16,18 +16,18 @@
         <!-- برنامج 1 -->
         <div class="col-lg-6">
             <div class="card card-custom p-4 h-100 border-start border-4 border-success">
-                <span class="badge bg-success bg-opacity-10 text-success align-self-start mb-2">برنامج سنوي</span>
-                <h4 class="fw-bold text-dark mb-2">برنامج تجسير البحث العلمي بالسوق (Science-to-Market)</h4>
+                <span class="badge bg-success bg-opacity-10 text-success align-self-start mb-2">{{ _('برنامج سنوي', 'Annual Program') }}</span>
+                <h4 class="fw-bold text-dark mb-2">{{ _('برنامج تجسير البحث العلمي بالسوق (Science-to-Market)', 'Science-to-Market Bridging Program') }}</h4>
                 <p class="text-muted leading-relaxed small mb-3">
-                    مبادرة مشتركة بين الجمعية والجامعات والمراكز البحثية الليبية، تهدف إلى فرز براءات الاختراع والبحوث الأكاديمية التطبيقية، وتحويلها إلى نماذج أعمال تجارية وتأسيس شركات منبثقة (Spin-offs) قابلة للنمو.
+                    {{ _('مبادرة مشتركة بين الجمعية والجامعات والمراكز البحثية الليبية، تهدف إلى فرز براءات الاختراع والبحوث الأكاديمية التطبيقية، وتحويلها إلى نماذج أعمال تجارية وتأسيس شركات منبثقة (Spin-offs) قابلة للنمو.', 'A joint initiative between the Society, universities, and research centers in Libya to evaluate patents and applied academic research, transforming them into commercial business models and scalable university spin-offs.') }}
                 </p>
                 <div class="small text-secondary mb-3">
-                    <i class="bi bi-check-circle-fill text-success ms-1"></i> استشارات حماية ملكية فكرية وتسجيل البراءات.
+                    <i class="bi bi-check-circle-fill text-success ms-1"></i> {{ _('استشارات حماية ملكية فكرية وتسجيل البراءات.', 'Intellectual property protection and patent registration advisory.') }}
                     <br>
-                    <i class="bi bi-check-circle-fill text-success ms-1"></i> توفير دعم أولي لتصنيع النموذج التجريبي (Prototyping).
+                    <i class="bi bi-check-circle-fill text-success ms-1"></i> {{ _('توفير دعم أولي لتصنيع النموذج التجريبي (Prototyping).', 'Early-stage prototyping and proof-of-concept fabrication support.') }}
                 </div>
                 <div class="mt-auto">
-                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary btn-sm">تقديم بحث أو اختراع تجاري</a>
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary btn-sm">{{ _('تقديم بحث أو اختراع تجاري', 'Submit Research or Commercial Invention') }}</a>
                 </div>
             </div>
         </div>
@@ -35,18 +35,18 @@
         <!-- برنامج 2 -->
         <div class="col-lg-6">
             <div class="card card-custom p-4 h-100 border-start border-4 border-warning">
-                <span class="badge bg-warning bg-opacity-10 text-warning align-self-start mb-2">مبادرة وطنية</span>
-                <h4 class="fw-bold text-dark mb-2">شبكة المستثمرين الملائكيين الليبيين (Libya Angel Network)</h4>
+                <span class="badge bg-warning bg-opacity-10 text-warning align-self-start mb-2">{{ _('مبادرة وطنية', 'National Initiative') }}</span>
+                <h4 class="fw-bold text-dark mb-2">{{ _('شبكة المستثمرين الملائكيين الليبيين (Libya Angel Network)', 'Libya Angel Investors Network (LAN)') }}</h4>
                 <p class="text-muted leading-relaxed small mb-3">
-                    مبادرة رائدة تهدف إلى حشد وتأهيل المستثمرين الأفراد ورجال الأعمال في ليبيا، لتمويل المشاريع الناشئة الواعدة في مراحلها المبكرة (Seed Stage) وتقليل مخاطر الاستثمار من خلال آليات تقييم موحدة.
+                    {{ _('مبادرة رائدة تهدف إلى حشد وتأهيل المستثمرين الأفراد ورجال الأعمال في ليبيا، لتمويل المشاريع الناشئة الواعدة في مراحلها المبكرة (Seed Stage) وتقليل مخاطر الاستثمار من خلال آليات تقييم موحدة.', 'A pioneering initiative mobilizing and qualifying individual angel investors and business leaders to fund early-stage startups and de-risk investments through standardized evaluation.') }}
                 </p>
                 <div class="small text-secondary mb-3">
-                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> جلسات عروض دورية (Demo Days) للمشاريع المعتمدة.
+                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> {{ _('جلسات عروض دورية (Demo Days) للمشاريع المعتمدة.', 'Regular Demo Days and pitch sessions for vetted startups.') }}
                     <br>
-                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> عقود استثمار معيارية متوافقة مع القوانين الليبية.
+                    <i class="bi bi-check-circle-fill text-warning ms-1"></i> {{ _('عقود استثمار معيارية متوافقة مع القوانين الليبية.', 'Standardized investment term sheets compliant with Libyan commercial law.') }}
                 </div>
                 <div class="mt-auto">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm">الانضمام كجهة استثمارية</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm">{{ _('الانضمام كجهة استثمارية', 'Join as an Investor') }}</a>
                 </div>
             </div>
         </div>
@@ -54,13 +54,13 @@
         <!-- برنامج 3 -->
         <div class="col-lg-6">
             <div class="card card-custom p-4 h-100 border-start border-4 border-primary">
-                <span class="badge bg-primary bg-opacity-10 text-primary align-self-start mb-2">حاضنة رقمية</span>
-                <h4 class="fw-bold text-dark mb-2">مسرعة ومخيم الابتكار التقني (LSIE Tech Accelerator)</h4>
+                <span class="badge bg-primary bg-opacity-10 text-primary align-self-start mb-2">{{ _('حاضنة رقمية', 'Digital Incubator') }}</span>
+                <h4 class="fw-bold text-dark mb-2">{{ _('مسرعة ومخيم الابتكار التقني (LSIE Tech Accelerator)', 'LSIE Tech Accelerator & Bootcamp') }}</h4>
                 <p class="text-muted leading-relaxed small mb-3">
-                    برنامج مكثف يمتد لـ 16 أسبوعاً، يستهدف الشركات التقنية الناشئة في مجالات FinTech، EdTech، HealthTech، والحلول الذكية، لتسريع نموها وزيادة قاعدة عملائها.
+                    {{ _('برنامج مكثف يمتد لـ 16 أسبوعاً، يستهدف الشركات التقنية الناشئة في مجالات FinTech، EdTech، HealthTech، والحلول الذكية، لتسريع نموها وزيادة قاعدة عملائها.', 'An intensive 16-week program targeting technology startups in FinTech, EdTech, HealthTech, and smart solutions to accelerate their traction and scale customer base.') }}
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary btn-sm">متابعة مواعيد الدورة القادمة</a>
+                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary btn-sm">{{ _('متابعة مواعيد الدورة القادمة', 'Explore Upcoming Cohort Dates') }}</a>
                 </div>
             </div>
         </div>
@@ -68,13 +68,13 @@
         <!-- برنامج 4 -->
         <div class="col-lg-6">
             <div class="card card-custom p-4 h-100 border-start border-4 border-info">
-                <span class="badge bg-info bg-opacity-10 text-info align-self-start mb-2">شباب وجامعات</span>
-                <h4 class="fw-bold text-dark mb-2">أندية الابتكار الجامعية (Campus Innovation Hubs)</h4>
+                <span class="badge bg-info bg-opacity-10 text-info align-self-start mb-2">{{ _('شباب وجامعات', 'Youth & Universities') }}</span>
+                <h4 class="fw-bold text-dark mb-2">{{ _('أندية الابتكار الجامعية (Campus Innovation Hubs)', 'Campus Innovation Hubs & Clubs') }}</h4>
                 <p class="text-muted leading-relaxed small mb-3">
-                    تأسيس فروع وأندية ابتكار طلابية داخل الكليات والجامعات الليبية لنشر التفكير الريادي، وتنظيم هاكاثونات ومسابقات برمجية محلية تدعم روح المبادرة لدى الطلاب.
+                    {{ _('تأسيس فروع وأندية ابتكار طلابية داخل الكليات والجامعات الليبية لنشر التفكير الريادي، وتنظيم هاكاثونات ومسابقات برمجية محلية تدعم روح المبادرة لدى الطلاب.', 'Establishing collegiate innovation clubs across universities in Libya to foster entrepreneurial culture, host hackathons, and support student inventors.') }}
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-primary btn-sm">طلب تأسيس نادٍ جامعي</a>
+                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-primary btn-sm">{{ _('طلب تأسيس نادٍ جامعي', 'Request a Campus Hub Setup') }}</a>
                 </div>
             </div>
         </div>

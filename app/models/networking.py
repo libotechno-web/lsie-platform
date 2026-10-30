@@ -47,6 +47,28 @@ class NetworkingRequest(db.Model):
         }
         return labels.get(self.status, self.status)
 
+    def get_type_label(self, lang='ar'):
+        if lang == 'en':
+            types_en = {
+                'mentorship': 'Mentorship & Guidance',
+                'investment': 'Investment Interest',
+                'partnership': 'Partnership & Collaboration',
+                'consultation': 'Specialized Consultation'
+            }
+            return types_en.get(self.request_type, 'Connect Request')
+        return self.type_label_ar
+
+    def get_status_label(self, lang='ar'):
+        if lang == 'en':
+            labels_en = {
+                'pending': 'Pending',
+                'accepted': 'Accepted & Connected',
+                'declined': 'Declined',
+                'completed': 'Completed'
+            }
+            return labels_en.get(self.status, self.status)
+        return self.status_label_ar
+
 
 class Notification(db.Model):
     """نظام التنبيهات الداخلية للمستخدمين"""

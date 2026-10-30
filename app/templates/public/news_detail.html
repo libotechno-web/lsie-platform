@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ article.title }} | الأخبار{% endblock %}
+{% block title %}{{ article.title }} | {{ _('الأخبار', 'News') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,7 +8,7 @@
         <div class="col-lg-8">
             <div class="card card-custom p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ article.category_label_ar }}</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ article.get_category_label(current_lang) }}</span>
                     <small class="text-muted"><i class="bi bi-clock ms-1"></i>{{ article.published_at.strftime('%Y-%m-%d') }}</small>
                 </div>
 
@@ -28,9 +28,9 @@
                     {{ article.content_html|safe }}
                 </div>
 
-                <!-- أزرار المشاركة على منصات التواصل (Section 16 requirement) -->
+                <!-- أزرار المشاركة على منصات التواصل -->
                 <div class="border-top pt-4 mt-5 d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div class="small fw-bold text-dark"><i class="bi bi-share ms-1"></i>مشاركة الخبر:</div>
+                    <div class="small fw-bold text-dark"><i class="bi bi-share ms-1"></i>{{ _('مشاركة الخبر:', 'Share Article:') }}</div>
                     <div class="d-flex gap-2">
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-facebook ms-1"></i>Facebook</a>
                         <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ article.title }}" target="_blank" class="btn btn-sm btn-outline-dark"><i class="bi bi-twitter-x ms-1"></i>X</a>
@@ -42,7 +42,7 @@
 
         <div class="col-lg-4">
             <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">أخبار أخرى ذات صلة</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('أخبار أخرى ذات صلة', 'Related News') }}</h5>
                 <div class="d-flex flex-column gap-3">
                     {% for r in related_articles %}
                         <div>
@@ -52,7 +52,7 @@
                             </h6>
                         </div>
                     {% else %}
-                        <div class="text-muted small">لا توجد أخبار أخرى حالياً.</div>
+                        <div class="text-muted small">{{ _('لا توجد أخبار أخرى حالياً.', 'No related articles available.') }}</div>
                     {% endfor %}
                 </div>
             </div>

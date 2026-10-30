@@ -1,21 +1,21 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}المسجلون في فعالية: {{ event.title }}{% endblock %}
+{% block title %}{{ _('المسجلون في فعالية', 'Attendees for Event') }}: {{ event.get_title(current_lang) }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">قائمة الحضور المسجلين: {{ event.title }}</h3>
-        <p class="text-muted small mb-0">المقاعد المسجلة: <strong class="text-primary">{{ registrations|length }}</strong> من أصل <strong>{{ event.capacity }}</strong> مقعد متاح</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('قائمة الحضور المسجلين:', 'Registered Attendees:') }} {{ event.get_title(current_lang) }}</h3>
+        <p class="text-muted small mb-0">{{ _('المقاعد المسجلة:', 'Registered seats:') }} <strong class="text-primary">{{ registrations|length }}</strong> {{ _('من أصل', 'out of') }} <strong>{{ event.capacity }}</strong> {{ _('مقعد متاح', 'seats available') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ url_for('admin.export_event_registrations', event_id=event.id) }}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-file-earmark-excel"></i>
-            <span>تصدير قائمة الحضور كملف Excel (.xlsx)</span>
+            <span>{{ _('تصدير قائمة الحضور كملف Excel (.xlsx)', 'Export Attendees to Excel (.xlsx)') }}</span>
         </a>
         <a href="{{ url_for('admin.events') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
-            <i class="bi bi-arrow-right"></i>
-            <span>العودة للفعاليات</span>
+            <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
+            <span>{{ _('العودة للفعاليات', 'Back to Events') }}</span>
         </a>
     </div>
 </div>
@@ -26,13 +26,13 @@
             <thead class="table-light small">
                 <tr>
                     <th>#</th>
-                    <th>اسم المشارك</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>رقم الهاتف</th>
-                    <th>الجهة / المؤسسة التابع لها</th>
-                    <th>ملاحظات واستفسارات</th>
-                    <th>الحالة</th>
-                    <th>تاريخ التسجيل</th>
+                    <th>{{ _('اسم المشارك', 'Participant Name') }}</th>
+                    <th>{{ _('البريد الإلكتروني', 'Email') }}</th>
+                    <th>{{ _('رقم الهاتف', 'Phone Number') }}</th>
+                    <th>{{ _('الجهة / المؤسسة التابع لها', 'Organization / Entity') }}</th>
+                    <th>{{ _('ملاحظات واستفسارات', 'Notes & Inquiries') }}</th>
+                    <th>{{ _('الحالة', 'Status') }}</th>
+                    <th>{{ _('تاريخ التسجيل', 'Registration Date') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,7 +49,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center py-5 text-muted">لم يسجل أي مشارك لحضور هذه الفعالية حتى الآن.</td>
+                        <td colspan="8" class="text-center py-5 text-muted">{{ _('لم يسجل أي مشارك لحضور هذه الفعالية حتى الآن.', 'No attendees registered for this event yet.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

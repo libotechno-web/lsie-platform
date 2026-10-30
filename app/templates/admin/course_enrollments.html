@@ -1,21 +1,21 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}المتدربون المسجلون: {{ course.title }}{% endblock %}
+{% block title %}{{ _('المتدربون المسجلون', 'Enrolled Trainees') }}: {{ course.title }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">قائمة المتدربين: {{ course.title }}</h3>
-        <p class="text-muted small mb-0">المقاعد المسجلة: <strong class="text-primary">{{ enrollments|length }}</strong> من أصل <strong>{{ course.max_seats }}</strong> مقعد متاح</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('قائمة المتدربين:', 'Trainees List:') }} {{ course.title }}</h3>
+        <p class="text-muted small mb-0">{{ _('المقاعد المسجلة:', 'Enrolled seats:') }} <strong class="text-primary">{{ enrollments|length }}</strong> {{ _('من أصل', 'out of') }} <strong>{{ course.max_seats }}</strong> {{ _('مقعد متاح', 'seats available') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ url_for('admin.export_course_enrollments', course_id=course.id) }}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-file-earmark-excel"></i>
-            <span>تصدير قائمة المسجلين كملف Excel (.xlsx)</span>
+            <span>{{ _('تصدير قائمة المسجلين كملف Excel (.xlsx)', 'Export Trainees to Excel (.xlsx)') }}</span>
         </a>
         <a href="{{ url_for('admin.training') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
-            <i class="bi bi-arrow-right"></i>
-            <span>العودة للبرامج التدريبية</span>
+            <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
+            <span>{{ _('العودة للبرامج التدريبية', 'Back to Courses') }}</span>
         </a>
     </div>
 </div>
@@ -26,12 +26,12 @@
             <thead class="table-light small">
                 <tr>
                     <th>#</th>
-                    <th>اسم المتدرب</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>الهاتف</th>
-                    <th>دافع الالتحاق والملاحظات</th>
-                    <th>حالة التسجيل</th>
-                    <th>تاريخ التسجيل</th>
+                    <th>{{ _('اسم المتدرب', 'Trainee Name') }}</th>
+                    <th>{{ _('البريد الإلكتروني', 'Email') }}</th>
+                    <th>{{ _('الهاتف', 'Phone') }}</th>
+                    <th>{{ _('دافع الالتحاق والملاحظات', 'Motivation & Notes') }}</th>
+                    <th>{{ _('حالة التسجيل', 'Registration Status') }}</th>
+                    <th>{{ _('تاريخ التسجيل', 'Enrollment Date') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,13 +41,13 @@
                         <td class="fw-bold text-dark">{{ en.full_name }}</td>
                         <td class="small">{{ en.email }}</td>
                         <td class="small">{{ en.phone or '-' }}</td>
-                        <td class="small text-secondary" style="max-width: 320px;">{{ en.motivation or 'لم يتم إدخال دافع' }}</td>
+                        <td class="small text-secondary" style="max-width: 320px;">{{ en.motivation or _('لم يتم إدخال دافع', 'No motivation provided') }}</td>
                         <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">{{ en.status }}</span></td>
                         <td class="small text-muted">{{ en.enrolled_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">لا يوجد متدربون مسجلون في هذا البرنامج التدريبي حتى الآن.</td>
+                        <td colspan="7" class="text-center py-5 text-muted">{{ _('لا يوجد متدربون مسجلون في هذا البرنامج التدريبي حتى الآن.', 'No trainees enrolled in this course yet.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

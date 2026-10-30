@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}الملف الشخصي والإعدادات{% endblock %}
+{% block title %}{{ _('الملف الشخصي والإعدادات', 'Profile & Settings') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -18,17 +18,17 @@
                     {% endif %}
                 </div>
                 <h6 class="fw-bold text-dark mb-1">{{ current_user.full_name }}</h6>
-                <div class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ current_user.primary_role_title }}</div>
+                <div class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ _(current_user.primary_role_title) }}</div>
                 <small class="text-muted d-block">{{ current_user.email }}</small>
             </div>
 
             <div class="list-group shadow-sm border-0">
-                <a href="{{ url_for('dashboard.index') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-columns-gap ms-2"></i>لوحة التحكم الشخصية</a>
-                <a href="{{ url_for('dashboard.projects') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-collection ms-2"></i>مشاريعي وأفكاري</a>
-                <a href="{{ url_for('dashboard.my_courses') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-mortarboard ms-2"></i>دوراتي التدريبية</a>
-                <a href="{{ url_for('dashboard.my_events') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-calendar-check ms-2"></i>فعالياتي</a>
-                <a href="{{ url_for('dashboard.networking_requests') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-people ms-2"></i>طلبات التشبيك</a>
-                <a href="{{ url_for('auth.profile') }}" class="list-group-item list-group-item-action active py-3"><i class="bi bi-person-gear ms-2"></i>تعديل الملف الشخصي</a>
+                <a href="{{ url_for('dashboard.index') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-columns-gap ms-2"></i>{{ _('لوحة التحكم الشخصية', 'My Dashboard') }}</a>
+                <a href="{{ url_for('dashboard.projects') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-collection ms-2"></i>{{ _('مشاريعي وأفكاري', 'My Projects & Ideas') }}</a>
+                <a href="{{ url_for('dashboard.my_courses') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-mortarboard ms-2"></i>{{ _('دوراتي التدريبية', 'My Courses') }}</a>
+                <a href="{{ url_for('dashboard.my_events') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-calendar-check ms-2"></i>{{ _('فعالياتي', 'My Events') }}</a>
+                <a href="{{ url_for('dashboard.networking_requests') }}" class="list-group-item list-group-item-action py-3"><i class="bi bi-people ms-2"></i>{{ _('طلبات التشبيك', 'Networking Requests') }}</a>
+                <a href="{{ url_for('auth.profile') }}" class="list-group-item list-group-item-action active py-3"><i class="bi bi-person-gear ms-2"></i>{{ _('تعديل الملف الشخصي', 'Edit Profile') }}</a>
             </div>
         </div>
 
@@ -36,7 +36,7 @@
         <div class="col-lg-9">
             <div class="card card-custom p-4 shadow-sm">
                 <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
-                    <i class="bi bi-person-gear text-primary ms-2"></i>تعديل الملف الشخصي
+                    <i class="bi bi-person-gear text-primary ms-2"></i>{{ _('تعديل الملف الشخصي', 'Edit Profile') }}
                 </h4>
 
                 <form method="POST" enctype="multipart/form-data">
@@ -44,95 +44,95 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.full_name.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.full_name.label.text, 'Full Name') }}</label>
                             {{ form.full_name(class="form-control") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.phone.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.phone.label.text, 'Phone Number') }}</label>
                             {{ form.phone(class="form-control") }}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.city.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.city.label.text, 'City') }}</label>
                             {{ form.city(class="form-control") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.current_job.label }}</label>
-                            {{ form.current_job(class="form-control", placeholder="مثال: مهندس ذكاء اصطناعي، باحث أكاديمي") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.current_job.label.text, 'Current Job / Academic Title') }}</label>
+                            {{ form.current_job(class="form-control", placeholder=_('مثال: مهندس ذكاء اصطناعي، باحث أكاديمي', 'e.g., AI Engineer, Academic Researcher')) }}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.headline.label }}</label>
-                            {{ form.headline(class="form-control", placeholder="العنوان أو المسمى التعريفي المختصر") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.headline.label.text, 'Headline / Brief Title') }}</label>
+                            {{ form.headline(class="form-control", placeholder=_('العنوان أو المسمى التعريفي المختصر', 'Professional headline / concise tagline')) }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.cv_file.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.cv_file.label.text, 'Curriculum Vitae (PDF/Word)') }}</label>
                             {{ form.cv_file(class="form-control", accept=".pdf,.doc,.docx") }}
                             {% if current_user.cv_file %}
                                 <div class="mt-1 small">
-                                    <span class="text-success fw-bold"><i class="bi bi-file-earmark-check ms-1"></i>السيرة الذاتية الحالية مرفوعة:</span>
-                                    <a href="{{ url_for('static', filename=current_user.cv_file) }}" target="_blank" class="text-primary text-decoration-none ms-1">معاينة / تنزيل الملف</a>
+                                    <span class="text-success fw-bold"><i class="bi bi-file-earmark-check ms-1"></i>{{ _('السيرة الذاتية الحالية مرفوعة:', 'Current CV uploaded:') }}</span>
+                                    <a href="{{ url_for('static', filename=current_user.cv_file) }}" target="_blank" class="text-primary text-decoration-none ms-1">{{ _('معاينة / تنزيل الملف', 'Preview / Download File') }}</a>
                                 </div>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.previous_activities.label }}</label>
-                        {{ form.previous_activities(class="form-control", rows=3, placeholder="أعمال ونشاطات سابقة في مجالات الابتكار، ريادة الأعمال، مسابقات، أبحاث تطبيقية...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.previous_activities.label.text, 'Past Experience in Innovation & Entrepreneurship') }}</label>
+                        {{ form.previous_activities(class="form-control", rows=3, placeholder=_('أعمال ونشاطات سابقة في مجالات الابتكار، ريادة الأعمال، مسابقات، أبحاث تطبيقية...', 'Previous projects, hackathons, academic publications, or ventures...')) }}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.bio.label }}</label>
-                        {{ form.bio(class="form-control", rows=3, placeholder="نبذة مختصرة عن مسيرتك المهنية واهتماماتك...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.bio.label.text, 'Brief Bio') }}</label>
+                        {{ form.bio(class="form-control", rows=3, placeholder=_('نبذة مختصرة عن مسيرتك المهنية واهتماماتك...', 'Brief overview of your professional trajectory and interests...')) }}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.avatar.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.avatar.label.text, 'Profile Avatar / Photo') }}</label>
                         {{ form.avatar(class="form-control") }}
                     </div>
 
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">المهارات والبيانات التخصصية</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">{{ _('المهارات والبيانات التخصصية', 'Skills & Technical Specialization') }}</h5>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.skills.label }}</label>
-                            {{ form.skills(class="form-control", placeholder="مثال: بايثون، تخطيط مالي، تسويق رقمي") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.skills.label.text, 'Key Skills (comma-separated)') }}</label>
+                            {{ form.skills(class="form-control", placeholder=_('مثال: بايثون، تخطيط مالي، تسويق رقمي', 'e.g., Python, Financial Planning, Digital Marketing')) }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.interests.label }}</label>
-                            {{ form.interests(class="form-control", placeholder="مثال: التقنيات المالية، الطاقة، الذكاء الاصطناعي") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.interests.label.text, 'Interests') }}</label>
+                            {{ form.interests(class="form-control", placeholder=_('مثال: التقنيات المالية، الطاقة، الذكاء الاصطناعي', 'e.g., FinTech, Clean Energy, AI')) }}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.specialization.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.specialization.label.text, 'Specialization') }}</label>
                             {{ form.specialization(class="form-control") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.experience_years.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.experience_years.label.text, 'Years of Experience') }}</label>
                             {{ form.experience_years(class="form-control") }}
                         </div>
                     </div>
 
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">الروابط المهنية وتفضيلات الخصوصية</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">{{ _('الروابط المهنية وتفضيلات الخصوصية', 'Professional Links & Privacy Preferences') }}</h5>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.linkedin_url.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.linkedin_url.label.text, 'LinkedIn Profile URL') }}</label>
                             {{ form.linkedin_url(class="form-control", placeholder="https://linkedin.com/in/...") }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.github_url.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.github_url.label.text, 'GitHub / Portfolio URL') }}</label>
                             {{ form.github_url(class="form-control", placeholder="https://github.com/...") }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.website_url.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.website_url.label.text, 'Website URL') }}</label>
                             {{ form.website_url(class="form-control", placeholder="https://...") }}
                         </div>
                     </div>
@@ -141,13 +141,13 @@
                         <div class="form-check">
                             {{ form.available_for_mentoring(class="form-check-input") }}
                             <label class="form-check-label fw-bold text-dark" for="available_for_mentoring">
-                                {{ form.available_for_mentoring.label.text }}
+                                {{ _(form.available_for_mentoring.label.text, 'Available for Mentorship') }}
                             </label>
-                            <small class="text-muted d-block">السماح بتلقي طلبات إرشاد وتوجيه من أصحاب الأفكار والمبتكرين.</small>
+                            <small class="text-muted d-block">{{ _('السماح بتلقي طلبات إرشاد وتوجيه من أصحاب الأفكار والمبتكرين.', 'Allow receiving mentorship and guidance requests from innovators and startup teams.') }}</small>
                         </div>
                     </div>
 
-                    {{ form.submit(class="btn btn-primary px-4 py-2") }}
+                    <button type="submit" class="btn btn-primary px-4 py-2">{{ _('حفظ التعديلات', 'Save Changes') }}</button>
                 </form>
             </div>
         </div>

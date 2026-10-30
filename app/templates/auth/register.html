@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}إنشاء حساب جديد | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('إنشاء حساب جديد', 'Create New Account') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="container py-5 my-2">
@@ -9,9 +9,9 @@
             <div class="card card-custom p-4 p-md-5 shadow">
                 <!-- الشعار في صفحة إنشاء الحساب -->
                 <div class="text-center mb-4">
-                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="شعار الجمعية" style="height: 70px; background: #fff; border-radius: 50%; padding: 4px;" class="shadow-sm mb-3">
-                    <h3 class="fw-bold text-dark">انضم إلى مجتمع الابتكار الليبي</h3>
-                    <p class="text-muted small">أنشئ حسابك للاستفادة من برامج التمويل، الاحتضان، والتوجيه</p>
+                    <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="{{ _('شعار الجمعية', 'Society Logo') }}" style="height: 70px; background: #fff; border-radius: 50%; padding: 4px;" class="shadow-sm mb-3">
+                    <h3 class="fw-bold text-dark">{{ _('انضم إلى مجتمع الابتكار الليبي', 'Join the Libyan Innovation Community') }}</h3>
+                    <p class="text-muted small">{{ _('أنشئ حسابك للاستفادة من برامج التمويل، الاحتضان، والتوجيه', 'Create your account to benefit from grants, incubation, and mentorship') }}</p>
                 </div>
 
                 <form method="POST" enctype="multipart/form-data">
@@ -19,19 +19,19 @@
 
                     <div class="alert alert-info py-2 px-3 small rounded-3 mb-4 d-flex align-items-center gap-2">
                         <i class="bi bi-shield-check fs-5 text-primary"></i>
-                        <span>يتم مراجعة وتأكيد طلبات الانضمام من قبل إدارة الجمعية، وتصلك رسالة تأكيد رسمية على بريدك الإلكتروني فور اعتماد التسجيل.</span>
+                        <span>{{ _('يتم مراجعة وتأكيد طلبات الانضمام من قبل إدارة الجمعية، وتصلك رسالة تأكيد رسمية على بريدك الإلكتروني فور اعتماد التسجيل.', 'Membership applications are verified by the society administration. You will receive an official confirmation email once approved.') }}</span>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.full_name.label }} *</label>
-                            {{ form.full_name(class="form-control", placeholder="الاسم الثلاثي أو الرباعي") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.full_name.label.text, 'Full Name') }} *</label>
+                            {{ form.full_name(class="form-control", placeholder=_('الاسم الثلاثي أو الرباعي', 'Full Name (First, Middle, Last)')) }}
                             {% for err in form.full_name.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
                             {% endfor %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.email.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.email.label.text, 'Email Address') }} *</label>
                             {{ form.email(class="form-control", placeholder="name@example.com") }}
                             {% for err in form.email.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
@@ -41,26 +41,26 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.phone.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.phone.label.text, 'Phone Number') }} *</label>
                             {{ form.phone(class="form-control", placeholder="091XXXXXXX") }}
                             {% for err in form.phone.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
                             {% endfor %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.city.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.city.label.text, 'City') }} *</label>
                             {{ form.city(class="form-select") }}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.account_type.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.account_type.label.text, 'Account Track / Role') }} *</label>
                             {{ form.account_type(class="form-select") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.current_job.label }} *</label>
-                            {{ form.current_job(class="form-control", placeholder="مثال: مهندس برمجيات، باحث، مؤسس...") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.current_job.label.text, 'Current Job / Academic Title') }} *</label>
+                            {{ form.current_job(class="form-control", placeholder=_('مثال: مهندس برمجيات، باحث، مؤسس...', 'e.g., Software Engineer, Researcher, Founder...')) }}
                             {% for err in form.current_job.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
                             {% endfor %}
@@ -68,10 +68,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.cv_file.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.cv_file.label.text, 'Curriculum Vitae (PDF/Word)') }}</label>
                         {{ form.cv_file(class="form-control", accept=".pdf,.doc,.docx") }}
                         <small class="text-muted d-block mt-1">
-                            <i class="bi bi-paperclip ms-1"></i>الصيغ المسموحة: PDF أو Word (doc/docx). يساعد رفع السيرة الذاتية في تسريع اعتماد طلبك ومطابقتك مع فرص التمويل والتوجيه.
+                            <i class="bi bi-paperclip ms-1"></i>{{ _('الصيغ المسموحة: PDF أو Word (doc/docx). يساعد رفع السيرة الذاتية في تسريع اعتماد طلبك ومطابقتك مع فرص التمويل والتوجيه.', 'Allowed formats: PDF or Word (doc/docx). Uploading your CV expedites account verification and grant matching.') }}
                         </small>
                         {% for err in form.cv_file.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
@@ -79,9 +79,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.previous_activities.label }}</label>
-                        {{ form.previous_activities(class="form-control", rows="3", placeholder="اذكر باختصار أي أعمال أو مشاريع سابقة، معارض، مسابقات، أبحاث تطبيقية، أو نشاطات ريادية ذات صلة بالابتكار...") }}
-                        <small class="text-muted d-block mt-1">تساعد هذه البيانات الإدارة ولجنة التقييم في تصنيف عضويتك وتقديم التوجيه الأنسب لك.</small>
+                        <label class="form-label fw-bold text-dark">{{ _(form.previous_activities.label.text, 'Past Experience in Innovation & Entrepreneurship') }}</label>
+                        {{ form.previous_activities(class="form-control", rows="3", placeholder=_('اذكر باختصار أي أعمال أو مشاريع سابقة، معارض، مسابقات، أبحاث تطبيقية، أو نشاطات ريادية ذات صلة بالابتكار...', 'Briefly mention prior projects, exhibitions, hackathons, applied research, or entrepreneurial ventures...')) }}
+                        <small class="text-muted d-block mt-1">{{ _('تساعد هذه البيانات الإدارة ولجنة التقييم في تصنيف عضويتك وتقديم التوجيه الأنسب لك.', 'This info helps the committee categorize your membership and offer optimal opportunities.') }}</small>
                         {% for err in form.previous_activities.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
@@ -89,15 +89,15 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.password.label }} *</label>
-                            {{ form.password(class="form-control", placeholder="8 أحرف على الأقل") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.password.label.text, 'Password') }} *</label>
+                            {{ form.password(class="form-control", placeholder=_('8 أحرف على الأقل', 'Minimum 8 characters')) }}
                             {% for err in form.password.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
                             {% endfor %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.confirm_password.label }} *</label>
-                            {{ form.confirm_password(class="form-control", placeholder="أعد إدخال كلمة المرور") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.confirm_password.label.text, 'Confirm Password') }} *</label>
+                            {{ form.confirm_password(class="form-control", placeholder=_('أعد إدخال كلمة المرور', 'Re-enter your password')) }}
                             {% for err in form.confirm_password.errors %}
                                 <div class="text-danger small mt-1">{{ err }}</div>
                             {% endfor %}
@@ -108,7 +108,7 @@
                         <div class="form-check">
                             {{ form.terms(class="form-check-input") }}
                             <label class="form-check-label small text-muted" for="terms">
-                                أوافق على <a href="{{ url_for('public.dynamic_page', slug='terms-of-service') }}" target="_blank">الشروط والأحكام</a> و <a href="{{ url_for('public.dynamic_page', slug='privacy-policy') }}" target="_blank">سياسة الخصوصية</a> الخاصة بالجمعية.
+                                {{ _('أوافق على', 'I agree to the') }} <a href="{{ url_for('public.dynamic_page', slug='terms-of-service') }}" target="_blank">{{ _('الشروط والأحكام', 'Terms of Service') }}</a> {{ _('و', 'and') }} <a href="{{ url_for('public.dynamic_page', slug='privacy-policy') }}" target="_blank">{{ _('سياسة الخصوصية', 'Privacy Policy') }}</a> {{ _('الخاصة بالجمعية.', 'of the Society.') }}
                             </label>
                         </div>
                         {% for err in form.terms.errors %}
@@ -116,11 +116,11 @@
                         {% endfor %}
                     </div>
 
-                    {{ form.submit(class="btn btn-primary w-100 py-2 fs-6 fw-bold mb-3") }}
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-6 fw-bold mb-3">{{ _('إنشاء الحساب', 'Create Account') }}</button>
 
                     <div class="text-center small text-muted">
-                        لديك حساب بالفعل؟
-                        <a href="{{ url_for('auth.login') }}" class="text-primary fw-bold text-decoration-none">تسجيل الدخول</a>
+                        {{ _('لديك حساب بالفعل؟', 'Already have an account?') }}
+                        <a href="{{ url_for('auth.login') }}" class="text-primary fw-bold text-decoration-none">{{ _('تسجيل الدخول', 'Sign In') }}</a>
                     </div>
                 </form>
             </div>

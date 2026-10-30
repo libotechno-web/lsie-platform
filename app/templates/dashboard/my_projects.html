@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}مشاريعي وأفكاري | لوحة التحكم{% endblock %}
+{% block title %}{{ _('مشاريعي وأفكاري', 'My Projects & Ideas') }} | {{ _('لوحة التحكم', 'Dashboard') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold text-dark mb-1">مشاريعي وأفكاري المقدمة</h3>
-            <p class="text-muted small mb-0">متابعة حالة مراجعة وتقييم مشاريعك المودعة لدى الجمعية</p>
+            <h3 class="fw-bold text-dark mb-1">{{ _('مشاريعي وأفكاري المقدمة', 'Submitted Projects & Ideas') }}</h3>
+            <p class="text-muted small mb-0">{{ _('متابعة حالة مراجعة وتقييم مشاريعك المودعة لدى الجمعية', 'Track evaluation and committee review status of your submitted ventures') }}</p>
         </div>
         <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary d-flex align-items-center gap-1">
             <i class="bi bi-plus-lg"></i>
-            <span>تقديم فكرة جديدة</span>
+            <span>{{ _('تقديم فكرة جديدة', 'Submit New Idea') }}</span>
         </a>
     </div>
 
@@ -22,7 +22,7 @@
                     <div class="p-4 flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <span class="badge bg-{{ p.status_badge_class }} fs-6">
-                                {{ p.status_label_ar }}
+                                {{ p.get_status_label(current_lang) }}
                             </span>
                             <small class="text-muted">{{ p.created_at.strftime('%Y-%m-%d') }}</small>
                         </div>
@@ -30,28 +30,28 @@
                         <h5 class="fw-bold text-dark mb-2">{{ p.title }}</h5>
                         <p class="text-muted small leading-relaxed mb-3">{{ p.summary[:130] }}...</p>
 
-                        <div class="small text-muted mb-2"><i class="bi bi-tag ms-1"></i>القطاع: <strong>{{ p.sector }}</strong></div>
-                        <div class="small text-muted mb-3"><i class="bi bi-flag ms-1"></i>المرحلة: <strong>{{ p.stage_label_ar }}</strong></div>
+                        <div class="small text-muted mb-2"><i class="bi bi-tag ms-1"></i>{{ _('القطاع:', 'Sector:') }} <strong>{{ _(p.sector) }}</strong></div>
+                        <div class="small text-muted mb-3"><i class="bi bi-flag ms-1"></i>{{ _('المرحلة:', 'Stage:') }} <strong>{{ p.get_stage_label(current_lang) }}</strong></div>
 
                         {% if p.status_notes_public %}
                             <div class="p-2 bg-light rounded small text-secondary border">
-                                <i class="bi bi-chat-quote ms-1 text-primary"></i>ملاحظات اللجنة: {{ p.status_notes_public[:100] }}...
+                                <i class="bi bi-chat-quote ms-1 text-primary"></i>{{ _('ملاحظات اللجنة:', 'Committee Notes:') }} {{ p.status_notes_public[:100] }}...
                             </div>
                         {% endif %}
                     </div>
 
                     <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
-                        <span class="small text-muted">المعرف: #{{ p.id }}</span>
-                        <a href="{{ url_for('dashboard.project_detail', project_id=p.id) }}" class="btn btn-outline-primary btn-sm">عرض التفاصيل ومتابعة التقييم</a>
+                        <span class="small text-muted">{{ _('المعرف:', 'ID:') }} #{{ p.id }}</span>
+                        <a href="{{ url_for('dashboard.project_detail', project_id=p.id) }}" class="btn btn-outline-primary btn-sm">{{ _('عرض التفاصيل ومتابعة التقييم', 'View Details & Evaluation') }}</a>
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-5 bg-white rounded-3 border">
                 <i class="bi bi-lightbulb text-muted fs-1 d-block mb-3"></i>
-                <h5 class="fw-bold text-dark">لم تقم بإرسال أي فكرة أو مشروع حتى الآن</h5>
-                <p class="text-muted small mb-4">لديك فكرة إبداعية أو نموذج أولي؟ قدّمها الآن للاستفادة من برامج التوجيه والتمويل.</p>
-                <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary px-4">تقديم أول فكرة</a>
+                <h5 class="fw-bold text-dark">{{ _('لم تقم بإرسال أي فكرة أو مشروع حتى الآن', 'No ideas or projects submitted yet') }}</h5>
+                <p class="text-muted small mb-4">{{ _('لديك فكرة إبداعية أو نموذج أولي؟ قدّمها الآن للاستفادة من برامج التوجيه والتمويل.', 'Have an innovative idea or prototype? Submit now to access mentorship and funding programs.') }}</p>
+                <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-primary px-4">{{ _('تقديم أول فكرة', 'Submit Your First Idea') }}</a>
             </div>
         {% endfor %}
     </div>

@@ -1,73 +1,73 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ _(title) }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-9">
         <div class="card card-custom p-4 shadow-sm">
-            <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">{{ title }}</h4>
+            <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">{{ _(title) }}</h4>
 
             <form method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.title.label }} *</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.title.label.text, 'Course Title') }} *</label>
                     {{ form.title(class="form-control") }}
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.trainer_name.label }} *</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.trainer_name.label.text, 'Trainer Name') }} *</label>
                         {{ form.trainer_name(class="form-control") }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.trainer_title.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.trainer_title.label.text, 'Trainer Title / Bio') }}</label>
                         {{ form.trainer_title(class="form-control") }}
                     </div>
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.course_type.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.course_type.label.text, 'Course Track / Type') }}</label>
                         {{ form.course_type(class="form-select") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.delivery_mode.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.delivery_mode.label.text, 'Delivery Mode') }}</label>
                         {{ form.delivery_mode(class="form-select") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.location_or_link.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.location_or_link.label.text, 'Location or Link') }}</label>
                         {{ form.location_or_link(class="form-control") }}
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.summary.label }} *</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.summary.label.text, 'Summary') }} *</label>
                     {{ form.summary(class="form-control", rows=2) }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.description.label }} *</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.description.label.text, 'Description') }} *</label>
                     {{ form.description(class="form-control", rows=4) }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.learning_objectives.label }}</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.learning_objectives.label.text, 'Learning Objectives') }}</label>
                     {{ form.learning_objectives(class="form-control", rows=3) }}
                 </div>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.start_date.label }} *</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.start_date.label.text, 'Start Date') }} *</label>
                         {{ form.start_date(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.duration_hours.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.duration_hours.label.text, 'Duration (Hours)') }}</label>
                         {{ form.duration_hours(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.max_seats.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.max_seats.label.text, 'Max Seats') }}</label>
                         {{ form.max_seats(class="form-control") }}
                     </div>
                 </div>
@@ -76,24 +76,24 @@
                     <div class="col-md-4">
                         <div class="form-check mt-2">
                             {{ form.is_free(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="is_free">{{ form.is_free.label.text }}</label>
+                            <label class="form-check-label fw-bold text-dark" for="is_free">{{ _(form.is_free.label.text, 'Free Course') }}</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-check mt-2">
                             {{ form.certificate_included(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="certificate_included">{{ form.certificate_included.label.text }}</label>
+                            <label class="form-check-label fw-bold text-dark" for="certificate_included">{{ _(form.certificate_included.label.text, 'Certificate Included') }}</label>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold text-dark">{{ form.registration_status.label }}</label>
+                        <label class="form-label small fw-bold text-dark">{{ _(form.registration_status.label.text, 'Registration Status') }}</label>
                         {{ form.registration_status(class="form-select form-select-sm") }}
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                    <a href="{{ url_for('admin.training') }}" class="btn btn-light">إلغاء والعودة</a>
-                    {{ form.submit(class="btn btn-primary px-4") }}
+                    <a href="{{ url_for('admin.training') }}" class="btn btn-light">{{ _('إلغاء والعودة', 'Cancel & Return') }}</a>
+                    <button type="submit" class="btn btn-primary px-4">{{ _('حفظ البرنامج', 'Save Course') }}</button>
                 </div>
             </form>
         </div>

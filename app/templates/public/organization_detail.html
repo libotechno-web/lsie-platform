@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ org.name }} | دليل الشركات الناشئة{% endblock %}
+{% block title %}{{ org.name }} | {{ _('دليل الشركات الناشئة', 'Startups Directory') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -11,18 +11,18 @@
                     <i class="bi bi-building text-primary" style="font-size: 3rem;"></i>
                 </div>
                 <h4 class="fw-bold text-dark mb-1">{{ org.name }}</h4>
-                <div class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ org.sector }}</div>
-                <div class="text-muted small mb-3"><i class="bi bi-geo-alt ms-1"></i>{{ org.city }}</div>
+                <div class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ _(org.sector) }}</div>
+                <div class="text-muted small mb-3"><i class="bi bi-geo-alt ms-1"></i>{{ _(org.city) }}</div>
 
                 {% if org.is_verified %}
                     <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-3">
-                        <i class="bi bi-check-circle ms-1"></i>شركة ناشئة موثقة
+                        <i class="bi bi-check-circle ms-1"></i>{{ _('شركة ناشئة موثقة', 'Verified Startup') }}
                     </span>
                 {% endif %}
 
                 {% if org.website %}
                     <a href="{{ org.website }}" target="_blank" class="btn btn-outline-primary w-100 mb-2">
-                        <i class="bi bi-globe ms-1"></i>زيارة الموقع الرسمي
+                        <i class="bi bi-globe ms-1"></i>{{ _('زيارة الموقع الرسمي', 'Visit Official Website') }}
                     </a>
                 {% endif %}
             </div>
@@ -30,30 +30,30 @@
 
         <div class="col-lg-8">
             <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">عن الشركة / المؤسسة</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('عن الشركة / المؤسسة', 'About Company / Organization') }}</h5>
                 <p class="text-secondary leading-relaxed mb-0">{{ org.description }}</p>
             </div>
 
             <div class="card card-custom p-4">
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">البيانات التشغيلية والاحتياجات</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('البيانات التشغيلية والاحتياجات', 'Operational Details & Needs') }}</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="text-muted small">مرحلة المشروع:</div>
-                        <div class="fw-bold text-dark">{{ org.stage }}</div>
+                        <div class="text-muted small">{{ _('مرحلة المشروع:', 'Startup Stage:') }}</div>
+                        <div class="fw-bold text-dark">{{ _(org.stage) }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-muted small">حجم الفريق:</div>
-                        <div class="fw-bold text-dark">{{ org.team_size or 'غير محدد' }}</div>
+                        <div class="text-muted small">{{ _('حجم الفريق:', 'Team Size:') }}</div>
+                        <div class="fw-bold text-dark">{{ org.team_size or _('غير محدد', 'Unspecified') }}</div>
                     </div>
                     {% if org.funding_needs %}
                         <div class="col-md-6">
-                            <div class="text-muted small">الاحتياجات التمويلية:</div>
+                            <div class="text-muted small">{{ _('الاحتياجات التمويلية:', 'Funding Needs:') }}</div>
                             <div class="fw-bold text-primary">{{ org.funding_needs }}</div>
                         </div>
                     {% endif %}
                     {% if org.partnership_needs %}
                         <div class="col-md-6">
-                            <div class="text-muted small">الشراكات المستهدفة:</div>
+                            <div class="text-muted small">{{ _('الشراكات المستهدفة:', 'Target Partnerships:') }}</div>
                             <div class="fw-bold text-dark">{{ org.partnership_needs }}</div>
                         </div>
                     {% endif %}

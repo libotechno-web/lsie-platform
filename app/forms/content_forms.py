@@ -27,8 +27,9 @@ class ArticleForm(FlaskForm):
 
 
 class EventForm(FlaskForm):
-    title = StringField('عنوان الفعالية', validators=[DataRequired(), Length(max=250)])
-    event_type = SelectField('نوع الفعالية', choices=[
+    # البيانات الأساسية بالعربية
+    title = StringField('عنوان الفعالية / المنشط (بالعربية)', validators=[DataRequired(), Length(max=250)])
+    event_type = SelectField('نوع الفعالية / المنشط', choices=[
         ('conference', 'مؤتمر علمي / ريادي'),
         ('forum', 'منتدى حواري'),
         ('workshop', 'ورشة عمل تدريبية'),
@@ -36,17 +37,24 @@ class EventForm(FlaskForm):
         ('demo_day', 'يوم العروض (Demo Day)'),
         ('networking', 'لقاء تشبيك وتواصل')
     ], default='conference')
-    summary = TextAreaField('موجز الفعالية', validators=[DataRequired()])
-    description = TextAreaField('التفاصيل الكاملة وجدول الأعمال', validators=[DataRequired()])
+    summary = TextAreaField('موجز الفعالية (بالعربية)', validators=[DataRequired()])
+    description = TextAreaField('التفاصيل الكاملة وجدول الأعمال (بالعربية)', validators=[DataRequired()])
     cover_image = FileField('صورة الفعالية', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg', 'webp'], 'صور فقط')])
     
+    # خيار إضافة المنشط باللغة الإنجليزية (English Activity Information)
+    title_en = StringField('عنوان المنشط بالإنجليزية (English Title)', validators=[Optional(), Length(max=250)])
+    city_en = StringField('المدينة بالإنجليزية (English City)', validators=[Optional(), Length(max=60)])
+    location_name_en = StringField('اسم المكان أو المنصة بالإنجليزية (English Venue)', validators=[Optional(), Length(max=255)])
+    summary_en = TextAreaField('موجز المنشط بالإنجليزية (English Summary)', validators=[Optional()])
+    description_en = TextAreaField('التفاصيل الكاملة بالإنجليزية (English Description)', validators=[Optional()])
+
     location_type = SelectField('طريقة الانعقاد', choices=[
         ('in_person', 'حضوري'),
         ('online', 'عبر الإنترنت (افتراضي)'),
         ('hybrid', 'مدمج (حضوري وافتراضي)')
     ], default='in_person')
-    location_name = StringField('اسم المكان أو المنصة', default='مقر الجمعية - جامعة غريان')
-    city = StringField('المدينة', default='غريان')
+    location_name = StringField('اسم المكان أو المنصة (بالعربية)', default='مقر الجمعية - جامعة غريان')
+    city = StringField('المدينة (بالعربية)', default='غريان')
     online_link = StringField('رابط البث / اللقاء الافتراضي إن وجد', validators=[Optional()])
     
     start_time = DateTimeLocalField('موعد وتاريخ البداية', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
@@ -55,8 +63,8 @@ class EventForm(FlaskForm):
     
     is_registration_open = BooleanField('التسجيل مفتوح للجمهور', default=True)
     is_featured = BooleanField('إبراز في الصفحة الرئيسية')
-    is_published = BooleanField('منشور', default=True)
-    submit = SubmitField('حفظ الفعالية')
+    is_published = BooleanField('منشور ومتاح للعامة', default=True)
+    submit = SubmitField('حفظ الفعالية / المنشط')
 
 
 class OpportunityForm(FlaskForm):

@@ -85,6 +85,34 @@ class InnovationProject(db.Model):
         }
         return stages.get(self.stage, self.stage)
 
+    def get_status_label(self, lang='ar'):
+        if lang == 'en':
+            labels_en = {
+                'draft': 'Draft',
+                'submitted': 'Submitted',
+                'under_review': 'Under Initial Review',
+                'needs_info': 'Additional Info Required',
+                'under_evaluation': 'Technical Evaluation',
+                'accepted': 'Accepted & Approved',
+                'rejected': 'Declined',
+                'deferred': 'Deferred',
+                'closed': 'Closed'
+            }
+            return labels_en.get(self.status, self.status)
+        return self.status_label_ar
+
+    def get_stage_label(self, lang='ar'):
+        if lang == 'en':
+            stages_en = {
+                'idea': 'Idea / Concept',
+                'prototype': 'Working Prototype',
+                'mvp': 'Minimum Viable Product (MVP)',
+                'operational': 'Market Operational',
+                'scaling': 'Growth & Scaling Stage'
+            }
+            return stages_en.get(self.stage, self.stage)
+        return self.stage_label_ar
+
     def __repr__(self):
         return f'<InnovationProject {self.title} ({self.status})>'
 

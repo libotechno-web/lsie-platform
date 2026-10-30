@@ -38,22 +38,39 @@ class Article(db.Model):
         }
         return categories.get(self.category, 'خبر')
 
+    def get_category_label(self, lang='ar'):
+        if lang == 'en':
+            categories_en = {
+                'news': 'Society News',
+                'article': 'Analytical Article',
+                'success_story': 'Startup Success Story',
+                'announcement': 'Official Announcement',
+                'report': 'Report & Statistics'
+            }
+            return categories_en.get(self.category, 'News')
+        return self.category_label_ar
+
 
 class Event(db.Model):
     __tablename__ = 'events'
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), nullable=False, index=True)
+    title_en = db.Column(db.String(250), nullable=True) # العنوان باللغة الإنجليزية
     slug = db.Column(db.String(270), unique=True, nullable=False, index=True)
     event_type = db.Column(db.String(50), default='conference') # conference, workshop, hackathon, forum, demo_day, networking
     
     summary = db.Column(db.Text, nullable=False)
+    summary_en = db.Column(db.Text, nullable=True) # الموجز باللغة الإنجليزية
     description = db.Column(db.Text, nullable=False)
+    description_en = db.Column(db.Text, nullable=True) # التفاصيل وجدول الأعمال باللغة الإنجليزية
     cover_image = db.Column(db.String(255), nullable=True)
     
     location_type = db.Column(db.String(30), default='in_person') # in_person, online, hybrid
     location_name = db.Column(db.String(255), default='مقر الجمعية - جامعة غريان')
+    location_name_en = db.Column(db.String(255), nullable=True) # اسم المكان بالإنجليزية
     city = db.Column(db.String(60), default='غريان')
+    city_en = db.Column(db.String(60), nullable=True) # المدينة بالإنجليزية
     online_link = db.Column(db.String(255), nullable=True)
     
     start_time = db.Column(db.DateTime, nullable=False)
@@ -68,6 +85,67 @@ class Event(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     registrations = db.relationship('EventRegistration', backref='event', cascade='all, delete-orphan')
+
+    def get_title(self, lang='ar'):
+        if lang == 'en' and self.title_en and self.title_en.strip():
+            return self.title_en.strip()
+        return self.title
+
+    def get_summary(self, lang='ar'):
+        if lang == 'en' and self.summary_en and self.summary_en.strip():
+            return self.summary_en.strip()
+        return self.summary
+
+    def get_description(self, lang='ar'):
+        if lang == 'en' and self.description_en and self.description_en.strip():
+            return self.description_en.strip()
+        return self.description
+
+    def get_location_name(self, lang='ar'):
+        if lang == 'en' and self.location_name_en and self.location_name_en.strip():
+            return self.location_name_en.strip()
+        return self.location_name
+
+    def get_city(self, lang='ar'):
+        if lang == 'en' and self.city_en and self.city_en.strip():
+            return self.city_en.strip()
+        return self.city
+
+    def get_event_type_label(self, lang='ar'):
+        types_ar = {
+            'conference': 'مؤتمر علمي / ريادي',
+            'forum': 'منتدى حواري',
+            'workshop': 'ورشة عمل تدريبية',
+            'hackathon': 'هاكاثون ومنافسة برمجية',
+            'demo_day': 'يوم العروض (Demo Day)',
+            'networking': 'لقاء تشبيك وتواصل'
+        }
+        types_en = {
+            'conference': 'Scientific / Entrepreneurial Conference',
+            'forum': 'Discussion Forum',
+            'workshop': 'Training Workshop',
+            'hackathon': 'Hackathon & Tech Challenge',
+            'demo_day': 'Demo Day & Pitching',
+            'networking': 'Networking Meetup'
+        }
+        if lang == 'en':
+            return types_en.get(self.event_type, self.event_type)
+        return types_ar.get(self.event_type, self.event_type)
+
+    def get_location_type_label(self, lang='ar'):
+        loc_ar = {
+            'in_person': 'حضوري بالمقر',
+            'online': 'افتراضي عن بُعد',
+            'hybrid': 'مدمج (حضوري وافتراضي)'
+        }
+        loc_en = {
+            'in_person': 'In-Person at Venue',
+            'online': 'Virtual / Online',
+            'hybrid': 'Hybrid (In-Person & Online)'
+        }
+        if lang == 'en':
+            return loc_en.get(self.location_type, self.location_type)
+        return loc_ar.get(self.location_type, self.location_type)
 
 
 class EventRegistration(db.Model):
@@ -132,6 +210,17 @@ class Opportunity(db.Model):
         }
         return labels.get(self.status, self.status)
 
+    def get_status_label(self, lang='ar'):
+        if lang == 'en':
+            labels_en = {
+                'open': 'Open for Application',
+                'upcoming': 'Opening Soon',
+                'closed': 'Closed',
+                'archived': 'Archived'
+            }
+            return labels_en.get(self.status, self.status)
+        return self.status_label_ar
+
     @property
     def type_label_ar(self):
         types = {
@@ -143,6 +232,19 @@ class Opportunity(db.Model):
             'award': 'جائزة سنوية'
         }
         return types.get(self.opportunity_type, self.opportunity_type)
+
+    def get_type_label(self, lang='ar'):
+        if lang == 'en':
+            types_en = {
+                'grant': 'Innovation Grant',
+                'competition': 'Challenge & Competition',
+                'incubation': 'Incubation Program',
+                'acceleration': 'Business Acceleration',
+                'funding': 'Investment Opportunity',
+                'award': 'National Award'
+            }
+            return types_en.get(self.opportunity_type, self.opportunity_type)
+        return self.type_label_ar
 
 
 class OpportunityApplication(db.Model):
@@ -207,6 +309,38 @@ class TrainingCourse(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     enrollments = db.relationship('CourseEnrollment', backref='course', cascade='all, delete-orphan')
+
+    def get_delivery_mode_label(self, lang='ar'):
+        modes_en = {
+            'online': 'Online / Virtual',
+            'in_person': 'In-Person',
+            'hybrid': 'Hybrid'
+        }
+        modes_ar = {
+            'online': 'عن بُعد (افتراضي)',
+            'in_person': 'حضوري',
+            'hybrid': 'مدمج'
+        }
+        if lang == 'en':
+            return modes_en.get(self.delivery_mode, self.delivery_mode)
+        return modes_ar.get(self.delivery_mode, self.delivery_mode)
+
+    def get_registration_status_label(self, lang='ar'):
+        statuses_en = {
+            'open': 'Open for Registration',
+            'closing_soon': 'Closing Soon',
+            'closed': 'Closed / Seats Filled',
+            'completed': 'Completed'
+        }
+        statuses_ar = {
+            'open': 'التسجيل متاح',
+            'closing_soon': 'يغلق قريباً',
+            'closed': 'اكتمل العدد / مغلق',
+            'completed': 'مكتمل ومنتهي'
+        }
+        if lang == 'en':
+            return statuses_en.get(self.registration_status, self.registration_status)
+        return statuses_ar.get(self.registration_status, self.registration_status)
 
 
 class CourseEnrollment(db.Model):

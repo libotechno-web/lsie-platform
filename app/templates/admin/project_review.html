@@ -1,6 +1,6 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}تقييم مشروع: {{ project.title }}{% endblock %}
+{% block title %}{{ _('تقييم مشروع:', 'Project Review:') }} {{ project.title }}{% endblock %}
 
 {% block content %}
 <div class="row g-4">
@@ -8,35 +8,35 @@
     <div class="col-lg-6">
         <div class="card card-custom p-4 shadow-sm mb-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="badge bg-{{ project.status_badge_class }} fs-6">{{ project.status_label_ar }}</span>
+                <span class="badge bg-{{ project.status_badge_class }} fs-6">{{ project.get_status_label(current_lang) }}</span>
                 <small class="text-muted">{{ project.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
             </div>
 
             <h4 class="fw-bold text-dark mb-2">{{ project.title }}</h4>
             <div class="small text-muted mb-3">
-                المبتكر: <strong>{{ project.owner.full_name }}</strong> ({{ project.owner.email }} - {{ project.owner.phone or 'لا يوجد هاتف' }})
+                {{ _('المبتكر:', 'Innovator:') }} <strong>{{ project.owner.full_name }}</strong> ({{ project.owner.email }} - {{ project.owner.phone or _('لا يوجد هاتف', 'No phone provided') }})
             </div>
 
-            <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">الوصف العام:</h6>
+            <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">{{ _('الوصف العام:', 'Overview:') }}</h6>
             <p class="text-secondary small leading-relaxed mb-3">{{ project.summary }}</p>
 
-            <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">المشكلة والحل:</h6>
-            <div class="small mb-2"><strong>المشكلة:</strong> {{ project.problem_statement }}</div>
-            <div class="small mb-3"><strong>الحل:</strong> {{ project.proposed_solution }}</div>
+            <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">{{ _('المشكلة والحل:', 'Problem & Solution:') }}</h6>
+            <div class="small mb-2"><strong>{{ _('المشكلة:', 'Problem:') }}</strong> {{ project.problem_statement }}</div>
+            <div class="small mb-3"><strong>{{ _('الحل:', 'Solution:') }}</strong> {{ project.proposed_solution }}</div>
 
             {% if project.business_model %}
-                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">نموذج الإيرادات:</h6>
+                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">{{ _('نموذج الإيرادات:', 'Revenue Model:') }}</h6>
                 <p class="text-secondary small leading-relaxed mb-3">{{ project.business_model }}</p>
             {% endif %}
 
             {% if project.team_description %}
-                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">فريق العمل:</h6>
+                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">{{ _('فريق العمل:', 'Team:') }}</h6>
                 <p class="text-secondary small leading-relaxed mb-3">{{ project.team_description }}</p>
             {% endif %}
 
             <!-- المرفقات -->
             {% if project.attachments %}
-                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">ملفات العرض التقديمي (Pitch Deck):</h6>
+                <h6 class="fw-bold text-dark border-bottom pb-1 mb-2">{{ _('ملفات العرض التقديمي (Pitch Deck):', 'Pitch Deck Presentations:') }}</h6>
                 <div class="d-flex flex-wrap gap-2 mb-2">
                     {% for att in project.attachments %}
                         <a href="{{ url_for('static', filename=att.file_path) }}" target="_blank" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
@@ -53,7 +53,7 @@
     <div class="col-lg-6">
         <div class="card card-custom p-4 shadow-sm border-top border-4 border-primary">
             <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
-                <i class="bi bi-clipboard-check text-primary ms-2"></i>نموذج التقييم الفني المعتمد
+                <i class="bi bi-clipboard-check text-primary ms-2"></i>{{ _('نموذج التقييم الفني المعتمد', 'Official Evaluation & Scoring Form') }}
             </h4>
 
             <form method="POST">
@@ -61,23 +61,23 @@
 
                 <!-- درجات المعايير (من 25 لكل معيار، المجموع 100) -->
                 <div class="p-3 bg-light rounded-3 mb-3">
-                    <h6 class="fw-bold text-dark mb-3">معايير التقييم والدرجات (من 100)</h6>
+                    <h6 class="fw-bold text-dark mb-3">{{ _('معايير التقييم والدرجات (من 100)', 'Evaluation Criteria & Scoring (out of 100)') }}</h6>
                     
                     <div class="row g-3">
                         <div class="col-6">
-                            <label class="form-label small fw-bold text-dark">{{ form.score_innovation.label }}</label>
+                            <label class="form-label small fw-bold text-dark">{{ _(form.score_innovation.label.text, 'Innovation Score (0-25)') }}</label>
                             {{ form.score_innovation(class="form-control form-control-sm", placeholder="0-25") }}
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold text-dark">{{ form.score_feasibility.label }}</label>
+                            <label class="form-label small fw-bold text-dark">{{ _(form.score_feasibility.label.text, 'Feasibility Score (0-25)') }}</label>
                             {{ form.score_feasibility(class="form-control form-control-sm", placeholder="0-25") }}
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold text-dark">{{ form.score_market_impact.label }}</label>
+                            <label class="form-label small fw-bold text-dark">{{ _(form.score_market_impact.label.text, 'Market Impact (0-25)') }}</label>
                             {{ form.score_market_impact(class="form-control form-control-sm", placeholder="0-25") }}
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-bold text-dark">{{ form.score_team.label }}</label>
+                            <label class="form-label small fw-bold text-dark">{{ _(form.score_team.label.text, 'Team Capacity (0-25)') }}</label>
                             {{ form.score_team(class="form-control form-control-sm", placeholder="0-25") }}
                         </div>
                     </div>
@@ -85,33 +85,33 @@
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.recommendation.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.recommendation.label.text, 'Recommendation') }}</label>
                         {{ form.recommendation(class="form-select") }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.status.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.status.label.text, 'Final Status') }}</label>
                         {{ form.status(class="form-select") }}
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold text-danger">
-                        <i class="bi bi-shield-lock ms-1"></i>{{ form.internal_notes.label }}
+                        <i class="bi bi-shield-lock ms-1"></i>{{ _(form.internal_notes.label.text, 'Internal Committee Notes (Confidential)') }}
                     </label>
-                    {{ form.internal_notes(class="form-control", rows=3, placeholder="تدوينات وتوجيهات خاصة بلجنة المراجعة فقط (سرية ولا تكشف للمبتكر)...") }}
-                    <small class="text-muted">هذا الحقل محمي ولا يظهر أبداً لصاحب الفكرة.</small>
+                    {{ form.internal_notes(class="form-control", rows=3, placeholder=_('تدوينات وتوجيهات خاصة بلجنة المراجعة فقط (سرية ولا تكشف للمبتكر)...', 'Confidential committee notes (not visible to applicant)...')) }}
+                    <small class="text-muted">{{ _('هذا الحقل محمي ولا يظهر أبداً لصاحب الفكرة.', 'This field is restricted to reviewers and administrators.') }}</small>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-bold text-success">
-                        <i class="bi bi-chat-quote ms-1"></i>{{ form.applicant_feedback.label }}
+                        <i class="bi bi-chat-quote ms-1"></i>{{ _(form.applicant_feedback.label.text, 'Applicant Feedback & Guidance') }}
                     </label>
-                    {{ form.applicant_feedback(class="form-control", rows=3, placeholder="ملاحظات وتوجيهات بناءة تظهر للمبتكر في حسابه لمساعدته على تطوير مشروعه...") }}
+                    {{ form.applicant_feedback(class="form-control", rows=3, placeholder=_('ملاحظات وتوجيهات بناءة تظهر للمبتكر في حسابه لمساعدته على تطوير مشروعه...', 'Constructive feedback and guidance visible to applicant to improve venture...')) }}
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                    <a href="{{ url_for('admin.projects') }}" class="btn btn-light">إلغاء والعودة</a>
-                    {{ form.submit(class="btn btn-primary px-4") }}
+                    <a href="{{ url_for('admin.projects') }}" class="btn btn-light">{{ _('إلغاء والعودة', 'Cancel & Return') }}</a>
+                    <button type="submit" class="btn btn-primary px-4">{{ _('حفظ التقييم والقرار', 'Save Evaluation') }}</button>
                 </div>
             </form>
         </div>

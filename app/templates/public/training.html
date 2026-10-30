@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}الأكاديمية الرقمية والتدريب | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('الأكاديمية الرقمية والتدريب', 'Digital Academy & Training') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, #0d4a29 100%);">
     <div class="container py-3">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">بناء القدرات والمعرفة</span>
-        <h1 class="fw-bold mb-2">التدريب والأكاديمية الرقمية</h1>
-        <p class="fs-6 text-light opacity-90 mb-0">برامج تدريبية تخصصية، ورش عمل تطبيقية، ومخيمات مكثفة تؤهلك لتطوير مشروعك وإدارته بكفاءة واحترافية.</p>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">{{ _('بناء القدرات والمعرفة', 'Capacity & Knowledge Building') }}</span>
+        <h1 class="fw-bold mb-2">{{ _('التدريب والأكاديمية الرقمية', 'Training & Digital Academy') }}</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">{{ _('برامج تدريبية تخصصية، ورش عمل تطبيقية، ومخيمات مكثفة تؤهلك لتطوير مشروعك وإدارته بكفاءة واحترافية.', 'Specialized programs, hands-on workshops, and intensive bootcamps empowering you to grow and lead ventures with excellence.') }}</p>
     </div>
 </div>
 
@@ -19,35 +19,36 @@
                     <div class="p-4 flex-grow-1">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="badge bg-primary bg-opacity-10 text-primary">
-                                {% if c.delivery_mode == 'online' %}<i class="bi bi-camera-video ms-1"></i>عن بُعد{% elif c.delivery_mode == 'in_person' %}<i class="bi bi-geo ms-1"></i>حضوري{% else %}مدمج{% endif %}
+                                {% if c.delivery_mode == 'online' %}<i class="bi bi-camera-video ms-1"></i>{% elif c.delivery_mode == 'in_person' %}<i class="bi bi-geo ms-1"></i>{% else %}<i class="bi bi-laptop ms-1"></i>{% endif %}
+                                {{ c.get_delivery_mode_label(current_lang) }}
                             </span>
-                            <span class="badge bg-success bg-opacity-10 text-success">{{ c.duration_hours }} ساعة تدريبية</span>
+                            <span class="badge bg-success bg-opacity-10 text-success">{{ c.duration_hours }} {{ _('ساعة تدريبية', 'Training Hours') }}</span>
                         </div>
 
                         <h5 class="fw-bold text-dark mb-2">
                             <a href="{{ url_for('public.training_detail', slug=c.slug) }}" class="text-decoration-none text-dark hover-primary">{{ c.title }}</a>
                         </h5>
 
-                        <div class="small text-muted mb-3"><i class="bi bi-person-badge ms-1"></i>المدرب: <strong>{{ c.trainer_name }}</strong></div>
+                        <div class="small text-muted mb-3"><i class="bi bi-person-badge ms-1"></i>{{ _('المدرب', 'Trainer') }}: <strong>{{ c.trainer_name }}</strong></div>
                         <p class="text-muted small leading-relaxed mb-3">{{ c.summary[:130] }}...</p>
 
                         <div class="d-flex justify-content-between small text-muted">
-                            <span><i class="bi bi-calendar-check ms-1"></i>البداية: {{ c.start_date.strftime('%Y-%m-%d') }}</span>
-                            <span><i class="bi bi-people ms-1"></i>المقاعد: {{ c.enrolled_count }}/{{ c.max_seats }}</span>
+                            <span><i class="bi bi-calendar-check ms-1"></i>{{ _('البداية', 'Starts') }}: {{ c.start_date.strftime('%Y-%m-%d') }}</span>
+                            <span><i class="bi bi-people ms-1"></i>{{ _('المقاعد', 'Seats') }}: {{ c.enrolled_count }}/{{ c.max_seats }}</span>
                         </div>
                     </div>
 
                     <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
-                        <span class="fw-bold text-success small">{% if c.is_free %}مجانية بالكامل{% else %}مدعومة{% endif %}</span>
-                        <a href="{{ url_for('public.training_detail', slug=c.slug) }}" class="btn btn-primary btn-sm">تفاصيل البرنامج والتسجيل</a>
+                        <span class="fw-bold text-success small">{% if c.is_free %}{{ _('مجانية بالكامل', '100% Free') }}{% else %}{{ _('مدعومة', 'Subsidized') }}{% endif %}</span>
+                        <a href="{{ url_for('public.training_detail', slug=c.slug) }}" class="btn btn-primary btn-sm">{{ _('تفاصيل البرنامج والتسجيل', 'Details & Enroll') }}</a>
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-5">
                 <i class="bi bi-mortarboard text-muted fs-1 d-block mb-3"></i>
-                <h5 class="fw-bold text-dark">لا توجد دورات تدريبية نشطة حالياً</h5>
-                <p class="text-muted small">يجري التجهيز للمخيم التدريبي القادم. تابع أخبار الجمعية لمعرفة مواعيد التسجيل.</p>
+                <h5 class="fw-bold text-dark">{{ _('لا توجد دورات تدريبية نشطة حالياً', 'No active training courses currently') }}</h5>
+                <p class="text-muted small">{{ _('يجري التجهيز للمخيم التدريبي القادم. تابع أخبار الجمعية لمعرفة مواعيد التسجيل.', 'The upcoming bootcamp is currently being prepared. Follow society announcements for registration announcements.') }}</p>
             </div>
         {% endfor %}
     </div>

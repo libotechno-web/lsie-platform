@@ -1,7 +1,7 @@
 import os
 import sqlite3
-from flask import Flask, render_template
-from sqlalchemy import event
+from flask import Flask, render_template, request, session
+from sqlalchemy import event, inspect, text
 from sqlalchemy.engine import Engine
 
 from config import config_by_name
@@ -58,12 +58,25 @@ def create_app(config_name='default'):
         db.session.rollback()
         return render_template('public/error.html', code=500, message='حدث خطأ داخلي في الخادم. تم تسجيل الخطأ وسيقوم الفريق بمعالجته.'), 500
 
+    # التحقق من لغة العرض وتحديدها
+    @app.before_request
+    def determine_language():
+        req_lang = request.args.get('lang')
+        if req_lang in ['ar', 'en']:
+            session['lang'] = req_lang
+
     # معالج السياق العام لجميع القوالب (Data-Driven Global Context)
     @app.context_processor
     def inject_global_data():
         from app.models.settings import SiteSetting, NavigationItem
         from app.models.networking import Notification
         from flask_login import current_user
+        from app.translations import translate
+
+        current_lang = session.get('lang', 'ar')
+
+        def trans(ar_text, en_text=None):
+            return translate(ar_text, en_text, current_lang)
 
         settings_dict = {}
         try:
@@ -90,7 +103,31 @@ def create_app(config_name='default'):
         return {
             'site_settings': settings_dict,
             'header_nav': header_nav,
-            'unread_notifications': unread_notifications
+            'unread_notifications': unread_notifications,
+            'current_lang': current_lang,
+            'trans': trans,
+            '_': trans
         }
+
+    # التحديث التلقائي لأعمدة جدول الفعاليات عند الحاجة
+    try:
+        with app.app_context():
+            inspector = inspect(db.engine)
+            if 'events' in inspector.get_table_names():
+                cols = [c['name'] for c in inspector.get_columns('events')]
+                new_cols = [
+                    ('title_en', 'VARCHAR(250)'),
+                    ('summary_en', 'TEXT'),
+                    ('description_en', 'TEXT'),
+                    ('location_name_en', 'VARCHAR(255)'),
+                    ('city_en', 'VARCHAR(60)')
+                ]
+                for cname, ctype in new_cols:
+                    if cname not in cols:
+                        with db.engine.connect() as conn:
+                            conn.execute(text(f"ALTER TABLE events ADD COLUMN {cname} {ctype}"))
+                            conn.commit()
+    except Exception:
+        pass
 
     return app

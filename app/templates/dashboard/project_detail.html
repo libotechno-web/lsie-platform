@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ project.title }} | متابعة المشروع{% endblock %}
+{% block title %}{{ project.title }} | {{ _('متابعة المشروع', 'Project Tracking') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -10,9 +10,9 @@
             <div class="card card-custom p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="badge bg-{{ project.status_badge_class }} fs-6">
-                        {{ project.status_label_ar }}
+                        {{ project.get_status_label(current_lang) }}
                     </span>
-                    <small class="text-muted"><i class="bi bi-clock ms-1"></i>تاريخ الإرسال: {{ project.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    <small class="text-muted"><i class="bi bi-clock ms-1"></i>{{ _('تاريخ الإرسال:', 'Submitted:') }} {{ project.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                 </div>
 
                 <h2 class="fw-bold text-dark mb-2">{{ project.title }}</h2>
@@ -20,32 +20,32 @@
                     <p class="text-primary fw-semibold mb-4">{{ project.tagline }}</p>
                 {% endif %}
 
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">الوصف العام</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('الوصف العام', 'Overview') }}</h5>
                 <p class="text-secondary leading-relaxed mb-4">{{ project.summary }}</p>
 
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">المشكلة والحل الابتكاري</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('المشكلة والحل الابتكاري', 'Problem & Innovative Solution') }}</h5>
                 <div class="mb-3">
-                    <strong class="text-dark d-block mb-1">المشكلة المستهدفة:</strong>
+                    <strong class="text-dark d-block mb-1">{{ _('المشكلة المستهدفة:', 'Target Problem:') }}</strong>
                     <p class="text-secondary small leading-relaxed">{{ project.problem_statement }}</p>
                 </div>
                 <div class="mb-4">
-                    <strong class="text-dark d-block mb-1">الحل المقترح والقيمة المضافة:</strong>
+                    <strong class="text-dark d-block mb-1">{{ _('الحل المقترح والقيمة المضافة:', 'Proposed Solution & Value:') }}</strong>
                     <p class="text-secondary small leading-relaxed">{{ project.proposed_solution }}</p>
                 </div>
 
                 {% if project.business_model %}
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">نموذج الإيرادات والعمل</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('نموذج الإيرادات والعمل', 'Business & Revenue Model') }}</h5>
                     <p class="text-secondary leading-relaxed mb-4">{{ project.business_model }}</p>
                 {% endif %}
 
                 {% if project.team_description %}
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">فريق العمل</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('فريق العمل', 'Team') }}</h5>
                     <p class="text-secondary leading-relaxed mb-4">{{ project.team_description }}</p>
                 {% endif %}
 
                 <!-- المرفقات -->
                 {% if project.attachments %}
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">الملفات المرفقة (Pitch Deck)</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('الملفات المرفقة (Pitch Deck)', 'Pitch Deck & Attachments') }}</h5>
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         {% for att in project.attachments %}
                             <a href="{{ url_for('static', filename=att.file_path) }}" target="_blank" class="btn btn-light btn-sm border d-flex align-items-center gap-1">
@@ -61,7 +61,7 @@
             {% if project.status_notes_public or (project.reviews and project.reviews|selectattr('applicant_feedback')|list) %}
                 <div class="card card-custom p-4 border-start border-4 border-primary">
                     <h5 class="fw-bold text-primary mb-3">
-                        <i class="bi bi-chat-left-dots ms-2"></i>ملاحظات وتوجيهات لجنة التقييم
+                        <i class="bi bi-chat-left-dots ms-2"></i>{{ _('ملاحظات وتوجيهات لجنة التقييم', 'Review Committee Feedback & Guidelines') }}
                     </h5>
                     {% if project.status_notes_public %}
                         <p class="text-dark leading-relaxed mb-2">{{ project.status_notes_public }}</p>
@@ -78,40 +78,40 @@
         <!-- الشريط الجانبي: مسار وحالة التقييم -->
         <div class="col-lg-4">
             <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">حالة الطلب</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('حالة الطلب', 'Application Status') }}</h5>
                 
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span class="badge bg-{{ project.status_badge_class }} fs-6 py-2 px-3">
-                        {{ project.status_label_ar }}
+                        {{ project.get_status_label(current_lang) }}
                     </span>
                 </div>
 
                 <div class="small text-muted mb-4">
-                    المشروع حالياً في مرحلة: <strong>{{ project.status_label_ar }}</strong>. ستصلك إشعارات فور تحديث حالة المشروع.
+                    {{ _('المشروع حالياً في مرحلة:', 'Venture is currently at:') }} <strong>{{ project.get_status_label(current_lang) }}</strong>. {{ _('ستصلك إشعارات فور تحديث حالة المشروع.', 'You will receive notifications once the committee updates the evaluation status.') }}
                 </div>
 
                 <ul class="list-unstyled small d-flex flex-column gap-3 mb-0">
                     <li>
-                        <div class="text-muted">القطاع:</div>
-                        <div class="fw-bold text-dark">{{ project.sector }}</div>
+                        <div class="text-muted">{{ _('القطاع:', 'Sector:') }}</div>
+                        <div class="fw-bold text-dark">{{ _(project.sector) }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">المدينة:</div>
-                        <div class="fw-bold text-dark">{{ project.city }}</div>
+                        <div class="text-muted">{{ _('المدينة:', 'City:') }}</div>
+                        <div class="fw-bold text-dark">{{ _(project.city) }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">مرحلة النضج:</div>
-                        <div class="fw-bold text-dark">{{ project.stage_label_ar }}</div>
+                        <div class="text-muted">{{ _('مرحلة النضج:', 'Maturity Stage:') }}</div>
+                        <div class="fw-bold text-dark">{{ project.get_stage_label(current_lang) }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">الدعم المطلوب:</div>
-                        <div class="fw-bold text-primary">{{ project.needed_support or 'غير محدد' }}</div>
+                        <div class="text-muted">{{ _('الدعم المطلوب:', 'Required Support:') }}</div>
+                        <div class="fw-bold text-primary">{{ project.needed_support or _('غير محدد', 'Unspecified') }}</div>
                     </li>
                 </ul>
             </div>
 
             <a href="{{ url_for('dashboard.projects') }}" class="btn btn-outline-secondary w-100">
-                <i class="bi bi-arrow-right ms-1"></i>العودة لقائمة المشاريع
+                <i class="bi bi-arrow-right ms-1"></i>{{ _('العودة لقائمة المشاريع', 'Return to Projects List') }}
             </a>
         </div>
     </div>

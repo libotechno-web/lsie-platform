@@ -7,33 +7,55 @@ from flask import current_app, url_for
 
 
 def get_mail_config():
-    """الحصول على إعدادات خادم البريد من البيئة أو ملف الإعدادات"""
+    """الحصول على إعدادات خادم البريد من قاعدة البيانات (SiteSetting) أو ملف البيئة (.env)"""
+    db_server = db_port = db_tls = db_ssl = db_user = db_password = db_sender = contact_email = None
+    try:
+        from app.models.settings import SiteSetting
+        db_server = SiteSetting.get_value('mail_server')
+        db_port = SiteSetting.get_value('mail_port')
+        db_tls = SiteSetting.get_value('mail_use_tls')
+        db_ssl = SiteSetting.get_value('mail_use_ssl')
+        db_user = SiteSetting.get_value('mail_username')
+        db_password = SiteSetting.get_value('mail_password')
+        db_sender = SiteSetting.get_value('mail_default_sender')
+        contact_email = SiteSetting.get_value('contact_email')
+    except Exception:
+        pass
+
+    server = db_server or os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
+    port = int(db_port or os.environ.get('MAIL_PORT', 587))
+    use_tls_val = db_tls if db_tls is not None else os.environ.get('MAIL_USE_TLS', 'true')
+    use_tls = str(use_tls_val).lower() in ('true', '1', 'yes')
+    use_ssl_val = db_ssl if db_ssl is not None else os.environ.get('MAIL_USE_SSL', 'false')
+    use_ssl = str(use_ssl_val).lower() in ('true', '1', 'yes')
+    username = db_user or os.environ.get('MAIL_USERNAME') or 'libotechno@gmail.com'
+    password = db_password or os.environ.get('MAIL_PASSWORD', '')
+    default_sender = db_sender or os.environ.get('MAIL_DEFAULT_SENDER') or contact_email or 'libotechno@gmail.com'
+
     return {
-        'server': os.environ.get('MAIL_SERVER'),
-        'port': int(os.environ.get('MAIL_PORT', 587)),
-        'use_tls': os.environ.get('MAIL_USE_TLS', 'true').lower() in ('true', '1', 'yes'),
-        'use_ssl': os.environ.get('MAIL_USE_SSL', 'false').lower() in ('true', '1', 'yes'),
-        'username': os.environ.get('MAIL_USERNAME', ''),
-        'password': os.environ.get('MAIL_PASSWORD', ''),
-        'default_sender': os.environ.get('MAIL_DEFAULT_SENDER', '')
+        'server': server,
+        'port': port,
+        'use_tls': use_tls,
+        'use_ssl': use_ssl,
+        'username': username,
+        'password': password,
+        'default_sender': default_sender
     }
 
 
 def send_email(to_email, subject, html_content, text_content=None):
     """
     إرسال رسالة بريد إلكتروني مع دعم RTL والقوالب الجميلة.
-    في بيئة التطوير والاختبار، إذا لم يكن هناك خادم SMTP حقيقي مُهيّأ، يتم توثيق الرسالة بأمان بدون تعطيل الطلب.
+    في بيئة الاختبار، يتم توثيق الرسالة ومحاكاتها بنجاح دون الحاجة لشبكة خارجية.
     """
     try:
         from app.models.settings import SiteSetting
         site_name = SiteSetting.get_value('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال')
-        contact_email = SiteSetting.get_value('contact_email', 'info@lsie.ly')
     except Exception:
         site_name = 'الجمعية الليبية للابتكار وريادة الأعمال'
-        contact_email = 'info@lsie.ly'
 
     cfg = get_mail_config()
-    sender_email = cfg['default_sender'] or contact_email or 'noreply@lsie.ly'
+    sender_email = cfg['default_sender'] or 'libotechno@gmail.com'
     
     msg = MIMEMultipart('alternative')
     msg['Subject'] = Header(subject, 'utf-8')
@@ -45,16 +67,22 @@ def send_email(to_email, subject, html_content, text_content=None):
     if html_content:
         msg.attach(MIMEText(html_content, 'html', 'utf-8'))
 
-    # التحقق من بيئة الاختبار أو عدم وجود خادم SMTP مضبوط
-    if current_app.config.get('TESTING') or not cfg['server']:
-        current_app.logger.info(f"[EmailService] المحاكاة: تم تسجيل بريد إلى '{to_email}' بعنوان: '{subject}'.")
-        return True, "تم تسجيل وإرسال البريد بنجاح (نمط بيئة التطوير)."
+    # التحقق من نمط الاختبار (unit tests)
+    if current_app.config.get('TESTING'):
+        current_app.logger.info(f"[EmailService] المحاكاة (بيئة الاختبار): تم إرسال بريد إلى '{to_email}' بعنوان: '{subject}'.")
+        return True, "تم تسجيل وإرسال البريد بنجاح (نمط بيئة الاختبار)."
+
+    # التحقق من وجود كلمة مرور التطبيقات
+    if not cfg['password']:
+        err_msg = f"لم يتم تعيين كلمة مرور التطبيقات (App Password) لحساب {cfg['username']}. يرجى إدخالها في إعدادات المنصة (/admin/settings) أو ملف .env لتفعيل الإرسال الفعلي."
+        current_app.logger.warning(f"[EmailService] {err_msg}")
+        return False, err_msg
 
     try:
         if cfg['use_ssl']:
-            server = smtplib.SMTP_SSL(cfg['server'], cfg['port'], timeout=10)
+            server = smtplib.SMTP_SSL(cfg['server'], cfg['port'], timeout=12)
         else:
-            server = smtplib.SMTP(cfg['server'], cfg['port'], timeout=10)
+            server = smtplib.SMTP(cfg['server'], cfg['port'], timeout=12)
             if cfg['use_tls']:
                 server.starttls()
 
@@ -65,9 +93,14 @@ def send_email(to_email, subject, html_content, text_content=None):
         server.quit()
         current_app.logger.info(f"[EmailService] تم إرسال البريد بنجاح إلى '{to_email}'.")
         return True, "تم إرسال البريد الإلكتروني بنجاح."
+    except smtplib.SMTPAuthenticationError as e:
+        err_msg = "فشلت مصادقة بريد Gmail. يرجى التأكد من استخدام 'كلمة مرور التطبيقات' (App Password المكونة من 16 حرفاً) وليس كلمة المرور العادية لحساب libotechno@gmail.com."
+        current_app.logger.error(f"[EmailService] {err_msg} ({e})")
+        return False, err_msg
     except Exception as e:
-        current_app.logger.error(f"[EmailService] تعذر الإرسال عبر SMTP ({e}). تم التدوين في سجلات المنصة.")
-        return False, str(e)
+        err_msg = f"تعذر إرسال البريد عبر خادم SMTP: {str(e)}"
+        current_app.logger.error(f"[EmailService] {err_msg}")
+        return False, err_msg
 
 
 def send_registration_confirmation_email(user):
@@ -77,11 +110,11 @@ def send_registration_confirmation_email(user):
     try:
         from app.models.settings import SiteSetting
         site_name = SiteSetting.get_value('site_name', 'الجمعية الليبية للابتكار وريادة الأعمال')
-        contact_email = SiteSetting.get_value('contact_email', 'info@lsie.ly')
+        contact_email = SiteSetting.get_value('contact_email', 'libotechno@gmail.com')
         contact_phone = SiteSetting.get_value('contact_phone', '+218 21 000 0000')
     except Exception:
         site_name = 'الجمعية الليبية للابتكار وريادة الأعمال'
-        contact_email = 'info@lsie.ly'
+        contact_email = 'libotechno@gmail.com'
         contact_phone = '+218 21 000 0000'
 
     try:
@@ -129,7 +162,7 @@ def send_registration_confirmation_email(user):
                 </h2>
                 
                 <p style="font-size: 15px; line-height: 1.8; color: #495057; margin-bottom: 20px;">
-                    يسرنا إبلاغك بأنه قد تمت مراجعة واعتماد طلب انضمامك إلى <strong>مجتمع الابتكار الليبي</strong> بنجاح من قبل إدارة الجمعية. حسابك الآن نشط ومفعل بالكامل للاستفادة من كافة الفرص والبرامج الوطنية.
+                    يسرنا إبلاغك بأنه قد تمت مراجعة واعتماد طلب انضمامك إلى <strong>مجتمع الابتكار الليبي</strong> بنجاح من قبل إدارة الجمعية. أصبح حسابك الآن مفعلاً وجاهزاً للاستخدام، ويمكنك الآن تسجيل الدخول ونشر أفكارك ومشاريعك والاستفادة من كافة الفرص والبرامج الوطنية.
                 </p>
 
                 <!-- بطاقة ملخص الحساب المعتمد -->
@@ -173,12 +206,12 @@ def send_registration_confirmation_email(user):
                 <!-- زر الإجراء -->
                 <div style="text-align: center; margin: 30px 0;">
                     <a href="{login_url}" style="background-color: #0d6e3f; color: #ffffff; text-decoration: none; padding: 14px 35px; border-radius: 8px; font-size: 16px; font-weight: bold; display: inline-block; box-shadow: 0 4px 10px rgba(13, 110, 63, 0.3);">
-                        الدخول إلى المنصة وحسابك
+                        الدخول إلى لوحة التحكم وحسابك
                     </a>
                 </div>
 
                 <p style="font-size: 13px; color: #718096; text-align: center; margin-top: 25px;">
-                    إذا واجهتك أي صعوبة في الدخول، يمكنك التواصل مباشرة مع فريق الدعم الفني للجمعية عبر: <a href="mailto:{contact_email}" style="color: #0d6e3f;">{contact_email}</a>
+                    إذا واجهتك أي صعوبة في الدخول، يمكنك التواصل مباشرة مع إدارة الجمعية عبر: <a href="mailto:{contact_email}" style="color: #0d6e3f;">{contact_email}</a>
                 </p>
             </div>
 
@@ -186,7 +219,7 @@ def send_registration_confirmation_email(user):
             <div style="background-color: #f1f5f9; padding: 20px 25px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0;">
                 <p style="margin: 0 0 5px 0; font-weight: bold; color: #334155;">{site_name}</p>
                 <p style="margin: 0 0 8px 0;">بموجب قرار إشهار رسمي رقم (525) لسنة 2026م</p>
-                <p style="margin: 0; color: #94a3b8;">هذه رسالة تلقائية لتأكيد اعتماد الحساب، يرجى عدم الرد المباشر على هذا البريد إلا عبر قنوات التواصل الرسمية.</p>
+                <p style="margin: 0; color: #94a3b8;">البريد الرسمي: {contact_email} | هاتف: {contact_phone}</p>
             </div>
         </div>
     </body>
@@ -201,7 +234,7 @@ def send_registration_confirmation_email(user):
     مرحباً بك يا {user.full_name}،
 
     يسرنا إبلاغك بأنه قد تمت مراجعة واعتماد طلب انضمامك إلى مجتمع الابتكار الليبي بنجاح من قبل إدارة الجمعية.
-    أصبح حسابك مفعلاً بالكامل للاستفادة من كافة الفرص، مسرعات الأعمال، والتشبيك مع المبتكرين والخبراء.
+    أصبح حسابك مفعلاً بالكامل الآن لتسجيل الدخول ونشر مشاريعك والاستفادة من كافة الفرص، مسرعات الأعمال، والتشبيك مع المبتكرين والخبراء.
 
     بيانات الحساب:
     - الاسم: {user.full_name}
@@ -218,3 +251,26 @@ def send_registration_confirmation_email(user):
     """
 
     return send_email(user.email, subject, html_content, text_content)
+
+
+def send_test_email(to_email):
+    """إرسال رسالة تجريبية لفحص إعدادات البريد الإلكتروني وخادم SMTP"""
+    cfg = get_mail_config()
+    subject = "رسالة تجريبية - فحص إعدادات البريد الإلكتروني (libotechno@gmail.com)"
+    html_content = f"""
+    <div dir="rtl" style="font-family: Arial, Tahoma, sans-serif; padding: 25px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #0d6e3f; margin-top: 0;">✓ فحص اتصال البريد الإلكتروني ناجح</h2>
+        <p style="font-size: 15px; color: #4a5568;">
+            تم إرسال هذه الرسالة التجريبية بنجاح من المنصة الوطنية للابتكار وريادة الأعمال عبر خادم:
+            <strong>{cfg['server']}:{cfg['port']}</strong>
+        </p>
+        <p style="font-size: 14px; color: #718096;">
+            حساب المرسل المعتمد: <strong>{cfg['username']}</strong>
+        </p>
+        <div style="background: #e8f8f0; color: #0d6e3f; padding: 12px; border-radius: 6px; font-weight: bold;">
+            إعدادات البريد جاهزة تماماً، وستصل رسائل تأكيد اعتماد العضوية للمستخدمين بنجاح.
+        </div>
+    </div>
+    """
+    text_content = f"رسالة تجريبية - اتصال البريد الإلكتروني عبر {cfg['server']} ({cfg['username']}) يعمل بنجاح."
+    return send_email(to_email, subject, html_content, text_content)

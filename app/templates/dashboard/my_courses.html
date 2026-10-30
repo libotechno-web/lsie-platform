@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}دوراتي التدريبية | لوحة التحكم{% endblock %}
+{% block title %}{{ _('دوراتي التدريبية', 'My Courses') }} | {{ _('لوحة التحكم', 'Dashboard') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold text-dark mb-1">الدورات التدريبية المسجل بها</h3>
-            <p class="text-muted small mb-0">متابعة برامجك في الأكاديمية الرقمية للجمعية</p>
+            <h3 class="fw-bold text-dark mb-1">{{ _('الدورات التدريبية المسجل بها', 'My Enrolled Training Courses') }}</h3>
+            <p class="text-muted small mb-0">{{ _('متابعة برامجك في الأكاديمية الرقمية للجمعية', 'Track your enrolled cohorts at the Society Digital Academy') }}</p>
         </div>
-        <a href="{{ url_for('public.training') }}" class="btn btn-outline-primary btn-sm">استكشاف دورات جديدة</a>
+        <a href="{{ url_for('public.training') }}" class="btn btn-outline-primary btn-sm">{{ _('استكشاف دورات جديدة', 'Explore New Courses') }}</a>
     </div>
 
     <div class="row g-4">
@@ -17,23 +17,23 @@
             <div class="col-md-6 col-lg-4">
                 <div class="card card-custom h-100 p-4 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-success bg-opacity-10 text-success">تسجيل مؤكد</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">{{ _('تسجيل مؤكد', 'Confirmed') }}</span>
                         <small class="text-muted">{{ en.enrolled_at.strftime('%Y-%m-%d') }}</small>
                     </div>
                     <h5 class="fw-bold text-dark mb-2">{{ en.course.title }}</h5>
-                    <div class="small text-muted mb-2"><i class="bi bi-person ms-1"></i>المدرب: {{ en.course.trainer_name }}</div>
-                    <div class="small text-muted mb-3"><i class="bi bi-calendar-event ms-1"></i>تاريخ البدء: {{ en.course.start_date.strftime('%Y-%m-%d %H:%M') }}</div>
+                    <div class="small text-muted mb-2"><i class="bi bi-person ms-1"></i>{{ _('المدرب:', 'Trainer:') }} {{ en.course.trainer_name }}</div>
+                    <div class="small text-muted mb-3"><i class="bi bi-calendar-event ms-1"></i>{{ _('تاريخ البدء:', 'Starts:') }} {{ en.course.start_date.strftime('%Y-%m-%d %H:%M') }}</div>
                     <div class="mt-auto pt-3 border-top">
-                        <a href="{{ url_for('public.training_detail', slug=en.course.slug) }}" class="btn btn-primary btn-sm w-100">تفاصيل المحاضرات والمقر</a>
+                        <a href="{{ url_for('public.training_detail', slug=en.course.slug) }}" class="btn btn-primary btn-sm w-100">{{ _('تفاصيل المحاضرات والمقر', 'View Course & Sessions') }}</a>
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-5 bg-white rounded-3 border text-muted">
                 <i class="bi bi-mortarboard fs-1 d-block mb-3"></i>
-                <h5 class="fw-bold text-dark">لست مسجلاً في أي دورة تدريبية حالياً</h5>
-                <p class="small mb-3">طور مهاراتك والتحق بأحدث الدورات وورش العمل المجانية.</p>
-                <a href="{{ url_for('public.training') }}" class="btn btn-primary btn-sm">تصفح الدورات المتاحة</a>
+                <h5 class="fw-bold text-dark">{{ _('لست مسجلاً في أي دورة تدريبية حالياً', 'You are not enrolled in any training courses currently') }}</h5>
+                <p class="small mb-3">{{ _('طور مهاراتك والتحق بأحدث الدورات وورش العمل المجانية.', 'Boost your skills by joining our complimentary workshops and courses.') }}</p>
+                <a href="{{ url_for('public.training') }}" class="btn btn-primary btn-sm">{{ _('تصفح الدورات المتاحة', 'Browse Available Courses') }}</a>
             </div>
         {% endfor %}
     </div>

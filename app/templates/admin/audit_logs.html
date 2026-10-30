@@ -1,12 +1,12 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}سجل التدقيق والأنشطة الإدارية{% endblock %}
+{% block title %}{{ _('سجل التدقيق والأنشطة الإدارية', 'Audit Logs & Administrative Activity') }}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">سجل التدقيق والرقابة الإدارية (Audit Logs)</h3>
-        <p class="text-muted small mb-0">توثيق كافة العمليات الإدارية الحساسة ومحاولات الدخول والتعديلات</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('سجل التدقيق والرقابة الإدارية (Audit Logs)', 'Audit Logs & Administrative Activity') }}</h3>
+        <p class="text-muted small mb-0">{{ _('توثيق كافة العمليات الإدارية الحساسة ومحاولات الدخول والتعديلات', 'Record of all administrative actions, logins, and modifications') }}</p>
     </div>
 </div>
 
@@ -15,13 +15,13 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light small">
                 <tr>
-                    <th>المعرف</th>
-                    <th>المستخدم</th>
-                    <th>العملية (Action)</th>
-                    <th>نوع السجل</th>
-                    <th>التفاصيل</th>
-                    <th>عنوان IP</th>
-                    <th>التاريخ والوقت</th>
+                    <th>{{ _('المعرف', 'ID') }}</th>
+                    <th>{{ _('المستخدم', 'User') }}</th>
+                    <th>{{ _('العملية (Action)', 'Action') }}</th>
+                    <th>{{ _('نوع السجل', 'Resource') }}</th>
+                    <th>{{ _('التفاصيل', 'Details') }}</th>
+                    <th>{{ _('عنوان IP', 'IP Address') }}</th>
+                    <th>{{ _('التاريخ والوقت', 'Date & Time') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">لا توجد سجلات تدقيق مسجلة حتى الآن.</td>
+                        <td colspan="7" class="text-center py-4 text-muted">{{ _('لا توجد سجلات تدقيق مسجلة حتى الآن.', 'No audit logs recorded yet.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

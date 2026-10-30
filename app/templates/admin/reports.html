@@ -1,61 +1,61 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}مركز التقارير الموحد وتصدير البيانات{% endblock %}
+{% block title %}{{ _('مركز التقارير الموحد وتصدير البيانات', 'Unified Reports Center & Data Export') }}{% endblock %}
 
 {% block content %}
 <div class="mb-4">
-    <h3 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-excel text-success ms-2"></i>مركز التقارير الموحد وتصدير البيانات</h3>
-    <p class="text-muted small mb-0">تصدير وتفريغ جميع حركات بيانات المنصة، المسجلين، والطلبات بصيغة Microsoft Excel (.xlsx) الاحترافية باللغة العربية (RTL)</p>
+    <h3 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-excel text-success ms-2"></i>{{ _('مركز التقارير الموحد وتصدير البيانات', 'Unified Reports Center & Data Export') }}</h3>
+    <p class="text-muted small mb-0">{{ _('تصدير وتفريغ جميع حركات بيانات المنصة، المسجلين، والطلبات بصيغة Microsoft Excel (.xlsx) الاحترافية', 'Export and extract all platform activity data, registrations, and applications into Microsoft Excel (.xlsx)') }}</p>
 </div>
 
 <!-- إحصاءات سريعة لحركات البيانات -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-primary text-center">
-            <div class="text-muted small mb-1">مسجلو التدريب</div>
+            <div class="text-muted small mb-1">{{ _('مسجلو التدريب', 'Trainees') }}</div>
             <h3 class="fw-bold text-primary mb-0">{{ summary.total_enrollments }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">في {{ summary.courses_count }} دورات</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('في', 'across') }} {{ summary.courses_count }} {{ _('دورات', 'courses') }}</div>
         </div>
     </div>
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-info text-center">
-            <div class="text-muted small mb-1">حضور الفعاليات</div>
+            <div class="text-muted small mb-1">{{ _('حضور الفعاليات', 'Event Attendees') }}</div>
             <h3 class="fw-bold text-info mb-0">{{ summary.total_event_registrations }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">في {{ summary.events_count }} فعاليات</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('في', 'across') }} {{ summary.events_count }} {{ _('فعاليات', 'events') }}</div>
         </div>
     </div>
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-warning text-center">
-            <div class="text-muted small mb-1">طلبات المنح والفرص</div>
+            <div class="text-muted small mb-1">{{ _('طلبات المنح والفرص', 'Opportunity Applications') }}</div>
             <h3 class="fw-bold text-warning mb-0">{{ summary.total_applications }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">في {{ summary.opportunities_count }} فرص</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('في', 'across') }} {{ summary.opportunities_count }} {{ _('فرص', 'opportunities') }}</div>
         </div>
     </div>
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-success text-center">
-            <div class="text-muted small mb-1">المشاريع الابتكارية</div>
+            <div class="text-muted small mb-1">{{ _('المشاريع الابتكارية', 'Innovation Projects') }}</div>
             <h3 class="fw-bold text-success mb-0">{{ summary.total_projects }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">أفكار ومشاريع</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('أفكار ومشاريع', 'ideas & projects') }}</div>
         </div>
     </div>
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-secondary text-center">
-            <div class="text-muted small mb-1">الأعضاء والمستخدمون</div>
+            <div class="text-muted small mb-1">{{ _('الأعضاء والمستخدمون', 'Users & Members') }}</div>
             <h3 class="fw-bold text-dark mb-0">{{ summary.total_users }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">مبتكرون وخبراء</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('مبتكرون وخبراء', 'innovators & experts') }}</div>
         </div>
     </div>
     <div class="col-sm-6 col-md-4 col-xl-2">
         <div class="card card-custom p-3 border-start border-4 border-danger text-center">
-            <div class="text-muted small mb-1">سجلات التدقيق</div>
+            <div class="text-muted small mb-1">{{ _('سجلات التدقيق', 'Audit Logs') }}</div>
             <h3 class="fw-bold text-danger mb-0">{{ summary.total_audit_logs }}</h3>
-            <div class="text-muted" style="font-size: 0.72rem;">عملية إدارية</div>
+            <div class="text-muted" style="font-size: 0.72rem;">{{ _('عملية إدارية', 'admin actions') }}</div>
         </div>
     </div>
 </div>
 
 <!-- بطاقات تصدير البيانات بنقرة واحدة -->
-<h5 class="fw-bold text-dark mb-3"><i class="bi bi-download ms-1 text-primary"></i>تصدير حركات البيانات كملفات Excel (.xlsx) بنقرة واحدة</h5>
+<h5 class="fw-bold text-dark mb-3"><i class="bi bi-download ms-1 text-primary"></i>{{ _('تصدير حركات البيانات كملفات Excel (.xlsx) بنقرة واحدة', 'Export Data Activity to Excel (.xlsx) in One Click') }}</h5>
 
 <div class="row g-4">
     <!-- 1. تقرير المسجلين في البرامج التدريبية -->
@@ -63,20 +63,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-primary">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6"><i class="bi bi-mortarboard ms-1"></i>الأكاديمية</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_enrollments }} سجل</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6"><i class="bi bi-mortarboard ms-1"></i>{{ _('الأكاديمية', 'Academy') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_enrollments }} {{ _('سجل', 'records') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">سجل المتدربين والملتحقين بالدورات</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('سجل المتدربين والملتحقين بالدورات', 'Course Trainees & Enrollees') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    يحتوي على بيانات المتدربين لكافة البرامج، البريد الإلكتروني، رقم الهاتف، دافع الالتحاق، حالة القبول، وتاريخ التسجيل.
+                    {{ _('يحتوي على بيانات المتدربين لكافة البرامج، البريد الإلكتروني، رقم الهاتف، دافع الالتحاق، حالة القبول، وتاريخ التسجيل.', 'Contains trainee data across all programs, email, phone, motivation, admission status, and enrollment date.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='enrollments') }}" class="btn btn-primary btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.training') }}" class="btn btn-outline-secondary btn-sm" title="عرض الدورات">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.training') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض الدورات', 'View Courses') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -87,20 +87,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-info">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-info bg-opacity-10 text-info fs-6"><i class="bi bi-calendar-check ms-1"></i>الفعاليات</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_event_registrations }} تذكرة</span>
+                    <span class="badge bg-info bg-opacity-10 text-info fs-6"><i class="bi bi-calendar-check ms-1"></i>{{ _('الفعاليات', 'Events') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_event_registrations }} {{ _('تذكرة', 'tickets') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">سجل الحضور وتذاكر الفعاليات</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('سجل الحضور وتذاكر الفعاليات', 'Event Attendees & Bookings') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    يتضمن قائمة المشاركين في كافة الفعاليات والمؤتمرات والورش، والجهات التابعين لها، والملاحظات، وحالة الحجز.
+                    {{ _('يتضمن قائمة المشاركين في كافة الفعاليات والمؤتمرات والورش، والجهات التابعين لها، والملاحظات، وحالة الحجز.', 'Includes list of participants across all events, conferences, workshops, affiliated organizations, and booking status.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='event_registrations') }}" class="btn btn-info text-white btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.events') }}" class="btn btn-outline-secondary btn-sm" title="عرض الفعاليات">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.events') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض الفعاليات', 'View Events') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -111,20 +111,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-warning">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-warning bg-opacity-10 text-dark fs-6"><i class="bi bi-gift ms-1"></i>الفرص والمنح</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_applications }} طلب</span>
+                    <span class="badge bg-warning bg-opacity-10 text-dark fs-6"><i class="bi bi-gift ms-1"></i>{{ _('الفرص والمنح', 'Grants & Opportunities') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_applications }} {{ _('طلب', 'applications') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">طلبات التقديم على المنح والاحتضان</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('طلبات التقديم على المنح والاحتضان', 'Opportunity & Incubation Applications') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    يشمل طلبات المبتكرين والشركات المتقدمة على برامج التمويل والجوائز، ملخص المقترحات، وأرقام التواصل.
+                    {{ _('يشمل طلبات المبتكرين والشركات المتقدمة على برامج التمويل والجوائز، ملخص المقترحات، وأرقام التواصل.', 'Includes applications for funding programs and awards, proposal summaries, and contact details.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='applications') }}" class="btn btn-warning btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.opportunities') }}" class="btn btn-outline-secondary btn-sm" title="عرض الفرص">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.opportunities') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض الفرص', 'View Opportunities') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -135,20 +135,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-success">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-success bg-opacity-10 text-success fs-6"><i class="bi bi-lightbulb ms-1"></i>بنك المشاريع</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_projects }} مشروع</span>
+                    <span class="badge bg-success bg-opacity-10 text-success fs-6"><i class="bi bi-lightbulb ms-1"></i>{{ _('بنك المشاريع', 'Projects Bank') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_projects }} {{ _('مشروع', 'projects') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">تقرير المشاريع والأفكار الابتكارية</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('تقرير المشاريع والأفكار الابتكارية', 'Innovation Projects & Ideas Report') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    بيانات الأفكار والمشاريع الوطنية المقدمة، أسماء أصحابها، القطاعات (طاقة، صحة، تقنية)، المدن، ومرحلة النضج والحالة.
+                    {{ _('بيانات الأفكار والمشاريع الوطنية المقدمة، أسماء أصحابها، القطاعات (طاقة، صحة، تقنية)، المدن، ومرحلة النضج والحالة.', 'Data of submitted national projects, innovators, sectors, cities, maturity stages, and status.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='projects') }}" class="btn btn-success btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.projects') }}" class="btn btn-outline-secondary btn-sm" title="عرض المشاريع">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.projects') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض المشاريع', 'View Projects') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -159,20 +159,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-secondary">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary fs-6"><i class="bi bi-people ms-1"></i>المجتمع</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_users }} مستخدم</span>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary fs-6"><i class="bi bi-people ms-1"></i>{{ _('المجتمع', 'Community') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_users }} {{ _('مستخدم', 'users') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">دليل المستخدمين والأعضاء المسجلين</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('دليل المستخدمين والأعضاء المسجلين', 'Registered Users & Members Directory') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    كافة المسجلين، نوع الحساب (مبتكر، مستثمر، خبير، باحث، مرشد)، المدينة، حالة التفعيل، وتاريخ التسجيل.
+                    {{ _('كافة المسجلين، نوع الحساب (مبتكر، مستثمر، خبير، باحث، مرشد)، المدينة، حالة التفعيل، وتاريخ التسجيل.', 'All registered members, account role, city, activation status, and join date.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='users') }}" class="btn btn-secondary btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary btn-sm" title="عرض المستخدمين">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض المستخدمين', 'View Users') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -183,20 +183,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-dark">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-dark bg-opacity-10 text-dark fs-6"><i class="bi bi-building ms-1"></i>المنظومة الريادية</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_startups }} جهة</span>
+                    <span class="badge bg-dark bg-opacity-10 text-dark fs-6"><i class="bi bi-building ms-1"></i>{{ _('المنظومة الريادية', 'Startup Ecosystem') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_startups }} {{ _('جهة', 'entities') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">دليل الشركات الناشئة والحاضنات</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('دليل الشركات الناشئة والحاضنات', 'Startups & Incubators Directory') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    الشركات الناشئة المسجلة، الحاضنات ومسرعات الأعمال، القطاعات، المواقع الإلكترونية، وحالة التوثيق الرسمي.
+                    {{ _('الشركات الناشئة المسجلة، الحاضنات ومسرعات الأعمال، القطاعات، المواقع الإلكترونية، وحالة التوثيق الرسمي.', 'Registered startups, incubators, accelerators, sectors, websites, and official verification status.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='startups') }}" class="btn btn-dark btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.organizations') }}" class="btn btn-outline-secondary btn-sm" title="عرض الشركات">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.organizations') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض الشركات', 'View Startups') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>
@@ -207,20 +207,20 @@
         <div class="card card-custom h-100 p-4 shadow-sm d-flex flex-column justify-content-between border-top border-4 border-danger">
             <div>
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="badge bg-danger bg-opacity-10 text-danger fs-6"><i class="bi bi-shield-lock ms-1"></i>الأمان والرقابة</span>
-                    <span class="badge bg-light text-dark border">{{ summary.total_audit_logs }} عملية</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger fs-6"><i class="bi bi-shield-lock ms-1"></i>{{ _('الأمان والرقابة', 'Security & Audit') }}</span>
+                    <span class="badge bg-light text-dark border">{{ summary.total_audit_logs }} {{ _('عملية', 'actions') }}</span>
                 </div>
-                <h5 class="fw-bold text-dark mb-2">سجل التدقيق والحركات الإدارية</h5>
+                <h5 class="fw-bold text-dark mb-2">{{ _('سجل التدقيق والحركات الإدارية', 'Audit Logs & Admin Trail') }}</h5>
                 <p class="text-muted small leading-relaxed mb-3">
-                    تفريغ كامل لكافة العمليات الحساسة (إنشاء، تعديل، حذف، تفعيل/تعطيل، تقييم) مع أسماء المنفذين وعناوين IP والتوقيت.
+                    {{ _('تفريغ كامل لكافة العمليات الحساسة (إنشاء، تعديل، حذف، تفعيل/تعطيل، تقييم) مع أسماء المنفذين وعناوين IP والتوقيت.', 'Full export of all sensitive operations with operator details, IP addresses, and timestamps.') }}
                 </p>
             </div>
             <div class="pt-3 border-top d-flex gap-2">
                 <a href="{{ url_for('admin.export_report', report_type='audit_logs') }}" class="btn btn-danger btn-sm flex-grow-1">
-                    <i class="bi bi-file-earmark-excel ms-1"></i>تصدير كملف Excel (.xlsx)
+                    <i class="bi bi-file-earmark-excel ms-1"></i>{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel (.xlsx)') }}
                 </a>
-                <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-outline-secondary btn-sm" title="عرض السجل">
-                    <i class="bi bi-arrow-left"></i>
+                <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-outline-secondary btn-sm" title="{{ _('عرض السجل', 'View Logs') }}">
+                    <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
                 </a>
             </div>
         </div>

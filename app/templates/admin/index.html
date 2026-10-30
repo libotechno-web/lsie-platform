@@ -1,19 +1,19 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}لوحة المؤشرات والتحكم{% endblock %}
+{% block title %}{{ _('لوحة المؤشرات والتحكم', 'KPI Dashboard') }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">لوحة المؤشرات العامة</h3>
-        <p class="text-muted small mb-0">بيانات إحصائية حية مشتقة مباشرة من قاعدة بيانات المنظومة</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('لوحة المؤشرات العامة', 'General Indicators & Control Dashboard') }}</h3>
+        <p class="text-muted small mb-0">{{ _('بيانات إحصائية حية مشتقة مباشرة من قاعدة بيانات المنظومة', 'Live platform telemetry derived directly from database records') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ url_for('admin.export_report', report_type='projects') }}" class="btn btn-outline-success btn-sm">
-            <i class="bi bi-file-earmark-spreadsheet ms-1"></i>تصدير المشاريع (Excel/CSV)
+            <i class="bi bi-file-earmark-spreadsheet ms-1"></i>{{ _('تصدير المشاريع (Excel/CSV)', 'Export Projects (CSV)') }}
         </a>
         <a href="{{ url_for('admin.export_report', report_type='users') }}" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-people ms-1"></i>تصدير المستخدمين (CSV)
+            <i class="bi bi-people ms-1"></i>{{ _('تصدير المستخدمين (CSV)', 'Export Users (CSV)') }}
         </a>
     </div>
 </div>
@@ -24,9 +24,9 @@
         <div class="card card-custom p-3 border-start border-4 border-primary">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="text-muted small fw-bold">إجمالي المستخدمين</span>
+                    <span class="text-muted small fw-bold">{{ _('إجمالي المستخدمين', 'Total Users') }}</span>
                     <h3 class="fw-bold text-dark mb-0">{{ stats.total_users }}</h3>
-                    <small class="text-success"><i class="bi bi-check-circle ms-1"></i>{{ stats.active_members }} عضو معتمد</small>
+                    <small class="text-success"><i class="bi bi-check-circle ms-1"></i>{{ stats.active_members }} {{ _('عضو معتمد', 'active members') }}</small>
                 </div>
                 <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3 fs-3">
                     <i class="bi bi-people"></i>
@@ -39,9 +39,9 @@
         <div class="card card-custom p-3 border-start border-4 border-warning">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="text-muted small fw-bold">إجمالي الأفكار والمشاريع</span>
+                    <span class="text-muted small fw-bold">{{ _('إجمالي الأفكار والمشاريع', 'Total Projects & Ideas') }}</span>
                     <h3 class="fw-bold text-dark mb-0">{{ stats.total_projects }}</h3>
-                    <small class="text-warning"><i class="bi bi-hourglass-split ms-1"></i>{{ stats.under_review_projects }} قيد المراجعة</small>
+                    <small class="text-warning"><i class="bi bi-hourglass-split ms-1"></i>{{ stats.under_review_projects }} {{ _('قيد المراجعة', 'under review') }}</small>
                 </div>
                 <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-3 fs-3">
                     <i class="bi bi-lightbulb"></i>
@@ -54,9 +54,9 @@
         <div class="card card-custom p-3 border-start border-4 border-success">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="text-muted small fw-bold">المشاريع المعتمدة</span>
+                    <span class="text-muted small fw-bold">{{ _('المشاريع المعتمدة', 'Approved Projects') }}</span>
                     <h3 class="fw-bold text-dark mb-0">{{ stats.accepted_projects }}</h3>
-                    <small class="text-muted">مشاريع مؤهلة للدعم</small>
+                    <small class="text-muted">{{ _('مشاريع مؤهلة للدعم', 'Ecosystem qualified') }}</small>
                 </div>
                 <div class="p-3 bg-success bg-opacity-10 text-success rounded-3 fs-3">
                     <i class="bi bi-patch-check"></i>
@@ -69,9 +69,9 @@
         <div class="card card-custom p-3 border-start border-4 border-info">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <span class="text-muted small fw-bold">الشركات والحاضنات</span>
+                    <span class="text-muted small fw-bold">{{ _('الشركات والحاضنات', 'Startups & Incubators') }}</span>
                     <h3 class="fw-bold text-dark mb-0">{{ stats.startups_count }}</h3>
-                    <small class="text-info">{{ stats.experts_count }} خبير وموجه</small>
+                    <small class="text-info">{{ stats.experts_count }} {{ _('خبير وموجه', 'experts & mentors') }}</small>
                 </div>
                 <div class="p-3 bg-info bg-opacity-10 text-info rounded-3 fs-3">
                     <i class="bi bi-rocket-takeoff"></i>
@@ -85,7 +85,7 @@
 <div class="row g-4 mb-4">
     <div class="col-lg-7">
         <div class="card card-custom p-4 h-100 shadow-sm">
-            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-pie-chart-fill text-primary ms-2"></i>توزيع المشاريع حسب القطاع والنشاط</h5>
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-pie-chart-fill text-primary ms-2"></i>{{ _('توزيع المشاريع حسب القطاع والنشاط', 'Project Distribution by Sector') }}</h5>
             <div style="height: 280px; position: relative;">
                 <canvas id="sectorChart"></canvas>
             </div>
@@ -94,7 +94,7 @@
 
     <div class="col-lg-5">
         <div class="card card-custom p-4 h-100 shadow-sm">
-            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-success ms-2"></i>حالات المشاريع ودورة التقييم</h5>
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-success ms-2"></i>{{ _('حالات المشاريع ودورة التقييم', 'Project Pipeline & Statuses') }}</h5>
             <div style="height: 280px; position: relative;">
                 <canvas id="statusChart"></canvas>
             </div>
@@ -107,8 +107,8 @@
     <div class="col-lg-8">
         <div class="card card-custom p-4 shadow-sm h-100">
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history text-warning ms-2"></i>أحدث المشاريع المقدمة للتقييم</h5>
-                <a href="{{ url_for('admin.projects') }}" class="btn btn-link text-primary p-0 small text-decoration-none">عرض كافة المشاريع</a>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history text-warning ms-2"></i>{{ _('أحدث المشاريع المقدمة للتقييم', 'Recently Submitted Projects') }}</h5>
+                <a href="{{ url_for('admin.projects') }}" class="btn btn-link text-primary p-0 small text-decoration-none">{{ _('عرض كافة المشاريع', 'View All Projects') }}</a>
             </div>
 
             {% if recent_submissions %}
@@ -116,11 +116,11 @@
                     <table class="table align-middle">
                         <thead class="table-light small">
                             <tr>
-                                <th>المشروع</th>
-                                <th>المبتكر</th>
-                                <th>القطاع</th>
-                                <th>الحالة</th>
-                                <th>إجراء</th>
+                                <th>{{ _('المشروع', 'Project') }}</th>
+                                <th>{{ _('المبتكر', 'Innovator') }}</th>
+                                <th>{{ _('القطاع', 'Sector') }}</th>
+                                <th>{{ _('الحالة', 'Status') }}</th>
+                                <th>{{ _('إجراء', 'Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -128,11 +128,11 @@
                                 <tr>
                                     <td class="fw-bold text-dark">{{ p.title }}</td>
                                     <td class="small">{{ p.owner.full_name }}</td>
-                                    <td class="small">{{ p.sector }}</td>
-                                    <td><span class="badge bg-{{ p.status_badge_class }}">{{ p.status_label_ar }}</span></td>
+                                    <td class="small">{{ _(p.sector) }}</td>
+                                    <td><span class="badge bg-{{ p.status_badge_class }}">{{ p.get_status_label(current_lang) }}</span></td>
                                     <td>
                                         <a href="{{ url_for('admin.review_project', project_id=p.id) }}" class="btn btn-sm btn-primary py-1 px-2">
-                                            تقييم وتوجيه
+                                            {{ _('تقييم وتوجيه', 'Review & Guide') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -141,7 +141,7 @@
                     </table>
                 </div>
             {% else %}
-                <div class="text-center py-4 text-muted small">لا توجد مشاريع تنتظر المراجعة حالياً.</div>
+                <div class="text-center py-4 text-muted small">{{ _('لا توجد مشاريع تنتظر المراجعة حالياً.', 'No projects currently awaiting review.') }}</div>
             {% endif %}
         </div>
     </div>
@@ -150,8 +150,8 @@
     <div class="col-lg-4">
         <div class="card card-custom p-4 shadow-sm h-100">
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-shield-check text-info ms-2"></i>آخر الأنشطة والعمليات</h5>
-                <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-link text-primary p-0 small text-decoration-none">سجل التدقيق</a>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-shield-check text-info ms-2"></i>{{ _('آخر الأنشطة والعمليات', 'Recent Audit & Actions') }}</h5>
+                <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-link text-primary p-0 small text-decoration-none">{{ _('سجل التدقيق', 'Audit Log') }}</a>
             </div>
 
             <div class="d-flex flex-column gap-3">
@@ -164,7 +164,7 @@
                         <p class="text-secondary small mb-0">{{ log.details or log.action }}</p>
                     </div>
                 {% else %}
-                    <div class="text-muted small text-center py-3">لا توجد أنشطة مسجلة حديثاً.</div>
+                    <div class="text-muted small text-center py-3">{{ _('لا توجد أنشطة مسجلة حديثاً.', 'No recent activities recorded.') }}</div>
                 {% endfor %}
             </div>
         </div>

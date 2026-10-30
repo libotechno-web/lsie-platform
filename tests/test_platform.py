@@ -33,7 +33,8 @@ class PlatformTestCase(unittest.TestCase):
             phone='0911111111',
             city='غريان',
             account_type='innovator',
-            is_active=True
+            is_active=True,
+            is_approved_member=True
         )
         self.user.set_password('Secret123!')
         self.user.roles.append(self.innovator_role)
@@ -68,7 +69,7 @@ class PlatformTestCase(unittest.TestCase):
         }, follow_redirects=True)
 
     def test_user_registration_and_login(self):
-        """1. اختبار تسجيل مستخدم جديد وتسجيل الدخول والخروج"""
+        """1. اختبار تسجيل مستخدم جديد ورفض دخوله للوحة التحكم قبل اعتماد الأدمن، ثم تمكينه من الدخول بعد الاعتماد"""
         res = self.client.post('/auth/register', data={
             'full_name': 'رائد أعمال جديد',
             'email': 'new_entrepreneur@test.ly',
@@ -81,12 +82,30 @@ class PlatformTestCase(unittest.TestCase):
             'terms': True
         }, follow_redirects=True)
         self.assertEqual(res.status_code, 200)
+        self.assertIn('pending-approval', res.request.path)
         
         created_user = User.query.filter_by(email='new_entrepreneur@test.ly').first()
         self.assertIsNotNone(created_user)
         self.assertTrue(created_user.check_password('Password123!'))
         self.assertFalse(created_user.is_approved_member) # بانتظار تأكيد الأدمن
         self.assertEqual(created_user.current_job, 'مؤسس شركة تقنية ناشئة')
+
+        # محاولة تسجيل الدخول للمستخدم الجديد قبل الاعتماد (يجب أن يُرفض ويُوجه لصفحة الانتظار)
+        login_res_pending = self.login_user('new_entrepreneur@test.ly', 'Password123!')
+        self.assertIn('pending-approval', login_res_pending.request.path)
+
+        # التأكد من أن المستخدم لم يتم تسجيل دخوله ولا يستطيع دخول لوحة التحكم
+        dash_res = self.client.get('/dashboard/', follow_redirects=True)
+        self.assertIn('login', dash_res.request.path)
+
+        # قيام الأدمن باعتماد وتأكيد العضوية
+        created_user.is_approved_member = True
+        db.session.commit()
+
+        # تسجيل الدخول بعد الاعتماد (يجب أن ينجح ويدخل للوحة التحكم)
+        login_res_ok = self.login_user('new_entrepreneur@test.ly', 'Password123!')
+        self.assertEqual(login_res_ok.status_code, 200)
+        self.assertIn('dashboard', login_res_ok.request.path)
 
         # تسجيل الخروج
         logout_res = self.client.get('/auth/logout', follow_redirects=True)
@@ -486,6 +505,196 @@ class PlatformTestCase(unittest.TestCase):
         self.assertTrue(candidate.is_approved_member)
         self.assertTrue(candidate.is_verified)
         self.assertTrue(candidate.is_active)
+
+        # اختبار فحص خادم البريد وإرسال بريد تجريبي عبر الأدمن
+        res_test_email = self.client.post('/admin/settings/test-email', data={'target_email': 'libotechno@gmail.com'}, follow_redirects=True)
+        self.assertEqual(res_test_email.status_code, 200)
+
+    def test_english_language_switching_and_activity_bilingual_support(self):
+        """12. اختبار تبديل اللغة إلى الإنجليزية في الواجهة الرئيسية ودعم إضافة المنشط باللغة الإنجليزية وعرضه باللغتين"""
+        from app.models import Event
+        from datetime import datetime, timedelta
+
+        # 1. فحص الواجهة الرئيسية باللغة العربية الافتراضية
+        res_ar = self.client.get('/')
+        self.assertEqual(res_ar.status_code, 200)
+        html_ar = res_ar.get_data(as_text=True)
+        self.assertIn('dir="rtl"', html_ar)
+        self.assertIn('من الفكرة إلى مشروع يصنع المستقبل', html_ar)
+        self.assertIn('English', html_ar)
+
+        # 2. التبديل إلى اللغة الإنجليزية
+        res_set_en = self.client.get('/set-language/en', follow_redirects=True)
+        self.assertEqual(res_set_en.status_code, 200)
+        html_en = res_set_en.get_data(as_text=True)
+        self.assertIn('dir="ltr"', html_en)
+        self.assertIn('lang="en"', html_en)
+        self.assertIn('From Idea to a Future-Shaping Venture', html_en)
+        self.assertIn('Tailored Pathways', html_en)
+        self.assertIn('Registered Members', html_en)
+        self.assertIn('العربية', html_en)
+
+        # 3. تسجيل الدخول كأدمن لإضافة منشط / فعالية جديدة مع خيار اللغة الإنجليزية
+        self.login_user('admin@test.ly', 'AdminSecret123!')
+        
+        # التأكد من ظهور حقول اللغة الإنجليزية في نموذج الفعالية
+        res_form = self.client.get('/admin/events/new')
+        self.assertEqual(res_form.status_code, 200)
+        form_html = res_form.get_data(as_text=True)
+        self.assertIn('title_en', form_html)
+        self.assertIn('summary_en', form_html)
+        self.assertIn('description_en', form_html)
+        self.assertIn('city_en', form_html)
+        self.assertIn('location_name_en', form_html)
+
+        # إضافة المنشط متضمناً البيانات الإنجليزية
+        event_data = {
+            'title': 'هاكاثون الذكاء الاصطناعي الوطني',
+            'title_en': 'National AI & Fintech Hackathon 2026',
+            'event_type': 'hackathon',
+            'summary': 'منافسة وطنية في الذكاء الاصطناعي',
+            'summary_en': 'Premier national hackathon in Artificial Intelligence and Fintech',
+            'description': 'تفاصيل وجدول أعمال الهاكاثون الكاملة بالعربية',
+            'description_en': 'Detailed schedule, mentorship sessions, and demo pitch tracks in English',
+            'city': 'غريان',
+            'city_en': 'Gharyan',
+            'location_name': 'جامعة غريان',
+            'location_name_en': 'University of Gharyan Campus',
+            'location_type': 'hybrid',
+            'start_time': (datetime.utcnow() + timedelta(days=14)).strftime('%Y-%m-%dT%H:%M'),
+            'capacity': 80,
+            'is_registration_open': 'y',
+            'is_published': 'y'
+        }
+        res_add = self.client.post('/admin/events/new', data=event_data, follow_redirects=True)
+        self.assertEqual(res_add.status_code, 200)
+
+        # التحقق من حفظ المنشط في قاعدة البيانات بكل الحقول الإنجليزية
+        event = Event.query.filter_by(title_en='National AI & Fintech Hackathon 2026').first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.title, 'هاكاثون الذكاء الاصطناعي الوطني')
+        self.assertEqual(event.city_en, 'Gharyan')
+        self.assertEqual(event.location_name_en, 'University of Gharyan Campus')
+        self.assertEqual(event.summary_en, 'Premier national hackathon in Artificial Intelligence and Fintech')
+
+        # 4. التحقق من عرض المنشط في قائمة الأنشطة والفعاليات باللغة الإنجليزية
+        res_events_en = self.client.get('/events')
+        self.assertEqual(res_events_en.status_code, 200)
+        events_en_html = res_events_en.get_data(as_text=True)
+        self.assertIn('National AI', events_en_html)
+        self.assertIn('Fintech Hackathon 2026', events_en_html)
+        self.assertIn('Premier national hackathon in Artificial Intelligence and Fintech', events_en_html)
+        self.assertIn('Gharyan', events_en_html)
+
+        # 5. التحقق من صفحة تفاصيل المنشط باللغة الإنجليزية
+        res_detail_en = self.client.get(f'/events/{event.slug}')
+        self.assertEqual(res_detail_en.status_code, 200)
+        detail_en_html = res_detail_en.get_data(as_text=True)
+        self.assertIn('National AI', detail_en_html)
+        self.assertIn('Fintech Hackathon 2026', detail_en_html)
+        self.assertIn('Detailed schedule, mentorship sessions, and demo pitch tracks in English', detail_en_html)
+        self.assertIn('University of Gharyan Campus', detail_en_html)
+        self.assertIn('Book a Seat &amp; Attend', detail_en_html)
+
+        # 6. العودة للغة العربية وفحص عرض المنشط بالعربية
+        self.client.get('/set-language/ar', follow_redirects=True)
+        res_events_ar = self.client.get('/events')
+        self.assertEqual(res_events_ar.status_code, 200)
+        events_ar_html = res_events_ar.get_data(as_text=True)
+        self.assertIn('هاكاثون الذكاء الاصطناعي الوطني', events_ar_html)
+        self.assertIn('منافسة وطنية في الذكاء الاصطناعي', events_ar_html)
+
+        # 7. فحص صفحة التفاصيل بالعربية
+        res_detail_ar = self.client.get(f'/events/{event.slug}')
+        self.assertEqual(res_detail_ar.status_code, 200)
+        detail_ar_html = res_detail_ar.get_data(as_text=True)
+        self.assertIn('هاكاثون الذكاء الاصطناعي الوطني', detail_ar_html)
+        self.assertIn('تفاصيل وجدول أعمال الهاكاثون الكاملة بالعربية', detail_ar_html)
+        self.assertIn('حجز مقعد وحضور الفعالية', detail_ar_html)
+
+    def test_comprehensive_bilingual_coverage(self):
+        """13. اختبار شامل لتغطية الترجمة الإنجليزية وتعديل الاتجاه (LTR/RTL) في كافة الصفحات العامة ونماذج الدخول ولوحة الأعضاء والإدارة"""
+        # 1. تفعيل اللغة الإنجليزية
+        res_lang = self.client.get('/set-language/en', follow_redirects=True)
+        self.assertEqual(res_lang.status_code, 200)
+
+        # 2. فحص الصفحات العامة باللغة الإنجليزية
+        public_urls = [
+            ('/', 'Libyan Society for Innovation'),
+            ('/about', 'About the Society'),
+            ('/services', 'E-Services Portal'),
+            ('/programs', 'National Programs'),
+            ('/opportunities', 'Opportunities, Grants'),
+            ('/training', 'Digital Academy'),
+            ('/events', 'Events'),
+            ('/news', 'News, Articles'),
+            ('/contact', 'Contact Us')
+        ]
+        for url, expected_text in public_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200, f"Failed GET {url}")
+            html = res.get_data(as_text=True)
+            self.assertIn('dir="ltr"', html, f"Page {url} did not render in LTR mode")
+            self.assertIn(expected_text, html, f"Expected '{expected_text}' in {url}")
+
+        # 3. فحص نماذج المصادقة (Auth Forms) باللغة الإنجليزية
+        res_login = self.client.get('/auth/login')
+        self.assertEqual(res_login.status_code, 200)
+        login_html = res_login.get_data(as_text=True)
+        self.assertIn('Access the National Innovation', login_html)
+        self.assertIn('Email Address', login_html)
+        self.assertIn('Password', login_html)
+
+        res_reg = self.client.get('/auth/register')
+        self.assertEqual(res_reg.status_code, 200)
+        reg_html = res_reg.get_data(as_text=True)
+        self.assertIn('Join the Libyan Innovation Community', reg_html)
+        self.assertIn('Full Name', reg_html)
+        self.assertIn('Curriculum Vitae', reg_html)
+
+        # 4. فحص لوحة تحكم العضو ونموذج تقديم المشاريع باللغة الإنجليزية
+        self.login_user('innovator@test.ly', 'Secret123!')
+        res_dash = self.client.get('/dashboard/')
+        self.assertEqual(res_dash.status_code, 200)
+        dash_html = res_dash.get_data(as_text=True)
+        self.assertIn('dir="ltr"', dash_html)
+        self.assertIn('Welcome,', dash_html)
+        self.assertIn('My Projects &amp; Ideas', dash_html)
+
+        res_submit = self.client.get('/dashboard/submit-project')
+        self.assertEqual(res_submit.status_code, 200)
+        submit_html = res_submit.get_data(as_text=True)
+        self.assertIn('Submit an Innovation Project / Venture', submit_html)
+        self.assertIn('Project / Idea Title', submit_html)
+        self.assertIn('Executive Summary', submit_html)
+        self.assertIn('Pitch Deck (PDF)', submit_html)
+
+        # 5. تسجيل الدخول كمدير وفحص صفحات ونماذج لوحة الإدارة بالإنجليزية
+        self.client.get('/auth/logout', follow_redirects=True)
+        self.login_user('admin@test.ly', 'AdminSecret123!')
+
+        admin_urls = [
+            ('/admin/', 'General Indicators &amp; Control Dashboard'),
+            ('/admin/settings', 'Platform Settings'),
+            ('/admin/training', 'Training &amp; Academy Management'),
+            ('/admin/opportunities', 'Manage Opportunities'),
+            ('/admin/reports', 'Unified Reports Center'),
+            ('/admin/backups', 'Database Backup &amp; Recovery')
+        ]
+        for url, expected_text in admin_urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 200, f"Failed GET {url}")
+            html = res.get_data(as_text=True)
+            self.assertIn('dir="ltr"', html, f"Admin page {url} did not render in LTR mode")
+            self.assertIn(expected_text, html, f"Expected '{expected_text}' in {url}")
+
+        # 6. العودة للغة العربية والتأكد من استعادة الاتجاه RTL والنصوص العربية في الإدارة والموقع
+        self.client.get('/set-language/ar', follow_redirects=True)
+        res_ar = self.client.get('/admin/')
+        self.assertEqual(res_ar.status_code, 200)
+        ar_html = res_ar.get_data(as_text=True)
+        self.assertIn('dir="rtl"', ar_html)
+        self.assertIn('لوحة المؤشرات العامة', ar_html)
 
 
 if __name__ == '__main__':

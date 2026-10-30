@@ -78,16 +78,22 @@ def seed_database():
             ('site_name_en', 'Libyan Society for Innovation & Entrepreneurship', 'general', 'اسم الجمعية بالإنجليزية', 'text'),
             ('site_acronym', 'L.S.I.E', 'general', 'المختصر الرسمي', 'text'),
             ('hero_title', 'من الفكرة إلى مشروع يصنع المستقبل', 'general', 'عنوان الهيرو الرئيسي', 'text'),
+            ('hero_title_en', 'From Idea to a Future-Shaping Venture', 'general', 'عنوان الهيرو بالإنجليزية', 'text'),
             ('hero_subtitle', 'المنصة الوطنية الموحدة لتمكين المبتكرين ورواد الأعمال وأصحاب الشركات الناشئة في ليبيا، وبناء جسور التعاون بين البحث العلمي والسوق الاقتصادي.', 'general', 'نص الهيرو الفرعي', 'textarea'),
+            ('hero_subtitle_en', 'The unified national platform empowering innovators, entrepreneurs, and startups in Libya, building bridges between scientific research and the economic marketplace.', 'general', 'نص الهيرو الفرعي بالإنجليزية', 'textarea'),
             
             ('about_intro', 'الجمعية الليبية للابتكار وريادة الأعمال هي جمعية تُعنى بدعم الابتكار وتعزيز ثقافة ريادة الأعمال في ليبيا، والعمل على إيجاد بيئة حاضنة تساعد المبتكرين ورواد الأعمال على تطوير أفكارهم وتحويلها إلى مشاريع قابلة للتطبيق والنمو. أُنشئت الجمعية بموجب قرار صادر عن رئيس الهيئة الليبية للبحث العلمي، وتسعى إلى بناء جسور التعاون بين المبتكرين والشركات والجامعات والمستثمرين والخبراء والجهات الداعمة، بما يسهم في تنمية الاقتصاد الوطني وتعزيز دور المعرفة والتكنولوجيا في معالجة التحديات المحلية.', 'about', 'المقدمة التعريفية الرسمية', 'textarea'),
             ('official_mission', 'تمكين المبتكرين ورواد الأعمال الليبيين عبر توفير بيئة حاضنة ومتكاملة تجمع بين التدريب، التوجيه، والتشبيك. نحن نسعى لجس الفجوة بين الأفكار الإبداعية والواقع السوقي، من خلال بناء شراكات استراتيجية تضمن تحويل التحديات المحلية إلى فرص اقتصادية ناجحة.', 'about', 'الرسالة الرسمية للجمعية', 'textarea'),
+            ('official_mission_en', 'Empowering Libyan innovators and entrepreneurs by providing an integrated incubation ecosystem uniting training, mentorship, and networking. We strive to bridge the gap between creative ideas and market reality by building strategic partnerships that transform local challenges into successful economic ventures.', 'about', 'الرسالة الرسمية بالإنجليزية', 'textarea'),
             ('official_vision', 'أن تكون الجمعية المنصة الوطنية الرائدة المحفزة لبيئة الابتكار واقتصاد المعرفة في ليبيا، وتمكين رواد الأعمال والمبتكرين من قيادة التنمية المستدامة والمنافسة إقليمياً ودولياً.', 'about', 'الرؤية الرسمية للجمعية', 'textarea'),
+            ('official_vision_en', 'To be the leading national platform catalyzing the innovation ecosystem and knowledge economy in Libya, empowering entrepreneurs and innovators to drive sustainable development and compete regionally and globally.', 'about', 'الرؤية الرسمية بالإنجليزية', 'textarea'),
             
             ('establishment_decree', 'قرار إشهار رقم (525) لسنة 2026م صادر عن الهيئة الليبية للبحث العلمي، استناداً إلى القرار رقم (1714) لسنة 2025م.', 'official', 'قرار الإشهار والتأسيس', 'text'),
             ('headquarters', 'المقر الرئيسي: جامعة غريان، غريان، ليبيا', 'official', 'المقر الرسمي', 'text'),
+            ('headquarters_en', 'Headquarters: University of Gharyan, Gharyan, Libya', 'official', 'المقر الرسمي بالإنجليزية', 'text'),
             ('certificate_number', 'LARS-SCS-2026-042', 'official', 'رقم شهادة مزاولة النشاط العلمي', 'text'),
             ('authority_name', 'الهيئة الليبية للبحث العلمي - وزارة التعليم العالي والبحث العلمي', 'official', 'الجهة المشرفة والمرخصة', 'text'),
+            ('authority_name_en', 'Libyan Authority for Scientific Research - Ministry of Higher Education & Scientific Research', 'official', 'الجهة المشرفة بالإنجليزية', 'text'),
             
             ('primary_color', '#0d6e3f', 'appearance', 'اللون الأساسي (أخضر الجمعية)', 'color'),
             ('secondary_color', '#133b66', 'appearance', 'اللون الثانوي (أزرق بحري)', 'color'),
@@ -262,6 +268,32 @@ def seed_database():
             db.session.add(art)
             db.session.commit()
             print("Initial news article seeded.")
+
+        # 12. فعالية ومنشط افتتاحي ثنائي اللغة (Event / Activity)
+        if Event.query.count() == 0:
+            ev = Event(
+                title='الملتقى الوطني الأول للابتكار وريادة الأعمال 2026',
+                title_en='1st National Innovation & Entrepreneurship Forum 2026',
+                slug='1st-national-innovation-forum-2026',
+                event_type='conference',
+                summary='الملتقى السنوي الجامع لرواد الأعمال والمبتكرين والخبراء وصناديق الاستثمار في ليبيا لاستعراض الرؤى وبناء الشراكات.',
+                summary_en='The premier national gathering uniting Libyan innovators, startup founders, industry experts, and investors to build impactful partnerships.',
+                description='يتضمن الملتقى جلسات حوارية متخصصة في الذكاء الاصطناعي واقتصاد المعرفة، ورش عمل تطبيقية، ويوم عروض للشركات الناشئة أمام المستثمرين.',
+                description_en='Featuring specialized panel discussions on AI, knowledge economies, interactive pitch decks, and investor networking sessions.',
+                location_type='hybrid',
+                location_name='قاعة المؤتمرات الكبرى - جامعة غريان',
+                location_name_en='Grand Auditorium - University of Gharyan',
+                city='غريان',
+                city_en='Gharyan',
+                start_time=datetime.utcnow() + timedelta(days=20),
+                capacity=150,
+                is_registration_open=True,
+                is_featured=True,
+                is_published=True
+            )
+            db.session.add(ev)
+            db.session.commit()
+            print("Initial event seeded.")
 
         print("=== Database Seeding Completed Successfully! ===")
 

@@ -1,21 +1,21 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}طلبات التقديم: {{ opportunity.title }}{% endblock %}
+{% block title %}{{ _('طلبات التقديم', 'Applications') }}: {{ opportunity.title }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">الطلبات المستلمة على فرصة: {{ opportunity.title }}</h3>
-        <p class="text-muted small mb-0">إجمالي الطلبات المستلمة: <strong class="text-primary">{{ applications|length }}</strong> طلب تقديم</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('الطلبات المستلمة على فرصة', 'Applications received for') }}: {{ opportunity.title }}</h3>
+        <p class="text-muted small mb-0">{{ _('إجمالي الطلبات المستلمة:', 'Total applications received:') }} <strong class="text-primary">{{ applications|length }}</strong> {{ _('طلب تقديم', 'applications') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ url_for('admin.export_opportunity_applications', opp_id=opportunity.id) }}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-file-earmark-excel"></i>
-            <span>تصدير المتقدمين كملف Excel (.xlsx)</span>
+            <span>{{ _('تصدير المتقدمين كملف Excel (.xlsx)', 'Export Applicants to Excel (.xlsx)') }}</span>
         </a>
         <a href="{{ url_for('admin.opportunities') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
-            <i class="bi bi-arrow-right"></i>
-            <span>العودة لقائمة الفرص</span>
+            <i class="bi bi-arrow-{{ 'left' if current_lang == 'en' else 'right' }}"></i>
+            <span>{{ _('العودة لقائمة الفرص', 'Back to Opportunities') }}</span>
         </a>
     </div>
 </div>
@@ -26,12 +26,12 @@
             <thead class="table-light small">
                 <tr>
                     <th>#</th>
-                    <th>مقدم الطلب</th>
-                    <th>البريد والهاتف</th>
-                    <th>موجز المقترح والحل الابتكاري</th>
-                    <th>الملف المرفق</th>
-                    <th>الحالة</th>
-                    <th>تاريخ التقديم</th>
+                    <th>{{ _('مقدم الطلب', 'Applicant') }}</th>
+                    <th>{{ _('البريد والهاتف', 'Email & Phone') }}</th>
+                    <th>{{ _('موجز المقترح والحل الابتكاري', 'Proposal Summary & Solution') }}</th>
+                    <th>{{ _('الملف المرفق', 'Attachment') }}</th>
+                    <th>{{ _('الحالة', 'Status') }}</th>
+                    <th>{{ _('تاريخ التقديم', 'Submitted At') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,10 +47,10 @@
                         <td>
                             {% if app.attachment_path %}
                                 <a href="{{ url_for('static', filename=app.attachment_path) }}" target="_blank" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-file-earmark-arrow-down ms-1"></i>تنزيل الملف
+                                    <i class="bi bi-file-earmark-arrow-down ms-1"></i>{{ _('تنزيل الملف', 'Download File') }}
                                 </a>
                             {% else %}
-                                <span class="text-muted small">لا يوجد ملف</span>
+                                <span class="text-muted small">{{ _('لا يوجد ملف', 'No file attached') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -60,7 +60,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">لم يتم استلام أي طلبات تقديم على هذه الفرصة حتى الآن.</td>
+                        <td colspan="7" class="text-center py-5 text-muted">{{ _('لم يتم استلام أي طلبات تقديم على هذه الفرصة حتى الآن.', 'No applications received for this opportunity yet.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

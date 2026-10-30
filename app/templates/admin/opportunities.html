@@ -1,21 +1,21 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}إدارة الفرص والمنح والمسابقات{% endblock %}
+{% block title %}{{ _('إدارة الفرص والمنح والمسابقات', 'Manage Opportunities & Grants') }}{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">إدارة الفرص والمنح والمسابقات</h3>
-        <p class="text-muted small mb-0">نشر وتعديل دورات المنح والاحتضان، تفعيلها وتعطيلها، ومتابعة وتصدير طلبات المبتكرين</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('إدارة الفرص والمنح والمسابقات', 'Manage Opportunities, Grants & Challenges') }}</h3>
+        <p class="text-muted small mb-0">{{ _('نشر وتعديل دورات المنح والاحتضان، تفعيلها وتعطيلها، ومتابعة وتصدير طلبات المبتكرين', 'Publish, edit, activate/deactivate funding cohorts, and export applicant dossiers') }}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{{ url_for('admin.export_report', report_type='applications') }}" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-file-earmark-excel"></i>
-            <span>تصدير كافة طلبات التقديم (Excel)</span>
+            <span>{{ _('تصدير كافة طلبات التقديم (Excel)', 'Export All Applications (Excel)') }}</span>
         </a>
         <a href="{{ url_for('admin.new_opportunity') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-plus-lg"></i>
-            <span>إضافة فرصة جديدة</span>
+            <span>{{ _('إضافة فرصة جديدة', 'Add New Opportunity') }}</span>
         </a>
     </div>
 </div>
@@ -25,79 +25,79 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light small">
                 <tr>
-                    <th>عنوان الفرصة</th>
-                    <th>النوع</th>
-                    <th>الجهة المانحة</th>
-                    <th>آخر موعد للتقديم</th>
-                    <th>حالة الفرصة</th>
-                    <th>الطلبات المستلمة</th>
-                    <th class="text-center" style="min-width: 220px;">الإجراءات والعمليات</th>
+                    <th>{{ _('عنوان الفرصة', 'Opportunity Title') }}</th>
+                    <th>{{ _('النوع', 'Type') }}</th>
+                    <th>{{ _('الجهة المانحة', 'Provider') }}</th>
+                    <th>{{ _('آخر موعد للتقديم', 'Deadline') }}</th>
+                    <th>{{ _('حالة الفرصة', 'Status') }}</th>
+                    <th>{{ _('الطلبات المستلمة', 'Applications') }}</th>
+                    <th class="text-center" style="min-width: 220px;">{{ _('الإجراءات والعمليات', 'Actions') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for opp in opportunities %}
                     <tr>
                         <td class="fw-bold text-dark">{{ opp.title }}</td>
-                        <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ opp.type_label_ar }}</span></td>
+                        <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ opp.get_type_label(current_lang) }}</span></td>
                         <td class="small">{{ opp.provider_name }}</td>
                         <td class="small text-danger fw-bold">{{ opp.deadline.strftime('%Y-%m-%d') }}</td>
                         <td>
                             <div class="d-flex flex-column gap-1">
                                 {% if opp.is_active %}
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-check-circle ms-1"></i>مفعلة</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-check-circle ms-1"></i>{{ _('مفعلة', 'Active') }}</span>
                                 {% else %}
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25"><i class="bi bi-pause-circle ms-1"></i>معطلة</span>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25"><i class="bi bi-pause-circle ms-1"></i>{{ _('معطلة', 'Disabled') }}</span>
                                 {% endif %}
                                 <span class="badge bg-{% if opp.status == 'open' %}success{% elif opp.status == 'upcoming' %}warning text-dark{% else %}secondary{% endif %}">
-                                    {{ opp.status_label_ar }}
+                                    {{ opp.get_status_label(current_lang) }}
                                 </span>
                             </div>
                         </td>
                         <td>
                             <a href="{{ url_for('admin.opportunity_applications', opp_id=opp.id) }}" class="btn btn-sm btn-outline-info py-1 px-2">
-                                <i class="bi bi-people ms-1"></i>{{ opp.applications|length }} طلب
+                                <i class="bi bi-people ms-1"></i>{{ opp.applications|length }} {{ _('طلب', 'applications') }}
                             </a>
                         </td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
                                 <!-- زر تعديل -->
-                                <a href="{{ url_for('admin.edit_opportunity', opp_id=opp.id) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="تعديل الفرصة">
-                                    <i class="bi bi-pencil-square ms-1"></i>تعديل
+                                <a href="{{ url_for('admin.edit_opportunity', opp_id=opp.id) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="{{ _('تعديل الفرصة', 'Edit') }}">
+                                    <i class="bi bi-pencil-square ms-1"></i>{{ _('تعديل', 'Edit') }}
                                 </a>
 
                                 <!-- زر تفعيل / تعطيل -->
                                 <form method="POST" action="{{ url_for('admin.toggle_opportunity_active', opp_id=opp.id) }}" class="d-inline">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     {% if opp.is_active %}
-                                        <button type="submit" class="btn btn-sm btn-outline-warning py-1 px-2" title="تعطيل الفرصة">
-                                            <i class="bi bi-pause-fill ms-1"></i>تعطيل
+                                        <button type="submit" class="btn btn-sm btn-outline-warning py-1 px-2" title="{{ _('تعطيل الفرصة', 'Disable') }}">
+                                            <i class="bi bi-pause-fill ms-1"></i>{{ _('تعطيل', 'Disable') }}
                                         </button>
                                     {% else %}
-                                        <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2" title="تفعيل الفرصة">
-                                            <i class="bi bi-play-fill ms-1"></i>تفعيل
+                                        <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2" title="{{ _('تفعيل الفرصة', 'Activate') }}">
+                                            <i class="bi bi-play-fill ms-1"></i>{{ _('تفعيل', 'Activate') }}
                                         </button>
                                     {% endif %}
                                 </form>
 
                                 <!-- زر عرض المتقدمين -->
-                                <a href="{{ url_for('admin.opportunity_applications', opp_id=opp.id) }}" class="btn btn-sm btn-outline-info py-1 px-2" title="عرض المتقدمين">
-                                    <i class="bi bi-people ms-1"></i>الطلبات
+                                <a href="{{ url_for('admin.opportunity_applications', opp_id=opp.id) }}" class="btn btn-sm btn-outline-info py-1 px-2" title="{{ _('عرض المتقدمين', 'Applicants') }}">
+                                    <i class="bi bi-people ms-1"></i>{{ _('الطلبات', 'Applications') }}
                                 </a>
 
                                 <!-- زر تصدير Excel للمتقدمين -->
-                                <a href="{{ url_for('admin.export_opportunity_applications', opp_id=opp.id) }}" class="btn btn-sm btn-outline-success py-1 px-2" title="تصدير كملف Excel (.xlsx)">
+                                <a href="{{ url_for('admin.export_opportunity_applications', opp_id=opp.id) }}" class="btn btn-sm btn-outline-success py-1 px-2" title="{{ _('تصدير كملف Excel (.xlsx)', 'Export Excel') }}">
                                     <i class="bi bi-file-earmark-excel"></i>
                                 </a>
 
                                 <!-- زر معاينة -->
-                                <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2" title="معاينة في الموقع">
+                                <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2" title="{{ _('معاينة في الموقع', 'Preview') }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
 
                                 <!-- زر حذف -->
-                                <form method="POST" action="{{ url_for('admin.delete_opportunity', opp_id=opp.id) }}" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف فرصة \'{{ opp.title }}\' وجميع طلبات التقديم المرتبطة بها؟');">
+                                <form method="POST" action="{{ url_for('admin.delete_opportunity', opp_id=opp.id) }}" class="d-inline" onsubmit="return confirm('{{ _('هل أنت متأكد من حذف هذه الفرصة؟', 'Are you sure you want to delete this opportunity?') }}');">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="حذف الفرصة">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="{{ _('حذف الفرصة', 'Delete') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -106,7 +106,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center py-5 text-muted">لا توجد فرص منشورة حالياً. اضغط على "إضافة فرصة جديدة" لنشر منحة أو برنامج احتضان.</td>
+                        <td colspan="7" class="text-center py-5 text-muted">{{ _('لا توجد فرص منشورة حالياً. اضغط على "إضافة فرصة جديدة" لنشر منحة أو برنامج احتضان.', 'No opportunities published yet. Click Add New Opportunity to create one.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

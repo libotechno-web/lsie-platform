@@ -230,7 +230,7 @@ def edit_user(user_id):
         
         # إرسال بريد التأكيد إذا تم تأكيد الحساب
         if (not was_approved and user.is_approved_member) or (user.is_approved_member and form.send_confirmation_email.data and not was_approved):
-            send_registration_confirmation_email(user)
+            email_sent, email_msg = send_registration_confirmation_email(user)
             create_notification(
                 user.id,
                 'تم تأكيد واعتماد انضمامك لمجتمع الابتكار!',
@@ -238,7 +238,10 @@ def edit_user(user_id):
                 link=url_for('dashboard.index'),
                 icon='bi-patch-check-fill'
             )
-            flash(f'تم اعتماد حساب المستخدم {user.full_name} بنجاح وإرسال رسالة تأكيد رسمية إلى بريده الإلكتروني ({user.email}).', 'success')
+            if email_sent:
+                flash(f'تم اعتماد وتفعيل حساب المستخدم {user.full_name} بنجاح وإرسال رسالة تأكيد رسمية إلى بريده الإلكتروني ({user.email}).', 'success')
+            else:
+                flash(f'تم اعتماد وتفعيل حساب المستخدم {user.full_name} بنجاح في المنظومة، ولكن تعذر إرسال البريد الإلكتروني: {email_msg}', 'warning')
         else:
             flash(f'تم تحديث بيانات المستخدم {user.full_name} بنجاح.', 'success')
 
@@ -296,7 +299,7 @@ def confirm_user_registration(user_id):
     db.session.commit()
     
     # إرسال بريد التأكيد الرسمي
-    send_registration_confirmation_email(user)
+    email_sent, email_msg = send_registration_confirmation_email(user)
     
     # إرسال إشعار داخلي في المنصة
     create_notification(
@@ -309,7 +312,10 @@ def confirm_user_registration(user_id):
     
     log_audit_action('user_registration_confirmed', 'user', user.id, f"تأكيد تسجيل العضو: {user.email} وإرسال بريد التأكيد", current_user)
     
-    flash(f'تم تأكيد واعتماد تسجيل المستخدم {user.full_name} بنجاح، وتم إرسال رسالة التأكيد إلى بريده الإلكتروني ({user.email}).', 'success')
+    if email_sent:
+        flash(f'تم تأكيد واعتماد تسجيل المستخدم {user.full_name} بنجاح، وتم إرسال رسالة التأكيد إلى بريده الإلكتروني ({user.email}).', 'success')
+    else:
+        flash(f'تم تأكيد واعتماد تسجيل المستخدم {user.full_name} بنجاح في المنظومة، ولكن تنبيه: {email_msg}', 'warning')
     return redirect(request.referrer or url_for('admin.users'))
 
 
@@ -887,14 +893,19 @@ def new_event():
                 
         event = Event(
             title=form.title.data.strip(),
+            title_en=form.title_en.data.strip() if form.title_en.data else None,
             slug=slug,
             event_type=form.event_type.data,
             summary=form.summary.data.strip(),
+            summary_en=form.summary_en.data.strip() if form.summary_en.data else None,
             description=form.description.data.strip(),
+            description_en=form.description_en.data.strip() if form.description_en.data else None,
             cover_image=img_path,
             location_type=form.location_type.data,
             location_name=form.location_name.data.strip() if form.location_name.data else None,
+            location_name_en=form.location_name_en.data.strip() if form.location_name_en.data else None,
             city=form.city.data.strip() if form.city.data else 'غريان',
+            city_en=form.city_en.data.strip() if form.city_en.data else None,
             online_link=form.online_link.data.strip() if form.online_link.data else None,
             start_time=form.start_time.data,
             end_time=form.end_time.data,
@@ -921,12 +932,17 @@ def edit_event(event_id):
     form = EventForm(obj=event)
     if form.validate_on_submit():
         event.title = form.title.data.strip()
+        event.title_en = form.title_en.data.strip() if form.title_en.data else None
         event.event_type = form.event_type.data
         event.summary = form.summary.data.strip()
+        event.summary_en = form.summary_en.data.strip() if form.summary_en.data else None
         event.description = form.description.data.strip()
+        event.description_en = form.description_en.data.strip() if form.description_en.data else None
         event.location_type = form.location_type.data
         event.location_name = form.location_name.data.strip() if form.location_name.data else None
+        event.location_name_en = form.location_name_en.data.strip() if form.location_name_en.data else None
         event.city = form.city.data.strip() if form.city.data else 'غريان'
+        event.city_en = form.city_en.data.strip() if form.city_en.data else None
         event.online_link = form.online_link.data.strip() if form.online_link.data else None
         event.start_time = form.start_time.data
         event.end_time = form.end_time.data
@@ -1173,20 +1189,29 @@ def settings():
         'about_intro', 'official_mission', 'official_vision', 'establishment_decree',
         'headquarters', 'certificate_number', 'primary_color', 'secondary_color', 'accent_color',
         'contact_email', 'contact_phone', 'contact_address',
-        'facebook_url', 'instagram_url', 'twitter_x_url', 'linkedin_url', 'youtube_url'
+        'facebook_url', 'instagram_url', 'twitter_x_url', 'linkedin_url', 'youtube_url',
+        'mail_server', 'mail_port', 'mail_username', 'mail_password', 'mail_use_tls'
     ]
     
     if request.method == 'GET':
         for k in keys:
             if hasattr(form, k):
                 field = getattr(form, k)
-                field.data = SiteSetting.get_value(k, '')
+                if k == 'mail_port':
+                    field.data = int(SiteSetting.get_value(k, 587) or 587)
+                elif k == 'mail_use_tls':
+                    field.data = str(SiteSetting.get_value(k, 'true')).lower() in ('true', '1')
+                else:
+                    field.data = SiteSetting.get_value(k, '')
                 
     if form.validate_on_submit():
         for k in keys:
             if hasattr(form, k):
                 val = getattr(form, k).data
-                SiteSetting.set_value(k, val.strip() if val else '')
+                if isinstance(val, bool):
+                    SiteSetting.set_value(k, 'true' if val else 'false')
+                else:
+                    SiteSetting.set_value(k, str(val).strip() if val is not None else '')
                 
         # رفع الشعار الجديد إن تم تحديده
         if form.logo.data:
@@ -1197,11 +1222,26 @@ def settings():
                 flash(str(e), 'danger')
                 return render_template('admin/settings.html', form=form)
                 
-        log_audit_action('settings_updated', 'settings', None, "تحديث إعدادات المنصة والهوية البصرية", current_user)
-        flash('تم حفظ جميع الإعدادات والهوية البصرية بنجاح!', 'success')
+        log_audit_action('settings_updated', 'settings', None, "تحديث إعدادات المنصة والهوية البصرية والبريد الإلكتروني", current_user)
+        flash('تم حفظ جميع الإعدادات وإعدادات البريد بنجاح!', 'success')
         return redirect(url_for('admin.settings'))
         
     return render_template('admin/settings.html', form=form)
+
+
+@admin_bp.route('/settings/test-email', methods=['POST'])
+@login_required
+@admin_required
+def test_email():
+    """اختبار اتصال خادم البريد وإرسال رسالة تجريبية"""
+    from app.services.email_service import send_test_email
+    target_email = request.form.get('target_email', '').strip() or 'libotechno@gmail.com'
+    success, message = send_test_email(target_email)
+    if success:
+        flash(f'نجح إرسال البريد التجريبي إلى ({target_email})! إعدادات خادم البريد الإلكتروني تعمل بنجاح.', 'success')
+    else:
+        flash(f'فشل إرسال البريد التجريبي: {message}', 'danger')
+    return redirect(url_for('admin.settings'))
 
 
 # -------------------------------------------------------------

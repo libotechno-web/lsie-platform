@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}طلب تشبيك مع {{ recipient.full_name }}{% endblock %}
+{% block title %}{{ _('طلب تشبيك مع', 'Connect Request with') }} {{ recipient.full_name }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -12,15 +12,15 @@
                         <i class="bi bi-people-fill"></i>
                     </div>
                     <div>
-                        <h4 class="fw-bold text-dark mb-1">طلب تشبيك وتواصل مباشر</h4>
-                        <p class="text-muted small mb-0">الطرف المستهدف: <strong>{{ recipient.full_name }}</strong> ({{ recipient.primary_role_title }})</p>
+                        <h4 class="fw-bold text-dark mb-1">{{ _('طلب تشبيك وتواصل مباشر', 'Direct Networking & Mentorship Request') }}</h4>
+                        <p class="text-muted small mb-0">{{ _('الطرف المستهدف:', 'Recipient:') }} <strong>{{ recipient.full_name }}</strong> ({{ _(recipient.primary_role_title) }})</p>
                     </div>
                 </div>
 
                 <div class="alert alert-info small d-flex align-items-center gap-2 mb-4">
                     <i class="bi bi-info-circle-fill fs-5"></i>
                     <div>
-                        لحماية الخصوصية، لن يتم إظهار معلومات الاتصال المباشرة إلا بعد موافقة الطرف الآخر على طلبك.
+                        {{ _('لحماية الخصوصية، لن يتم إظهار معلومات الاتصال المباشرة إلا بعد موافقة الطرف الآخر على طلبك.', 'To ensure privacy, direct contact details will only be disclosed once the recipient accepts your request.') }}
                     </div>
                 </div>
 
@@ -28,21 +28,21 @@
                     {{ form.hidden_tag() }}
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.request_type.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.request_type.label.text, 'Request Type') }}</label>
                         {{ form.request_type(class="form-select") }}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.subject.label }}</label>
-                        {{ form.subject(class="form-control", placeholder="مثال: استفسار حول تطوير نموذج العمل لمشروعنا...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.subject.label.text, 'Request Subject') }}</label>
+                        {{ form.subject(class="form-control", placeholder=_('مثال: استفسار حول تطوير نموذج العمل لمشروعنا...', 'e.g., Guidance regarding business model development for our startup...')) }}
                         {% for err in form.subject.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.message.label }}</label>
-                        {{ form.message(class="form-control", rows=5, placeholder="وضح باختصار أهدافك من التواصل وما تود مناقشته...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.message.label.text, 'Message Details & Purpose') }}</label>
+                        {{ form.message(class="form-control", rows=5, placeholder=_('وضح باختصار أهدافك من التواصل وما تود مناقشته...', 'Briefly outline what you aim to achieve and discuss...')) }}
                         {% for err in form.message.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
@@ -50,18 +50,18 @@
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.sender_contact_email.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.sender_contact_email.label.text, 'Contact Email') }}</label>
                             {{ form.sender_contact_email(class="form-control") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.sender_contact_phone.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.sender_contact_phone.label.text, 'Contact Phone Number') }}</label>
                             {{ form.sender_contact_phone(class="form-control") }}
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ url_for('dashboard.networking_requests') }}" class="btn btn-light">إلغاء والعودة</a>
-                        {{ form.submit(class="btn btn-primary px-4") }}
+                        <a href="{{ url_for('dashboard.networking_requests') }}" class="btn btn-light">{{ _('إلغاء والعودة', 'Cancel & Return') }}</a>
+                        <button type="submit" class="btn btn-primary px-4">{{ _('إرسال طلب التشبيك', 'Send Connect Request') }}</button>
                     </div>
                 </form>
             </div>

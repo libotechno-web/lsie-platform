@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}تقديم فكرة ومشروع جديد | الجمعية الليبية للابتكار{% endblock %}
+{% block title %}{{ _('تقديم فكرة ومشروع جديد', 'Submit New Project / Idea') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,15 +8,15 @@
         <div class="col-lg-10">
             <div class="card card-custom p-4 p-md-5 shadow">
                 <div class="border-bottom pb-3 mb-4">
-                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2">استقبال الأفكار والمشاريع</span>
-                    <h3 class="fw-bold text-dark mb-1">تقديم فكرة / مشروع ريادي</h3>
-                    <p class="text-muted small mb-0">املأ النموذج أدناه بدقة متناهية ليتم تحويل مشروعك للفرز والمراجعة من قبل اللجنة الفنية بالجمعية.</p>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2">{{ _('استقبال الأفكار والمشاريع', 'Project Intake Portal') }}</span>
+                    <h3 class="fw-bold text-dark mb-1">{{ _('تقديم فكرة / مشروع ريادي', 'Submit an Innovation Project / Venture') }}</h3>
+                    <p class="text-muted small mb-0">{{ _('املأ النموذج أدناه بدقة متناهية ليتم تحويل مشروعك للفرز والمراجعة من قبل اللجنة الفنية بالجمعية.', 'Please fill out the form carefully to submit your proposal for technical review and evaluation by our committee.') }}</p>
                 </div>
 
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-4 small">
                     <i class="bi bi-shield-lock-fill fs-5"></i>
                     <div>
-                        <strong>حماية تامة للملكية الفكرية:</strong> كافة البيانات الفنية ونماذج الأعمال المودعة تخضع لاتفاقيات سرية حازمة ولا تتاح إلا لأعضاء لجنة التقييم المعتمدين.
+                        <strong>{{ _('حماية تامة للملكية الفكرية:', 'Complete Intellectual Property Protection:') }}</strong> {{ _('كافة البيانات الفنية ونماذج الأعمال المودعة تخضع لاتفاقيات سرية حازمة ولا تتاح إلا لأعضاء لجنة التقييم المعتمدين.', 'All submitted business models and technical details are governed by strict confidentiality guidelines and accessible only to designated evaluators.') }}
                     </div>
                 </div>
 
@@ -24,58 +24,58 @@
                     {{ form.hidden_tag() }}
 
                     <!-- معلومات المشروع الأساسية -->
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">1. البيانات الأساسية للفكرة</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('1. البيانات الأساسية للفكرة', '1. Basic Venture Information') }}</h5>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.title.label }} *</label>
-                        {{ form.title(class="form-control", placeholder="مثال: منصة رقمية لإدارة النفايات وإعادة التدوير الذكي...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.title.label.text, 'Project / Idea Title') }} *</label>
+                        {{ form.title(class="form-control", placeholder=_('مثال: منصة رقمية لإدارة النفايات وإعادة التدوير الذكي...', 'e.g., Digital Platform for Smart Waste Recycling & Logistics...')) }}
                         {% for err in form.title.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.tagline.label }}</label>
-                        {{ form.tagline(class="form-control", placeholder="وصف مكثف في جملة واحدة تلخص القيمة المضافة") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.tagline.label.text, 'One-Line Tagline') }}</label>
+                        {{ form.tagline(class="form-control", placeholder=_('وصف مكثف في جملة واحدة تلخص القيمة المضافة', 'Concise one-sentence value proposition')) }}
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.sector.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.sector.label.text, 'Target Sector') }} *</label>
                             {{ form.sector(class="form-select") }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.city.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.city.label.text, 'City / Region') }} *</label>
                             {{ form.city(class="form-select") }}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold text-dark">{{ form.stage.label }} *</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.stage.label.text, 'Maturity Stage') }} *</label>
                             {{ form.stage(class="form-select") }}
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.summary.label }} *</label>
-                        {{ form.summary(class="form-control", rows=3, placeholder="اشرح فكرة المشروع بشكل عام وأهدافه...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.summary.label.text, 'Executive Summary') }} *</label>
+                        {{ form.summary(class="form-control", rows=3, placeholder=_('اشرح فكرة المشروع بشكل عام وأهدافه...', 'Explain your venture concept and primary objectives...')) }}
                         {% for err in form.summary.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
                     </div>
 
                     <!-- تفاصيل التحدي والحل -->
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">2. المشكلة والحل والقيمة المضافة</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">{{ _('2. المشكلة والحل والقيمة المضافة', '2. Problem, Solution & Value Proposition') }}</h5>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.problem_statement.label }} *</label>
-                        {{ form.problem_statement(class="form-control", rows=3, placeholder="ما هي المشكلة المحددة التي يعاني منها السوق أو المجتمع المحلي؟") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.problem_statement.label.text, 'Problem Statement') }} *</label>
+                        {{ form.problem_statement(class="form-control", rows=3, placeholder=_('ما هي المشكلة المحددة التي يعاني منها السوق أو المجتمع المحلي؟', 'What specific market problem or societal pain-point are you solving?')) }}
                         {% for err in form.problem_statement.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.proposed_solution.label }} *</label>
-                        {{ form.proposed_solution(class="form-control", rows=3, placeholder="كيف يعالج مشروعك هذه المشكلة بطريقة ابتكارية غير تقليدية؟") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.proposed_solution.label.text, 'Proposed Innovative Solution') }} *</label>
+                        {{ form.proposed_solution(class="form-control", rows=3, placeholder=_('كيف يعالج مشروعك هذه المشكلة بطريقة ابتكارية غير تقليدية؟', 'How does your solution solve this challenge innovatively and distinctively?')) }}
                         {% for err in form.proposed_solution.errors %}
                             <div class="text-danger small mt-1">{{ err }}</div>
                         {% endfor %}
@@ -83,49 +83,49 @@
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.target_market.label }}</label>
-                            {{ form.target_market(class="form-control", placeholder="من هم العملاء أو المستفيدون المستهدفون؟") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.target_market.label.text, 'Target Market Segment') }}</label>
+                            {{ form.target_market(class="form-control", placeholder=_('من هم العملاء أو المستفيدون المستهدفون؟', 'Who are your targeted customers or beneficiaries?')) }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.needed_support.label }}</label>
-                            {{ form.needed_support(class="form-control", placeholder="مثال: تمويل بذري، احتضان فني، شراكة تقنية...") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.needed_support.label.text, 'Required Support & Funding') }}</label>
+                            {{ form.needed_support(class="form-control", placeholder=_('مثال: تمويل بذري، احتضان فني، شراكة تقنية...', 'e.g., Seed funding, technical incubation, mentorship...')) }}
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.business_model.label }}</label>
-                        {{ form.business_model(class="form-control", rows=2, placeholder="كيف سيحقق المشروع أرباحاً وتدفقات مالية تضمن استدامته؟") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.business_model.label.text, 'Business Model & Monetization') }}</label>
+                        {{ form.business_model(class="form-control", rows=2, placeholder=_('كيف سيحقق المشروع أرباحاً وتدفقات مالية تضمن استدامته؟', 'How will this venture generate revenues and achieve commercial sustainability?')) }}
                     </div>
 
                     <!-- الفريق والروابط والملفات -->
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">3. فريق العمل والمرفقات</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">{{ _('3. فريق العمل والمرفقات', '3. Team & Supporting Attachments') }}</h5>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-dark">{{ form.team_description.label }}</label>
-                        {{ form.team_description(class="form-control", rows=2, placeholder="أسماء وتخصصات أعضاء الفريق والخبرات المتوفرة...") }}
+                        <label class="form-label fw-bold text-dark">{{ _(form.team_description.label.text, 'Team Description & Expertise') }}</label>
+                        {{ form.team_description(class="form-control", rows=2, placeholder=_('أسماء وتخصصات أعضاء الفريق والخبرات المتوفرة...', 'Core team members, their scientific background, and roles...')) }}
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.demo_url.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.demo_url.label.text, 'Prototype / Demo URL') }}</label>
                             {{ form.demo_url(class="form-control", placeholder="https://...") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.video_url.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.video_url.label.text, 'Video Pitch URL (YouTube/Drive)') }}</label>
                             {{ form.video_url(class="form-control", placeholder="https://youtube.com/...") }}
                         </div>
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.pitch_deck.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.pitch_deck.label.text, 'Pitch Deck (PDF)') }}</label>
                             {{ form.pitch_deck(class="form-control") }}
-                            <small class="text-muted">ملف العرض التقديمي للمشروع (PDF أو Presentation).</small>
+                            <small class="text-muted">{{ _('ملف العرض التقديمي للمشروع (PDF أو Presentation).', 'Pitch deck presentation file (PDF or PPTX).') }}</small>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.cover_image.label }}</label>
+                            <label class="form-label fw-bold text-dark">{{ _(form.cover_image.label.text, 'Project Cover / Logo Image') }}</label>
                             {{ form.cover_image(class="form-control") }}
-                            <small class="text-muted">صورة أو شعار معبر عن المشروع.</small>
+                            <small class="text-muted">{{ _('صورة أو شعار معبر عن المشروع.', 'Project logo or representative image.') }}</small>
                         </div>
                     </div>
 
@@ -133,7 +133,7 @@
                         <div class="form-check">
                             {{ form.terms(class="form-check-input") }}
                             <label class="form-check-label text-dark small" for="terms">
-                                {{ form.terms.label.text }} *
+                                {{ _(form.terms.label.text, 'I pledge that all provided information is accurate and that this intellectual idea is authentic to our team.') }} *
                             </label>
                         </div>
                         {% for err in form.terms.errors %}
@@ -142,8 +142,8 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ url_for('dashboard.projects') }}" class="btn btn-light">إلغاء والعودة</a>
-                        {{ form.submit(class="btn btn-primary px-5 py-2 fs-6 fw-bold") }}
+                        <a href="{{ url_for('dashboard.projects') }}" class="btn btn-light">{{ _('إلغاء والعودة', 'Cancel & Return') }}</a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fs-6 fw-bold">{{ _('إرسال فكرة المشروع', 'Submit Project Idea') }}</button>
                     </div>
                 </form>
             </div>

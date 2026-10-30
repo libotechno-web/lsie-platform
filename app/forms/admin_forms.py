@@ -39,6 +39,13 @@ class SiteSettingsForm(FlaskForm):
     linkedin_url = StringField('رابط صفحة LinkedIn', validators=[Optional()])
     youtube_url = StringField('رابط قناة YouTube', validators=[Optional()])
     
+    # إعدادات خادم البريد الإلكتروني والإشعارات (SMTP - Gmail)
+    mail_server = StringField('خادم البريد (SMTP Server)', default='smtp.gmail.com')
+    mail_port = IntegerField('منفذ البريد (Port)', default=587)
+    mail_username = StringField('حساب البريد الإلكتروني للمرسل (Gmail)', default='libotechno@gmail.com')
+    mail_password = StringField('كلمة مرور التطبيقات (Google App Password)', validators=[Optional()])
+    mail_use_tls = BooleanField('تفعيل بروتوكول الأمان TLS', default=True)
+    
     submit = SubmitField('حفظ الإعدادات الشاملة')
 
 

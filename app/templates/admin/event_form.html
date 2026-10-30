@@ -63,6 +63,49 @@
                     {{ form.description(class="form-control", rows=5) }}
                 </div>
 
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">{{ form.cover_image.label }}</label>
+                    {{ form.cover_image(class="form-control") }}
+                </div>
+
+                <!-- قسم خيار إضافة المنشط باللغة الإنجليزية (English Activity Information) -->
+                <div class="card border border-primary border-opacity-25 bg-light p-3 mb-4 rounded-3 shadow-sm">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary px-2 py-1"><i class="bi bi-translate ms-1"></i>English / الإنجليزية</span>
+                            <h6 class="fw-bold text-dark mb-0">خيار إضافة بيانات المنشط باللغة الإنجليزية (اختياري)</h6>
+                        </div>
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary">English Details</span>
+                    </div>
+                    <p class="text-muted small mb-3">تتيح لك هذه الحقول إضافة عنوان المنشط، موقعه، وملخصه باللغة الإنجليزية، ليتم عرضها تلقائياً عند تصفح زوار المنصة باللغة الإنجليزية.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.title_en.label }}</label>
+                        {{ form.title_en(class="form-control text-start", placeholder="e.g. 1st National Innovation Hackathon 2026", dir="ltr") }}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.city_en.label }}</label>
+                            {{ form.city_en(class="form-control text-start", placeholder="e.g. Gharyan, Tripoli, Benghazi", dir="ltr") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.location_name_en.label }}</label>
+                            {{ form.location_name_en(class="form-control text-start", placeholder="e.g. Main Auditorium - University of Gharyan", dir="ltr") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.summary_en.label }}</label>
+                        {{ form.summary_en(class="form-control text-start", rows=2, placeholder="Brief executive summary of the event/activity in English...", dir="ltr") }}
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold text-dark">{{ form.description_en.label }}</label>
+                        {{ form.description_en(class="form-control text-start", rows=4, placeholder="Detailed agenda, tracks, speaker info, and participation rules in English...", dir="ltr") }}
+                    </div>
+                </div>
+
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <div class="form-check mt-2">

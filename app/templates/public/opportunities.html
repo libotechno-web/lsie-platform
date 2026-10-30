@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}الفرص والمنح والمسابقات | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('الفرص والمنح والمسابقات', 'Opportunities, Grants & Competitions') }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);">
     <div class="container py-3">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">الدعم والتمويل والاحتضان</span>
-        <h1 class="fw-bold mb-2">بوابة الفرص والمنح والمسابقات</h1>
-        <p class="fs-6 text-light opacity-90 mb-0">اكتشف أحدث المنح التمويلية وبرامج الاحتضان والمسابقات التنافسية المفتوحة للمبتكرين ورواد الأعمال في ليبيا.</p>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">{{ _('الدعم والتمويل والاحتضان', 'Funding, Incubation & Support') }}</span>
+        <h1 class="fw-bold mb-2">{{ _('بوابة الفرص والمنح والمسابقات', 'Opportunities, Grants & Awards Portal') }}</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">{{ _('اكتشف أحدث المنح التمويلية وبرامج الاحتضان والمسابقات التنافسية المفتوحة للمبتكرين ورواد الأعمال في ليبيا.', 'Discover recent grants, incubation cohorts, and competitive challenges open to innovators and entrepreneurs in Libya.') }}</p>
     </div>
 </div>
 
 <div class="container py-5">
     <!-- فلاتر الحالة والنوع -->
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="{{ url_for('public.opportunities', status='all', type=current_type) }}" class="btn btn-sm {% if current_status == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">الكل</a>
-        <a href="{{ url_for('public.opportunities', status='open', type=current_type) }}" class="btn btn-sm {% if current_status == 'open' %}btn-success{% else %}btn-outline-secondary{% endif %}">مفتوحة للتقديم</a>
-        <a href="{{ url_for('public.opportunities', status='upcoming', type=current_type) }}" class="btn btn-sm {% if current_status == 'upcoming' %}btn-warning text-dark{% else %}btn-outline-secondary{% endif %}">تبدأ قريباً</a>
-        <a href="{{ url_for('public.opportunities', status='closed', type=current_type) }}" class="btn btn-sm {% if current_status == 'closed' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">مغلقة</a>
+        <a href="{{ url_for('public.opportunities', status='all', type=current_type) }}" class="btn btn-sm {% if current_status == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ _('الكل', 'All') }}</a>
+        <a href="{{ url_for('public.opportunities', status='open', type=current_type) }}" class="btn btn-sm {% if current_status == 'open' %}btn-success{% else %}btn-outline-secondary{% endif %}">{{ _('مفتوحة للتقديم', 'Open for Application') }}</a>
+        <a href="{{ url_for('public.opportunities', status='upcoming', type=current_type) }}" class="btn btn-sm {% if current_status == 'upcoming' %}btn-warning text-dark{% else %}btn-outline-secondary{% endif %}">{{ _('تبدأ قريباً', 'Upcoming Soon') }}</a>
+        <a href="{{ url_for('public.opportunities', status='closed', type=current_type) }}" class="btn btn-sm {% if current_status == 'closed' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">{{ _('مغلقة', 'Closed') }}</a>
     </div>
 
     <div class="row g-4">
@@ -26,9 +26,9 @@
                 <div class="card card-custom h-100 d-flex flex-column">
                     <div class="p-4 flex-grow-1">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ opp.type_label_ar }}</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ opp.get_type_label(current_lang) }}</span>
                             <span class="badge bg-{% if opp.status == 'open' %}success{% elif opp.status == 'upcoming' %}warning text-dark{% else %}secondary{% endif %} bg-opacity-10 text-{% if opp.status == 'open' %}success{% elif opp.status == 'upcoming' %}warning{% else %}secondary{% endif %}">
-                                {{ opp.status_label_ar }}
+                                {{ opp.get_status_label(current_lang) }}
                             </span>
                         </div>
 
@@ -36,25 +36,25 @@
                             <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" class="text-decoration-none text-dark hover-primary">{{ opp.title }}</a>
                         </h5>
 
-                        <div class="small text-muted mb-3"><i class="bi bi-building ms-1"></i>الجهة: <strong>{{ opp.provider_name }}</strong></div>
+                        <div class="small text-muted mb-3"><i class="bi bi-building ms-1"></i>{{ _('الجهة', 'Provider') }}: <strong>{{ opp.provider_name }}</strong></div>
                         <p class="text-muted small leading-relaxed mb-3">{{ opp.summary[:130] }}...</p>
 
                         {% if opp.award_or_funding %}
-                            <div class="small text-secondary mb-2"><i class="bi bi-trophy text-warning ms-1"></i>المزايا: <strong>{{ opp.award_or_funding }}</strong></div>
+                            <div class="small text-secondary mb-2"><i class="bi bi-trophy text-warning ms-1"></i>{{ _('المزايا', 'Award / Funding') }}: <strong>{{ opp.award_or_funding }}</strong></div>
                         {% endif %}
                     </div>
 
                     <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
-                        <small class="text-muted"><i class="bi bi-calendar-event ms-1"></i>الموعد: <strong>{{ opp.deadline.strftime('%Y-%m-%d') }}</strong></small>
-                        <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" class="btn btn-primary btn-sm">التفاصيل والتقديم</a>
+                        <small class="text-muted"><i class="bi bi-calendar-event ms-1"></i>{{ _('الموعد', 'Deadline') }}: <strong>{{ opp.deadline.strftime('%Y-%m-%d') }}</strong></small>
+                        <a href="{{ url_for('public.opportunity_detail', slug=opp.slug) }}" class="btn btn-primary btn-sm">{{ _('التفاصيل والتقديم', 'Details & Apply') }}</a>
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-5">
                 <i class="bi bi-gift text-muted fs-1 d-block mb-3"></i>
-                <h5 class="fw-bold text-dark">لا توجد فرص مطابقة لهذا التصنيف حالياً</h5>
-                <p class="text-muted small">يرجى متابعة الصفحة أو الانضمام للجمعية لتصلك الإشعارات فور إطلاق دورات التمويل القادمة.</p>
+                <h5 class="fw-bold text-dark">{{ _('لا توجد فرص مطابقة لهذا التصنيف حالياً', 'No opportunities found in this category currently') }}</h5>
+                <p class="text-muted small">{{ _('يرجى متابعة الصفحة أو الانضمام للجمعية لتصلك الإشعارات فور إطلاق دورات التمويل القادمة.', 'Please check back soon or register to receive notifications when new funding calls are announced.') }}</p>
             </div>
         {% endfor %}
     </div>

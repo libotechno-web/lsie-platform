@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
+from flask import Blueprint, render_template, request, flash, redirect, url_for, abort, session
 from flask_login import current_user, login_required
 from datetime import datetime
 from sqlalchemy import or_
@@ -18,6 +18,18 @@ from app.forms import (
 from app.utils.helpers import save_uploaded_file, create_notification
 
 public_bp = Blueprint('public', __name__)
+
+
+@public_bp.route('/set-language/<lang_code>')
+def set_language(lang_code):
+    """التبديل بين اللغتين العربية والإنجليزية وحفظ التفضيل في الجلسة"""
+    if lang_code in ['ar', 'en']:
+        session['lang'] = lang_code
+    
+    referrer = request.referrer
+    if referrer and request.host_url in referrer:
+        return redirect(referrer)
+    return redirect(url_for('public.index'))
 
 
 @public_bp.route('/')

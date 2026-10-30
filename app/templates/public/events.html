@@ -1,58 +1,62 @@
 {% extends 'base.html' %}
 
-{% block title %}الفعاليات والملتقيات | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('الفعاليات والأنشطة', 'Events & Activities') }} | {{ site_settings.get('site_name_en' if current_lang == 'en' else 'site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
 
 {% block content %}
 <div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
     <div class="container py-3">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">الملتقيات والمؤتمرات</span>
-        <h1 class="fw-bold mb-2">الفعاليات والأنشطة الريادية</h1>
-        <p class="fs-6 text-light opacity-90 mb-0">انضم إلى المؤتمرات العلمية، أيام العروض (Demo Days)، والملتقيات الدورية التي تجمع رواد الأعمال والمستثمرين في ليبيا.</p>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">{{ _('الملتقيات والمؤتمرات', 'Conferences & Gatherings') }}</span>
+        <h1 class="fw-bold mb-2">{{ _('الفعاليات والأنشطة الريادية', 'Entrepreneurial Events & Activities') }}</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">
+            {{ _('انضم إلى المؤتمرات العلمية، أيام العروض (Demo Days)، والملتقيات الدورية التي تجمع رواد الأعمال والمستثمرين في ليبيا.', 'Join scientific conferences, demo days, and recurring meetups uniting innovators, startups, and investors across Libya.') }}
+        </p>
     </div>
 </div>
 
 <div class="container py-5">
     <!-- الفعاليات القادمة -->
-    <h3 class="fw-bold text-dark mb-4"><i class="bi bi-calendar-event text-success ms-2"></i>الفعاليات القادمة</h3>
+    <h3 class="fw-bold text-dark mb-4">
+        <i class="bi bi-calendar-event text-success {{ 'me-2' if current_lang == 'en' else 'ms-2' }}"></i>{{ _('الفعاليات والأنشطة القادمة', 'Upcoming Activities & Events') }}
+    </h3>
     <div class="row g-4 mb-5">
         {% for ev in upcoming_events %}
             <div class="col-md-6 col-lg-4">
                 <div class="card card-custom h-100 d-flex flex-column border-top border-4 border-success">
                     <div class="p-4 flex-grow-1">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-success bg-opacity-10 text-success">{{ ev.city }}</span>
+                            <span class="badge bg-success bg-opacity-10 text-success">{{ ev.get_city(current_lang) }}</span>
                             <small class="text-muted">{{ ev.start_time.strftime('%Y-%m-%d %H:%M') }}</small>
                         </div>
                         <h5 class="fw-bold text-dark mb-2">
-                            <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="text-decoration-none text-dark hover-primary">{{ ev.title }}</a>
+                            <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="text-decoration-none text-dark hover-primary">{{ ev.get_title(current_lang) }}</a>
                         </h5>
-                        <p class="text-muted small leading-relaxed mb-3">{{ ev.summary[:130] }}...</p>
-                        <div class="small text-muted"><i class="bi bi-geo-alt ms-1"></i>المكان: {{ ev.location_name }}</div>
+                        <p class="text-muted small leading-relaxed mb-3">{{ ev.get_summary(current_lang)[:130] }}...</p>
+                        <div class="small text-muted"><i class="bi bi-geo-alt {{ 'me-1' if current_lang == 'en' else 'ms-1' }}"></i>{{ _('المكان:', 'Venue:') }} {{ ev.get_location_name(current_lang) }}</div>
                     </div>
                     <div class="px-4 py-3 bg-light border-top d-flex justify-content-between align-items-center">
-                        <small class="text-muted"><i class="bi bi-people ms-1"></i>المسجلون: {{ ev.registered_count }}/{{ ev.capacity }}</small>
-                        <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="btn btn-primary btn-sm">التسجيل في الفعالية</a>
+                        <small class="text-muted"><i class="bi bi-people {{ 'me-1' if current_lang == 'en' else 'ms-1' }}"></i>{{ _('المسجلون:', 'Registered:') }} {{ ev.registered_count }}/{{ ev.capacity }}</small>
+                        <a href="{{ url_for('public.event_detail', slug=ev.slug) }}" class="btn btn-primary btn-sm">{{ _('التسجيل في الفعالية', 'Register for Event') }}</a>
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-4 bg-white rounded-3 border text-muted">
                 <i class="bi bi-calendar-plus fs-2 d-block mb-2"></i>
-                ترقبوا إعلان جدول فعاليات الموسم الريادي القادم قريباً.
+                {{ _('ترقبوا إعلان جدول فعاليات الموسم الريادي القادم قريباً.', 'Stay tuned for announcements of the upcoming innovation season activities.') }}
             </div>
         {% endfor %}
     </div>
 
     <!-- الفعاليات السابقة -->
     {% if past_events %}
-        <h4 class="fw-bold text-muted mb-4 border-top pt-5">الفعاليات السابقة</h4>
+        <h4 class="fw-bold text-muted mb-4 border-top pt-5">{{ _('الفعاليات السابقة', 'Past Events & Activities') }}</h4>
         <div class="row g-4">
             {% for ev in past_events %}
                 <div class="col-md-6 col-lg-4">
                     <div class="card card-custom h-100 p-4 opacity-75">
                         <small class="text-muted mb-2 d-block">{{ ev.start_time.strftime('%Y-%m-%d') }}</small>
-                        <h6 class="fw-bold mb-2">{{ ev.title }}</h6>
-                        <p class="text-muted small mb-0">{{ ev.summary[:100] }}...</p>
+                        <h6 class="fw-bold mb-2">{{ ev.get_title(current_lang) }}</h6>
+                        <p class="text-muted small mb-0">{{ ev.get_summary(current_lang)[:100] }}...</p>
                     </div>
                 </div>
             {% endfor %}

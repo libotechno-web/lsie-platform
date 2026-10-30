@@ -1,6 +1,6 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}إدارة الإعدادات والهوية والشعار{% endblock %}
+{% block title %}{{ _('إدارة الإعدادات والهوية والشعار', 'Platform Settings & Visual Identity') }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,8 +8,8 @@
         <div class="card card-custom p-4 p-md-5 shadow-sm">
             <div class="border-bottom pb-3 mb-4">
                 <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2">Data-Driven Configuration</span>
-                <h3 class="fw-bold text-dark mb-1">إعدادات المنصة والهوية البصرية</h3>
-                <p class="text-muted small mb-0">التحكم الشامل في نصوص الموقع، الشعار، الألوان، البيانات الرسمية، وقنوات التواصل دون تعديل الكود.</p>
+                <h3 class="fw-bold text-dark mb-1">{{ _('إعدادات المنصة والهوية البصرية', 'Platform Settings & Visual Identity') }}</h3>
+                <p class="text-muted small mb-0">{{ _('التحكم الشامل في نصوص الموقع، الشعار، الألوان، البيانات الرسمية، وقنوات التواصل دون تعديل الكود.', 'Comprehensive control over site copy, logo, colors, official data, and social channels without code edits.') }}</p>
             </div>
 
             <form method="POST" enctype="multipart/form-data">
@@ -17,58 +17,58 @@
 
                 <!-- 1. الأسماء والشعار والعناوين الرئيسية -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
-                    <i class="bi bi-palette text-primary ms-1"></i>1. الهوية الرسمية والشعار
+                    <i class="bi bi-palette text-primary ms-1"></i>{{ _('1. الهوية الرسمية والشعار', '1. Official Identity & Logo') }}
                 </h5>
 
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.site_name.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.site_name.label.text, 'Site Name (Arabic)') }}</label>
                         {{ form.site_name(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.site_name_en.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.site_name_en.label.text, 'Site Name (English)') }}</label>
                         {{ form.site_name_en(class="form-control") }}
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label fw-bold text-dark">{{ form.site_acronym.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.site_acronym.label.text, 'Acronym') }}</label>
                         {{ form.site_acronym(class="form-control") }}
                     </div>
                 </div>
 
                 <div class="row g-3 mb-4 align-items-center">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.logo.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.logo.label.text, 'Logo Upload') }}</label>
                         {{ form.logo(class="form-control") }}
-                        <small class="text-muted">ارفع شعاراً جديداً ليتم استبداله تلقائياً في كافة صفحات المنصة دون تعديل القوالب.</small>
+                        <small class="text-muted">{{ _('ارفع شعاراً جديداً ليتم استبداله تلقائياً في كافة صفحات المنصة دون تعديل القوالب.', 'Upload a new logo to replace it across all platform pages automatically.') }}</small>
                     </div>
                     <div class="col-md-6 text-center text-md-start">
-                        <span class="text-muted small d-block mb-1">الشعار الحالي:</span>
-                        <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="الشعار الحالي" style="height: 60px; background: #fff; border-radius: 50%; padding: 3px;" class="border shadow-sm">
+                        <span class="text-muted small d-block mb-1">{{ _('الشعار الحالي:', 'Current Logo:') }}</span>
+                        <img src="{{ url_for('static', filename=site_settings.get('logo_path', 'images/logo.png')) }}" alt="{{ _('الشعار الحالي', 'Current Logo') }}" style="height: 60px; background: #fff; border-radius: 50%; padding: 3px;" class="border shadow-sm">
                     </div>
                 </div>
 
                 <!-- 2. لوحة الألوان المعتمدة (Primary, Secondary, Accent) -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
-                    <i class="bi bi-eyedropper text-success ms-1"></i>2. لوحة الألوان المعتمدة من الشعار
+                    <i class="bi bi-eyedropper text-success ms-1"></i>{{ _('2. لوحة الألوان المعتمدة من الشعار', '2. Official Brand Color Palette') }}
                 </h5>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.primary_color.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.primary_color.label.text, 'Primary Color') }}</label>
                         <div class="input-group">
                             {{ form.primary_color(class="form-control", type="color") }}
                             <span class="input-group-text bg-white small">{{ site_settings.get('primary_color', '#0d6e3f') }}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.secondary_color.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.secondary_color.label.text, 'Secondary Color') }}</label>
                         <div class="input-group">
                             {{ form.secondary_color(class="form-control", type="color") }}
                             <span class="input-group-text bg-white small">{{ site_settings.get('secondary_color', '#133b66') }}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.accent_color.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.accent_color.label.text, 'Accent Color') }}</label>
                         <div class="input-group">
                             {{ form.accent_color(class="form-control", type="color") }}
                             <span class="input-group-text bg-white small">{{ site_settings.get('accent_color', '#e5a93c') }}</span>
@@ -78,103 +78,103 @@
 
                 <!-- 3. نصوص الصفحة الرئيسية (Hero) -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
-                    <i class="bi bi-window text-info ms-1"></i>3. نصوص واجهة الصفحة الرئيسية (Hero)
+                    <i class="bi bi-window text-info ms-1"></i>{{ _('3. نصوص واجهة الصفحة الرئيسية (Hero)', '3. Homepage Hero Content') }}
                 </h5>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.hero_title.label }}</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.hero_title.label.text, 'Hero Title') }}</label>
                     {{ form.hero_title(class="form-control") }}
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-dark">{{ form.hero_subtitle.label }}</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.hero_subtitle.label.text, 'Hero Subtitle') }}</label>
                     {{ form.hero_subtitle(class="form-control", rows=2) }}
                 </div>
 
                 <!-- 4. النبذة والرسالة والرؤية والبيانات القانونية الرسمية -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
-                    <i class="bi bi-file-earmark-check text-warning ms-1"></i>4. النبذة والرسالة والرؤية الرسمية (القسم 3)
+                    <i class="bi bi-file-earmark-check text-warning ms-1"></i>{{ _('4. النبذة والرسالة والرؤية الرسمية (القسم 3)', '4. Official About, Mission & Vision (Section 3)') }}
                 </h5>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.about_intro.label }}</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.about_intro.label.text, 'About Introduction') }}</label>
                     {{ form.about_intro(class="form-control", rows=4) }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.official_mission.label }}</label>
+                    <label class="form-label fw-bold text-dark">{{ _(form.official_mission.label.text, 'Official Mission') }}</label>
                     {{ form.official_mission(class="form-control", rows=3) }}
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark">{{ form.official_vision.label }}</label>
-                    {{ form.official_vision(class="form-control", rows=3, placeholder="أدخل الرؤية الرسمية المعتمدة...") }}
+                    <label class="form-label fw-bold text-dark">{{ _(form.official_vision.label.text, 'Official Vision') }}</label>
+                    {{ form.official_vision(class="form-control", rows=3, placeholder=_('أدخل الرؤية الرسمية المعتمدة...', 'Enter the approved official vision...')) }}
                 </div>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.establishment_decree.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.establishment_decree.label.text, 'Establishment Decree') }}</label>
                         {{ form.establishment_decree(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.headquarters.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.headquarters.label.text, 'Headquarters') }}</label>
                         {{ form.headquarters(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.certificate_number.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.certificate_number.label.text, 'Certificate Number') }}</label>
                         {{ form.certificate_number(class="form-control") }}
                     </div>
                 </div>
 
                 <!-- 5. بيانات التواصل -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
-                    <i class="bi bi-telephone text-primary ms-1"></i>5. بيانات الاتصال الرسمية
+                    <i class="bi bi-telephone text-primary ms-1"></i>{{ _('5. بيانات الاتصال الرسمية', '5. Official Contact Details') }}
                 </h5>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.contact_email.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.contact_email.label.text, 'Contact Email') }}</label>
                         {{ form.contact_email(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.contact_phone.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.contact_phone.label.text, 'Contact Phone') }}</label>
                         {{ form.contact_phone(class="form-control") }}
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-dark">{{ form.contact_address.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.contact_address.label.text, 'Contact Address') }}</label>
                         {{ form.contact_address(class="form-control") }}
                     </div>
                 </div>
 
                 <!-- 6. شبكات التواصل الاجتماعي (Section 16: Facebook, Instagram, X, LinkedIn) -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
-                    <i class="bi bi-share text-secondary ms-1"></i>6. منصات التواصل الاجتماعي الرسمية (القسم 16)
+                    <i class="bi bi-share text-secondary ms-1"></i>{{ _('6. منصات التواصل الاجتماعي الرسمية (القسم 16)', '6. Official Social Media Channels (Section 16)') }}
                 </h5>
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.facebook_url.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.facebook_url.label.text, 'Facebook URL') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-facebook text-primary"></i></span>
                             {{ form.facebook_url(class="form-control", placeholder="https://facebook.com/...") }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.instagram_url.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.instagram_url.label.text, 'Instagram URL') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-instagram text-danger"></i></span>
                             {{ form.instagram_url(class="form-control", placeholder="https://instagram.com/...") }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.twitter_x_url.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.twitter_x_url.label.text, 'X / Twitter URL') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-twitter-x text-dark"></i></span>
                             {{ form.twitter_x_url(class="form-control", placeholder="https://x.com/...") }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold text-dark">{{ form.linkedin_url.label }}</label>
+                        <label class="form-label fw-bold text-dark">{{ _(form.linkedin_url.label.text, 'LinkedIn URL') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-linkedin text-info"></i></span>
                             {{ form.linkedin_url(class="form-control", placeholder="https://linkedin.com/...") }}
@@ -182,10 +182,79 @@
                     </div>
                 </div>
 
+                <!-- 7. إعدادات خادم البريد الإلكتروني (Gmail SMTP) -->
+                <h5 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">
+                    <i class="bi bi-envelope-at text-danger ms-1"></i>{{ _('7. إعدادات خادم البريد الإلكتروني الرسمي (Gmail SMTP)', '7. Official Mail Server Settings (Gmail SMTP)') }}
+                </h5>
+
+                <div class="alert alert-info py-3 px-3 small rounded-3 mb-4">
+                    <div class="fw-bold mb-1"><i class="bi bi-info-circle ms-1"></i>{{ _('كيفية ضبط بريد Gmail الرسمي (libotechno@gmail.com):', 'How to configure official Gmail (libotechno@gmail.com):') }}</div>
+                    <ol class="mb-0 pe-3">
+                        <li>{{ _('ادخل إلى حساب Google الخاص بـ libotechno@gmail.com ثم انتقل إلى الأمان (Security).', 'Log in to Google account libotechno@gmail.com and go to Security.') }}</li>
+                        <li>{{ _('تأكد من تفعيل التحقق بخطوتين (2-Step Verification).', 'Ensure 2-Step Verification is enabled.') }}</li>
+                        <li>{{ _('ابحث في الأمان عن كلمات مرور التطبيقات (App Passwords)، وأنشئ كلمة مرور جديدة باسم "منصة مجتمع الابتكار".', 'Search for App Passwords, and generate a new password named "Innovation Platform".') }}</li>
+                        <li>{{ _('انسخ كلمة المرور المكونة من 16 حرفاً وضعها في حقل "كلمة مرور التطبيقات" أدناه، ثم اضغط حفظ.', 'Copy the 16-character password into the "App Password" field below and save.') }}</li>
+                    </ol>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ _(form.mail_username.label.text, 'Mail Username / Address') }}</label>
+                        {{ form.mail_username(class="form-control", placeholder="libotechno@gmail.com") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark">{{ _(form.mail_password.label.text, 'App Password') }}</label>
+                        {{ form.mail_password(class="form-control", type="password", placeholder=_('كلمة مرور التطبيقات (16 حرفاً)', 'App Password (16 characters)')) }}
+                        <small class="text-muted">{{ _('كلمة مرور التطبيقات الخاصة بـ Google (تترك فارغة إذا تم ضبطها في ملف .env).', 'Google App Password (leave blank if configured in .env).') }}</small>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-dark">{{ _(form.mail_server.label.text, 'SMTP Server') }}</label>
+                        {{ form.mail_server(class="form-control", placeholder="smtp.gmail.com") }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-dark">{{ _(form.mail_port.label.text, 'Port') }}</label>
+                        {{ form.mail_port(class="form-control", placeholder="587") }}
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center pt-3">
+                        <div class="form-check mt-2">
+                            {{ form.mail_use_tls(class="form-check-input") }}
+                            <label class="form-check-label fw-bold text-dark" for="mail_use_tls">
+                                {{ _(form.mail_use_tls.label.text, 'Use TLS Encryption') }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-3 border-top text-end">
-                    {{ form.submit(class="btn btn-primary px-5 py-2 fs-6 fw-bold") }}
+                    <button type="submit" class="btn btn-primary px-5 py-2 fs-6 fw-bold">{{ _('حفظ الإعدادات', 'Save Settings') }}</button>
                 </div>
             </form>
+
+            <!-- صندوق اختبار إرسال البريد -->
+            <div class="mt-5 pt-4 border-top">
+                <div class="card bg-light border p-4 rounded-3">
+                    <h6 class="fw-bold text-dark mb-2">
+                        <i class="bi bi-send-check text-success ms-1"></i>{{ _('اختبار اتصال خادم البريد (Test SMTP Connection)', 'Test SMTP Connection') }}
+                    </h6>
+                    <p class="text-muted small mb-3">
+                        {{ _('يمكنك التأكد فوراً من عمل إرسال الرسائل الإلكترونية بعد حفظ كلمة مرور التطبيقات عبر إرسال رسالة تجريبية.', 'You can immediately verify that email sending works after saving the App Password by sending a test message.') }}
+                    </p>
+                    <form method="POST" action="{{ url_for('admin.test_email') }}" class="row g-2 align-items-center">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="col-md-8">
+                            <input type="email" name="target_email" class="form-control" placeholder="{{ _('أدخل البريد المستلم للتجربة (مثال: libotechno@gmail.com)', 'Enter recipient email (e.g., libotechno@gmail.com)') }}" value="libotechno@gmail.com" required>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-outline-success w-100 fw-bold">
+                                <i class="bi bi-send ms-1"></i>{{ _('إرسال رسالة تجريبية الآن', 'Send Test Email Now') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}خطأ {{ code }} | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('خطأ', 'Error') }} {{ code }} | {{ _(site_settings.get('site_name', 'الجمعية الليبية للابتكار'), site_settings.get('site_name_en', 'Libyan Society for Innovation')) }}{% endblock %}
 
 {% block content %}
 <div class="container py-5 text-center my-5">
@@ -8,11 +8,11 @@
         <div class="col-md-7 col-lg-6">
             <div class="card card-custom p-5 shadow">
                 <div class="text-danger fw-bold display-1 mb-2">{{ code }}</div>
-                <h4 class="fw-bold text-dark mb-3">{{ message }}</h4>
-                <p class="text-muted small mb-4">إذا كنت تعتقد أن هناك خطأ أو تحتاج إلى مساعدة، يمكنك التواصل مع فريق الدعم الفني بالجمعية.</p>
+                <h4 class="fw-bold text-dark mb-3">{{ _(message) }}</h4>
+                <p class="text-muted small mb-4">{{ _('إذا كنت تعتقد أن هناك خطأ أو تحتاج إلى مساعدة، يمكنك التواصل مع فريق الدعم الفني بالجمعية.', 'If you believe this is an error or need assistance, please feel free to contact technical support.') }}</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ url_for('public.index') }}" class="btn btn-primary"><i class="bi bi-house ms-1"></i>العودة للرئيسية</a>
-                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-secondary">تواصل معنا</a>
+                    <a href="{{ url_for('public.index') }}" class="btn btn-primary"><i class="bi bi-house ms-1"></i>{{ _('العودة للرئيسية', 'Back to Home') }}</a>
+                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-secondary">{{ _('تواصل معنا', 'Contact Us') }}</a>
                 </div>
             </div>
         </div>

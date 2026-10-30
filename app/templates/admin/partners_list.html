@@ -1,16 +1,16 @@
 {% extends 'admin/admin_base.html' %}
 
-{% block title %}إدارة الشركاء والرعاة{% endblock %}
+{% block title %}{{ _('إدارة الشركاء والرعاة', 'Partners & Sponsors Management') }}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold text-dark mb-1">الشركاء الاستراتيجيون والجهات الداعمة</h3>
-        <p class="text-muted small mb-0">إدارة شعارات وروابط وبيانات الشركاء الظاهرين بالواجهة</p>
+        <h3 class="fw-bold text-dark mb-1">{{ _('الشركاء الاستراتيجيون والجهات الداعمة', 'Strategic Partners & Supporting Entities') }}</h3>
+        <p class="text-muted small mb-0">{{ _('إدارة شعارات وروابط وبيانات الشركاء الظاهرين بالواجهة', 'Manage partner logos, links, and display on the homepage') }}</p>
     </div>
     <a href="{{ url_for('admin.new_partner') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
         <i class="bi bi-plus-lg"></i>
-        <span>إضافة شريك جديد</span>
+        <span>{{ _('إضافة شريك جديد', 'Add New Partner') }}</span>
     </a>
 </div>
 
@@ -19,31 +19,31 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light small">
                 <tr>
-                    <th>اسم الجهة الشريكة</th>
-                    <th>نوع الشراكة</th>
-                    <th>الموقع الإلكتروني</th>
-                    <th>الترتيب</th>
-                    <th>الحالة</th>
+                    <th>{{ _('اسم الجهة الشريكة', 'Partner Name') }}</th>
+                    <th>{{ _('نوع الشراكة', 'Partnership Type') }}</th>
+                    <th>{{ _('الموقع الإلكتروني', 'Website') }}</th>
+                    <th>{{ _('الترتيب', 'Display Order') }}</th>
+                    <th>{{ _('الحالة', 'Status') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for p in partners %}
                     <tr>
                         <td class="fw-bold text-dark">{{ p.name }}</td>
-                        <td><span class="badge bg-light text-dark border">{{ p.partner_type }}</span></td>
+                        <td><span class="badge bg-light text-dark border">{{ _(p.partner_type) }}</span></td>
                         <td class="small">{{ p.website_url or '-' }}</td>
                         <td class="small">{{ p.order_index }}</td>
                         <td>
                             {% if p.is_active %}
-                                <span class="badge bg-success bg-opacity-10 text-success">مفعّل</span>
+                                <span class="badge bg-success bg-opacity-10 text-success">{{ _('مفعّل', 'Active') }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">معطل</span>
+                                <span class="badge bg-secondary">{{ _('معطل', 'Inactive') }}</span>
                             {% endif %}
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">لا يوجد شركاء مضافون حالياً.</td>
+                        <td colspan="5" class="text-center py-4 text-muted">{{ _('لا يوجد شركاء مضافون حالياً.', 'No partners added currently.') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

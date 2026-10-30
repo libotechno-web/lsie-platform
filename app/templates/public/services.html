@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}بوابة الخدمات الإلكترونية | {{ site_settings.get('site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
+{% block title %}{{ _('بوابة الخدمات الإلكترونية', 'E-Services Portal') }} | {{ site_settings.get('site_name_en' if current_lang == 'en' else 'site_name', 'الجمعية الليبية للابتكار') }}{% endblock %}
 
 {% block content %}
 <div class="py-5 text-white" style="background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);">
     <div class="container py-3">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">الخدمات الرقمية المتكاملة</span>
-        <h1 class="fw-bold mb-2">بوابة الخدمات الإلكترونية</h1>
-        <p class="fs-6 text-light opacity-90 mb-0">حزمة متكاملة من الخدمات الرقمية الموجهة للمبتكرين والشركات الناشئة والمستثمرين والموجهين في ليبيا.</p>
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">{{ _('الخدمات الرقمية المتكاملة', 'Integrated Digital Services') }}</span>
+        <h1 class="fw-bold mb-2">{{ _('بوابة الخدمات الإلكترونية', 'E-Services Portal') }}</h1>
+        <p class="fs-6 text-light opacity-90 mb-0">
+            {{ _('حزمة متكاملة من الخدمات الرقمية الموجهة للمبتكرين والشركات الناشئة والمستثمرين والموجهين في ليبيا.', 'A comprehensive suite of digital services designed for innovators, startups, investors, and mentors across Libya.') }}
+        </p>
     </div>
 </div>
 
@@ -17,10 +19,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-lightbulb-fill"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">استقبال وتقييم الأفكار</h4>
-                <p class="text-muted small leading-relaxed mb-4">بوابة رقمية آمنة تتيح للمبتكرين إيداع أفكارهم، والحصول على تقييم فني وتجاري من لجان خبراء متخصصة مع الحفاظ التام على حقوق الملكية الفكرية.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('استقبال وتقييم الأفكار', 'Idea Submission & Evaluation') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('بوابة رقمية آمنة تتيح للمبتكرين إيداع أفكارهم، والحصول على تقييم فني وتجاري من لجان خبراء متخصصة مع الحفاظ التام على حقوق الملكية الفكرية.', 'A secure portal allowing innovators to submit their ideas and receive technical & commercial assessments from expert panels while preserving intellectual property.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-outline-primary w-100">قدّم فكرتك الآن</a>
+                    <a href="{{ url_for('dashboard.submit_project') }}" class="btn btn-outline-primary w-100">{{ _('قدّم فكرتك الآن', 'Submit Your Idea Now') }}</a>
                 </div>
             </div>
         </div>
@@ -29,10 +33,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-trophy-fill"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">البرامج والمبادرات الريادية</h4>
-                <p class="text-muted small leading-relaxed mb-4">برامج احتضان وتسريع أعمال وتحديات ابتكار متكاملة لدعم وتمكين أصحاب الأفكار والمشاريع الناشئة من الانطلاق والنمو وتحقيق الاستدامة.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('البرامج والمبادرات الريادية', 'Incubation & Acceleration Programs') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('برامج احتضان وتسريع أعمال وتحديات ابتكار متكاملة لدعم وتمكين أصحاب الأفكار والمشاريع الناشئة من الانطلاق والنمو وتحقيق الاستدامة.', 'Integrated incubation, acceleration, and innovation challenges to support startup founders in launching, scaling, and achieving sustainability.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.programs') }}" class="btn btn-outline-primary w-100">استكشف البرامج والمبادرات</a>
+                    <a href="{{ url_for('public.programs') }}" class="btn btn-outline-primary w-100">{{ _('استكشف البرامج والمبادرات', 'Explore Programs') }}</a>
                 </div>
             </div>
         </div>
@@ -41,10 +47,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-mortarboard-fill"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">التدريب والأكاديمية الرقمية</h4>
-                <p class="text-muted small leading-relaxed mb-4">دورات تدريبية متخصصة، وورش عمل تطبيقية، ومعسكرات ابتكار يقودها نخبة من المدربين والخبراء لتطوير مهارات ريادة الأعمال ونماذج العمل.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('التدريب والأكاديمية الرقمية', 'Training & Digital Academy') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('دورات تدريبية متخصصة، وورش عمل تطبيقية، ومعسكرات ابتكار يقودها نخبة من المدربين والخبراء لتطوير مهارات ريادة الأعمال ونماذج العمل.', 'Specialized courses, hands-on workshops, and bootcamps led by seasoned experts to develop entrepreneurial and tech skills.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.training') }}" class="btn btn-outline-primary w-100">استكشف البرامج التدريبية</a>
+                    <a href="{{ url_for('public.training') }}" class="btn btn-outline-primary w-100">{{ _('استكشف البرامج التدريبية', 'Browse Training Courses') }}</a>
                 </div>
             </div>
         </div>
@@ -53,10 +61,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-cash-coin"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">بوابة الفرص والمنح</h4>
-                <p class="text-muted small leading-relaxed mb-4">منصة مركزية تنشر أحدث فرص المنح المالية، مسابقات الابتكار، وبرامج الاحتضان والتسريع المحلية والدولية مع إمكانية التقديم المباشر.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('بوابة الفرص والمنح', 'Grants & Funding Portal') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('منصة مركزية تنشر أحدث فرص المنح المالية، مسابقات الابتكار، وبرامج الاحتضان والتسريع المحلية والدولية مع إمكانية التقديم المباشر.', 'A centralized hub featuring the latest financial grants, innovation competitions, and investor rounds with direct application pathways.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary w-100">عرض المنح والفرص</a>
+                    <a href="{{ url_for('public.opportunities') }}" class="btn btn-outline-primary w-100">{{ _('عرض المنح والفرص', 'View Grants & Funding') }}</a>
                 </div>
             </div>
         </div>
@@ -65,10 +75,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-people-fill"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">منظومة الإرشاد والتشبيك</h4>
-                <p class="text-muted small leading-relaxed mb-4">ربط المبتكرين مع الموجهين المتمرسين في مختلف التخصصات، وفتح قنوات تواصل مباشرة مع المستثمرين والشركاء التجاريين والأكاديميين.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('منظومة الإرشاد والتشبيك', 'Mentorship & Networking') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('ربط المبتكرين مع الموجهين المتمرسين في مختلف التخصصات، وفتح قنوات تواصل مباشرة مع المستثمرين والشركاء التجاريين والأكاديميين.', 'Connecting entrepreneurs with experienced mentors across disciplines, opening channels to investors and industry partners.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-primary w-100">طلب إرشاد وتوجيه</a>
+                    <a href="{{ url_for('public.contact') }}" class="btn btn-outline-primary w-100">{{ _('طلب إرشاد وتوجيه', 'Request Mentorship') }}</a>
                 </div>
             </div>
         </div>
@@ -77,10 +89,12 @@
         <div class="col-md-6 col-lg-4">
             <div class="card card-custom h-100 p-4">
                 <div class="quick-path-icon mb-3"><i class="bi bi-award-fill"></i></div>
-                <h4 class="fw-bold fs-5 mb-2">عضوية الجمعية العلمية</h4>
-                <p class="text-muted small leading-relaxed mb-4">الحصول على صفة العضوية الرسمية بالجمعية الصادرة بقرار الهيئة الليبية للبحث العلمي، والمشاركة في اللجان التخصصية وصنع القرارات الريادية.</p>
+                <h4 class="fw-bold fs-5 mb-2">{{ _('عضوية الجمعية العلمية', 'Scientific Society Membership') }}</h4>
+                <p class="text-muted small leading-relaxed mb-4">
+                    {{ _('الحصول على صفة العضوية الرسمية بالجمعية الصادرة بقرار الهيئة الليبية للبحث العلمي، والمشاركة في اللجان التخصصية وصنع القرارات الريادية.', 'Obtaining official registered membership in the scientific society, voting in committees, and contributing to national innovation leadership.') }}
+                </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">سجل عضويتك الآن</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">{{ _('سجل عضويتك الآن', 'Register Membership Now') }}</a>
                 </div>
             </div>
         </div>

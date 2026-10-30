@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ course.title }} | الأكاديمية التدريبية{% endblock %}
+{% block title %}{{ course.title }} | {{ _('الأكاديمية التدريبية', 'Training Academy') }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,54 +8,54 @@
         <div class="col-lg-8">
             <div class="card card-custom p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ course.delivery_mode }}</span>
-                    <span class="badge bg-success bg-opacity-10 text-success fs-6">{{ course.duration_hours }} ساعة معتمدة</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary fs-6">{{ course.get_delivery_mode_label(current_lang) }}</span>
+                    <span class="badge bg-success bg-opacity-10 text-success fs-6">{{ course.duration_hours }} {{ _('ساعة معتمدة', 'Accredited Hours') }}</span>
                 </div>
 
                 <h2 class="fw-bold text-dark mb-3">{{ course.title }}</h2>
                 <div class="text-muted small mb-4">
-                    <i class="bi bi-person ms-1 text-primary"></i> المدرب: <strong>{{ course.trainer_name }}</strong> ({{ course.trainer_title or 'خبير ريادي' }})
+                    <i class="bi bi-person ms-1 text-primary"></i> {{ _('المدرب', 'Trainer') }}: <strong>{{ course.trainer_name }}</strong> ({{ course.trainer_title or _('خبير ريادي', 'Entrepreneurial Expert') }})
                     <span class="mx-2">|</span>
-                    <i class="bi bi-calendar-event ms-1 text-success"></i> موعد الانعقاد: <strong>{{ course.start_date.strftime('%Y-%m-%d %H:%M') }}</strong>
+                    <i class="bi bi-calendar-event ms-1 text-success"></i> {{ _('موعد الانعقاد', 'Date & Time') }}: <strong>{{ course.start_date.strftime('%Y-%m-%d %H:%M') }}</strong>
                 </div>
 
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">وصف ومحاور الدورة</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('وصف ومحاور الدورة', 'Course Overview & Modules') }}</h5>
                 <p class="text-secondary leading-relaxed mb-4">{{ course.description }}</p>
 
                 {% if course.learning_objectives %}
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">مخرجات التعلم والمهارات المكتسبة</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('مخرجات التعلم والمهارات المكتسبة', 'Learning Outcomes & Acquired Skills') }}</h5>
                     <div class="text-secondary leading-relaxed mb-4" style="white-space: pre-line;">{{ course.learning_objectives }}</div>
                 {% endif %}
 
                 {% if course.prerequisites %}
-                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">المتطلبات المسبقة</h5>
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('المتطلبات المسبقة', 'Prerequisites') }}</h5>
                     <p class="text-secondary mb-4">{{ course.prerequisites }}</p>
                 {% endif %}
             </div>
 
             <!-- نموذج التسجيل بالدورة -->
             <div class="card card-custom p-4 shadow-sm border-top border-4 border-success" id="enroll-section">
-                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-pencil-square text-success ms-2"></i>التسجيل في البرنامج التدريبي</h4>
+                <h4 class="fw-bold text-dark mb-3"><i class="bi bi-pencil-square text-success ms-2"></i>{{ _('التسجيل في البرنامج التدريبي', 'Enroll in Training Program') }}</h4>
 
                 {% if is_already_enrolled %}
                     <div class="alert alert-success d-flex align-items-center gap-2 mb-0">
                         <i class="bi bi-check-circle-fill fs-4"></i>
-                        <div>أنت مسجل بالفعل في هذه الدورة! ستصلك تفاصيل الحضور والمواد التعليمية عبر بريدك وحسابك.</div>
+                        <div>{{ _('أنت مسجل بالفعل في هذه الدورة! ستصلك تفاصيل الحضور والمواد التعليمية عبر بريدك وحسابك.', 'You are already registered for this course! Access details and materials will be sent to your email and dashboard.') }}</div>
                     </div>
                 {% elif is_full %}
                     <div class="alert alert-danger d-flex align-items-center gap-3 mb-0 p-3 border-2">
                         <i class="bi bi-exclamation-octagon-fill fs-3 text-danger"></i>
                         <div>
-                            <h6 class="fw-bold mb-1">اكتمل العدد المحدد للتسجيل</h6>
-                            <p class="mb-0 small">عذراً، نعتذر منك! لقد اكتمل العدد الأقصى المحدد للمقاعد في هذا البرنامج التدريبي وتم إغلاق باب التسجيل.</p>
+                            <h6 class="fw-bold mb-1">{{ _('اكتمل العدد المحدد للتسجيل', 'Registration Capacity Reached') }}</h6>
+                            <p class="mb-0 small">{{ _('عذراً، نعتذر منك! لقد اكتمل العدد الأقصى المحدد للمقاعد في هذا البرنامج التدريبي وتم إغلاق باب التسجيل.', 'We apologize! The maximum number of seats has been filled and registration is currently closed.') }}</p>
                         </div>
                     </div>
                 {% elif is_closed %}
                     <div class="alert alert-secondary d-flex align-items-center gap-3 mb-0 p-3">
                         <i class="bi bi-lock-fill fs-3 text-secondary"></i>
                         <div>
-                            <h6 class="fw-bold mb-1">التسجيل مغلق حالياً</h6>
-                            <p class="mb-0 small">التسجيل في هذا البرنامج التدريبي غير متاح حالياً أو تم إيقافه من قبل الإدارة.</p>
+                            <h6 class="fw-bold mb-1">{{ _('التسجيل مغلق حالياً', 'Registration Closed') }}</h6>
+                            <p class="mb-0 small">{{ _('التسجيل في هذا البرنامج التدريبي غير متاح حالياً أو تم إيقافه من قبل الإدارة.', 'Registration for this program is currently closed or has concluded.') }}</p>
                         </div>
                     </div>
                 {% elif current_user.is_authenticated %}
@@ -64,35 +64,35 @@
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
-                                <label class="form-label fw-bold text-dark">{{ form.full_name.label }}</label>
+                                <label class="form-label fw-bold text-dark">{{ _(form.full_name.label.text, 'Full Name') }}</label>
                                 {{ form.full_name(class="form-control", value=current_user.full_name) }}
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-bold text-dark">{{ form.email.label }}</label>
+                                <label class="form-label fw-bold text-dark">{{ _(form.email.label.text, 'Email Address') }}</label>
                                 {{ form.email(class="form-control", value=current_user.email) }}
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-bold text-dark">{{ form.phone.label }}</label>
+                                <label class="form-label fw-bold text-dark">{{ _(form.phone.label.text, 'Phone Number') }}</label>
                                 {{ form.phone(class="form-control", value=current_user.phone or '') }}
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold text-dark">{{ form.motivation.label }}</label>
-                            {{ form.motivation(class="form-control", rows=3, placeholder="لماذا ترغب في حضور هذا البرنامج التدريبي؟") }}
+                            <label class="form-label fw-bold text-dark">{{ _(form.motivation.label.text, 'What is your motivation to enroll in this course?') }}</label>
+                            {{ form.motivation(class="form-control", rows=3, placeholder=_('لماذا ترغب في حضور هذا البرنامج التدريبي؟', 'Why do you wish to join this program and what do you hope to learn?')) }}
                         </div>
 
                         <button type="submit" class="btn btn-primary px-4 py-2">
-                            <i class="bi bi-check2-circle ms-1"></i>تأكيد الالتحاق بالدورة
+                            <i class="bi bi-check2-circle ms-1"></i>{{ _('تأكيد الالتحاق بالدورة', 'Confirm Course Enrollment') }}
                         </button>
                     </form>
                 {% else %}
                     <div class="text-center py-4 bg-light rounded-3">
                         <i class="bi bi-person-lock text-muted fs-2 d-block mb-2"></i>
-                        <h5 class="fw-bold text-dark">يرجى تسجيل الدخول للالتحاق بالدورة</h5>
-                        <p class="text-muted small mb-3">التسجيل مجاني ويتطلب حساباً لربط الشهادة المعتمدة بملفك بعد إتمام الدورة.</p>
-                        <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-primary btn-sm px-4">تسجيل الدخول</a>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm px-4">إنشاء حساب جديد</a>
+                        <h5 class="fw-bold text-dark">{{ _('يرجى تسجيل الدخول للالتحاق بالدورة', 'Please sign in to enroll in this course') }}</h5>
+                        <p class="text-muted small mb-3">{{ _('التسجيل مجاني ويتطلب حساباً لربط الشهادة المعتمدة بملفك بعد إتمام الدورة.', 'Enrollment is free and requires an account to link your certified completion certificate to your profile.') }}</p>
+                        <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-primary btn-sm px-4">{{ _('تسجيل الدخول', 'Sign In') }}</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-sm px-4">{{ _('إنشاء حساب جديد', 'Create an Account') }}</a>
                     </div>
                 {% endif %}
             </div>
@@ -101,42 +101,42 @@
         <!-- بطاقة جانبية -->
         <div class="col-lg-4">
             <div class="card card-custom p-4">
-                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">بطاقة البرنامج</h5>
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ _('بطاقة البرنامج', 'Program Overview') }}</h5>
                 <ul class="list-unstyled small d-flex flex-column gap-3 mb-4">
                     <li>
-                        <div class="text-muted">الشهادة:</div>
-                        <div class="fw-bold text-dark"><i class="bi bi-award text-success ms-1"></i>شهادة حضور معتمدة من الجمعية</div>
+                        <div class="text-muted">{{ _('الشهادة:', 'Certificate:') }}</div>
+                        <div class="fw-bold text-dark"><i class="bi bi-award text-success ms-1"></i>{{ _('شهادة حضور معتمدة من الجمعية', 'Accredited Attendance Certificate from Society') }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">رسوم الاشتراك:</div>
-                        <div class="fw-bold text-success fs-6">مجاني 100% مدعوم من الجمعية</div>
+                        <div class="text-muted">{{ _('رسوم الاشتراك:', 'Tuition Fee:') }}</div>
+                        <div class="fw-bold text-success fs-6">{{ _('مجاني 100% مدعوم من الجمعية', '100% Free - Society Subsidized') }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">نمط التدريب والمقر:</div>
-                        <div class="fw-bold text-dark">{{ course.location_or_link or 'مقر الجمعية بجامعة غريان وبث افتراضي' }}</div>
+                        <div class="text-muted">{{ _('نمط التدريب والمقر:', 'Delivery & Venue:') }}</div>
+                        <div class="fw-bold text-dark">{{ _(course.location_or_link or 'مقر الجمعية بجامعة غريان وبث افتراضي', 'Society HQ at University of Gharyan & Virtual Stream') }}</div>
                     </li>
                     <li>
-                        <div class="text-muted">حالة المقاعد:</div>
+                        <div class="text-muted">{{ _('حالة المقاعد:', 'Seat Status:') }}</div>
                         <div class="fw-bold">
                             {% if is_full %}
-                                <span class="badge bg-danger fs-6"><i class="bi bi-x-circle ms-1"></i>اكتمل العدد المحدد للتسجيل</span>
+                                <span class="badge bg-danger fs-6"><i class="bi bi-x-circle ms-1"></i>{{ _('اكتمل العدد المحدد للتسجيل', 'Fully Booked') }}</span>
                             {% elif is_closed %}
-                                <span class="badge bg-secondary fs-6"><i class="bi bi-lock ms-1"></i>التسجيل مغلق</span>
+                                <span class="badge bg-secondary fs-6"><i class="bi bi-lock ms-1"></i>{{ _('التسجيل مغلق', 'Registration Closed') }}</span>
                             {% else %}
-                                <span class="text-primary fs-6">{{ course.max_seats - (actual_enrolled_count or 0) }} مقعد شاغر من أصل {{ course.max_seats }}</span>
+                                <span class="text-primary fs-6">{{ course.max_seats - (actual_enrolled_count or 0) }} {{ _('مقعد شاغر من أصل', 'seats remaining out of') }} {{ course.max_seats }}</span>
                             {% endif %}
                         </div>
                     </li>
                 </ul>
 
                 {% if is_already_enrolled %}
-                    <button class="btn btn-success w-100" disabled><i class="bi bi-check2-circle ms-1"></i>أنت مسجل بالفعل</button>
+                    <button class="btn btn-success w-100" disabled><i class="bi bi-check2-circle ms-1"></i>{{ _('أنت مسجل بالفعل', 'Already Enrolled') }}</button>
                 {% elif is_full %}
-                    <button class="btn btn-danger w-100" disabled><i class="bi bi-x-circle ms-1"></i>اكتمل العدد المحدد للتسجيل</button>
+                    <button class="btn btn-danger w-100" disabled><i class="bi bi-x-circle ms-1"></i>{{ _('اكتمل العدد المحدد للتسجيل', 'Registration Capacity Reached') }}</button>
                 {% elif is_closed %}
-                    <button class="btn btn-secondary w-100" disabled><i class="bi bi-lock ms-1"></i>التسجيل مغلق</button>
+                    <button class="btn btn-secondary w-100" disabled><i class="bi bi-lock ms-1"></i>{{ _('التسجيل مغلق', 'Registration Closed') }}</button>
                 {% else %}
-                    <a href="#enroll-section" class="btn btn-primary w-100">سجل الآن</a>
+                    <a href="#enroll-section" class="btn btn-primary w-100">{{ _('سجل الآن', 'Enroll Now') }}</a>
                 {% endif %}
             </div>
         </div>
