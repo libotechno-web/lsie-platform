@@ -14,6 +14,16 @@ from app.utils.helpers import save_uploaded_file, slugify_text, create_notificat
 dashboard_bp = Blueprint('dashboard', __name__)
 
 
+@dashboard_bp.before_request
+def require_approved_membership():
+    """حظر وصول أي مستخدم للوحة التحكم أو نشر المشاريع حتى يتم اعتماده وتأكيده من قبل الأدمن"""
+    if not current_user.is_authenticated:
+        return None # يتولى @login_required التوجيه لصفحة الدخول
+    if not current_user.is_approved_member and not current_user.is_admin:
+        flash('عذراً، حسابك بانتظار المراجعة والاعتماد من قبل الأدمن الرئيسي. لا يمكنك الوصول للوحة التحكم أو نشر الطلبات والمشاريع قبل الاعتماد.', 'warning')
+        return redirect(url_for('auth.pending_approval', email=current_user.email))
+
+
 @dashboard_bp.route('/')
 @login_required
 def index():

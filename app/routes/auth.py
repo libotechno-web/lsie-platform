@@ -23,6 +23,11 @@ def login():
             if not user.is_active:
                 flash('هذا الحساب موقوف حالياً. يرجى التواصل مع إدارة الجمعية.', 'danger')
                 return render_template('auth/login.html', form=form)
+
+            # التحقق من اعتماد وتأكيد الحساب من قبل الأدمن الرئيسي
+            if not user.is_approved_member and not user.is_admin:
+                flash('طلب انضمامك لمجتمع الابتكار قيد المراجعة والاعتماد من قبل إدارة الجمعية. لا يمكنك الدخول للوحة التحكم أو نشر الطلبات إلا بعد تأكيد واعتماد الحساب من قبل الأدمن. ستصلك رسالة تأكيد على بريدك الإلكتروني فور الاعتماد.', 'warning')
+                return redirect(url_for('auth.pending_approval', email=user.email))
                 
             login_user(user, remember=form.remember_me.data)
             log_audit_action('user_login', 'user', user.id, f"تسجيل دخول المستخدم {user.email}", user)
@@ -90,21 +95,28 @@ def register():
         db.session.add(profile)
         db.session.commit()
         
-        login_user(user)
-        log_audit_action('user_registered', 'user', user.id, f"تسجيل حساب جديد: {user.email} بدور {user.account_type} بانتظار التأكيد", user)
+        # عدم تسجيل الدخول التلقائي - ينتظر المستخدم الاعتماد والتأكيد من الأدمن
+        log_audit_action('user_registered', 'user', user.id, f"تسجيل حساب جديد: {user.email} بدور {user.account_type} بانتظار التأكيد والاعتماد", user)
         
         create_notification(
             user.id,
             'مرحباً بك في مجتمع الابتكار!',
             'تم استلام طلب انضمامك بنجاح. طلبك قيد المراجعة والاعتماد من قبل إدارة الجمعية، وستصلك رسالة تأكيد على بريدك الإلكتروني فور الاعتماد.',
-            link=url_for('dashboard.index'),
+            link=url_for('public.index'),
             icon='bi-hourglass-split'
         )
         
-        flash('تم استلام طلب انضمامك إلى مجتمع الابتكار بنجاح! طلبك قيد المراجعة والاعتماد من قبل إدارة الجمعية، وستصلك رسالة تأكيد رسمية على بريدك الإلكتروني فور الاعتماد.', 'info')
-        return redirect(url_for('dashboard.index'))
+        flash('تم استلام طلب تسجيلك بنجاح! طلبك قيد المراجعة والاعتماد من قبل إدارة الجمعية. لا يمكنك الدخول للوحة التحكم أو نشر الطلبات حتى يتم اعتماد الحساب من قبل الأدمن. ستصلك رسالة تأكيد رسمية على بريدك الإلكتروني فور الاعتماد.', 'info')
+        return redirect(url_for('auth.pending_approval', email=user.email))
         
     return render_template('auth/register.html', form=form)
+
+
+@auth_bp.route('/pending-approval')
+def pending_approval():
+    """صفحة إشعار انتظار الاعتماد والتأكيد من الأدمن"""
+    email = request.args.get('email', '')
+    return render_template('auth/pending_approval.html', email=email)
 
 
 @auth_bp.route('/logout')

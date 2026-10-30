@@ -36,3 +36,16 @@ def reviewer_required(f):
 def editor_required(f):
     """صلاحية الوصول لمحرري المحتوى والمدراء"""
     return role_required('admin', 'editor')(f)
+
+
+def approved_required(f):
+    """التحقق من أن المستخدم معتمد ومؤكد رسمياً من قبل الإدارة"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('auth.login'))
+        if not current_user.is_approved_member and not current_user.is_admin:
+            flash('عذراً، يجب اعتماد وتأكيد حسابك من قبل الأدمن أولاً لتتمكن من الوصول ونشر المشاريع والطلبات.', 'warning')
+            return redirect(url_for('auth.pending_approval', email=current_user.email))
+        return f(*args, **kwargs)
+    return decorated_function
