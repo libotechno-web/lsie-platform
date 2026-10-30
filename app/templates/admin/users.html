@@ -202,6 +202,18 @@
                                                 {% endif %}
                                             </div>
                                         </div>
+                                        <div class="col-12">
+                                            <label class="text-muted small d-block mb-1">الأدوار والصلاحيات الممنوحة:</label>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% for r in u.roles %}
+                                                    <span class="badge bg-light text-dark border py-1 px-2">
+                                                        <i class="bi bi-shield-check text-primary ms-1"></i>{{ r.title_ar }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted small">لا توجد أدوار مخصصة</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="p-3 bg-light rounded-3 mb-3">

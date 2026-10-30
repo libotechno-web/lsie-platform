@@ -2,9 +2,54 @@
 
 {% block title %}تعديل المستخدم {{ user.full_name }}{% endblock %}
 
+{% block extra_css %}
+<style>
+.role-card, .status-card {
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    border-width: 1.5px !important;
+    user-select: none;
+    cursor: pointer;
+}
+.role-card:hover, .status-card:hover {
+    border-color: #94a3b8 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.role-card.is-active,
+.role-card:has(.role-checkbox:checked) {
+    border-color: var(--brand-primary, #0d6e3f) !important;
+    background-color: rgba(13, 110, 63, 0.04) !important;
+    box-shadow: 0 4px 14px rgba(13, 110, 63, 0.1) !important;
+}
+.status-card.is-active,
+.status-card:has(.form-check-input:checked) {
+    border-color: var(--brand-primary, #0d6e3f) !important;
+    background-color: rgba(13, 110, 63, 0.03) !important;
+}
+.role-card .form-check-input:checked,
+.status-card .form-check-input:checked,
+.email-switch-card .form-check-input:checked {
+    background-color: var(--brand-primary, #0d6e3f);
+    border-color: var(--brand-primary, #0d6e3f);
+}
+.role-icon-box {
+    transition: transform 0.2s ease;
+}
+.role-card:hover .role-icon-box {
+    transform: scale(1.08);
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.shadow-xs {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-xl-9 col-lg-10">
         <!-- شريط تنبيه إذا كان المستخدم بانتظار التأكيد -->
         {% if not user.is_approved_member %}
             <div class="card bg-warning bg-opacity-10 border-warning border-2 p-3 mb-4 rounded-3 shadow-sm">
@@ -32,22 +77,37 @@
             </div>
         {% endif %}
 
-        <div class="card card-custom p-4 shadow-sm">
-            <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
-                <i class="bi bi-person-gear text-primary ms-2"></i>تعديل المستخدم والصلاحيات: {{ user.full_name }}
-            </h4>
+        <div class="card card-custom p-4 shadow-sm border-0 rounded-4">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 flex-wrap gap-2">
+                <h4 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                    <span class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="bi bi-person-gear fs-5"></i>
+                    </span>
+                    <span>تعديل بيانات المستخدم والأدوار: {{ user.full_name }}</span>
+                </h4>
+                <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-right ms-1"></i>العودة للمستخدمين
+                </a>
+            </div>
 
             <form method="POST">
                 {{ form.hidden_tag() }}
 
+                <!-- البيانات الأساسية -->
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold text-dark">{{ form.full_name.label }}</label>
                         {{ form.full_name(class="form-control") }}
+                        {% if form.full_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.full_name.errors[0] }}</div>
+                        {% endif %}
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold text-dark">{{ form.email.label }}</label>
                         {{ form.email(class="form-control") }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">{{ form.email.errors[0] }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -78,7 +138,7 @@
                     <div class="col-12">
                         <label class="form-label fw-bold text-dark">السيرة الذاتية (CV)</label>
                         {% if user.cv_file %}
-                            <div class="d-flex align-items-center justify-content-between p-3 border rounded bg-light">
+                            <div class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="bi bi-file-earmark-pdf-fill text-danger fs-3"></i>
                                     <div>
@@ -91,7 +151,7 @@
                                 </a>
                             </div>
                         {% else %}
-                            <div class="p-2 border rounded bg-light text-muted small">
+                            <div class="p-2 border rounded-3 bg-light text-muted small">
                                 <i class="bi bi-x-circle ms-1 text-secondary"></i>لم يتم رفع سيرة ذاتية لهذا المستخدم
                             </div>
                         {% endif %}
@@ -103,56 +163,264 @@
                     {{ form.previous_activities(class="form-control", rows="3") }}
                 </div>
 
-                <!-- الأدوار والصلاحيات (RBAC) -->
-                <div class="mb-4 p-3 bg-light rounded-3">
-                    <label class="form-label fw-bold text-dark mb-2">الأدوار الممنوحة للمستخدم (يمكن اختيار أكثر من دور)</label>
-                    <div class="d-flex flex-column gap-2">
-                        {% for subfield in form.roles %}
-                            <div class="form-check">
-                                {{ subfield(class="form-check-input") }}
-                                {{ subfield.label(class="form-check-label text-dark") }}
+                <!-- الأدوار والصلاحيات الممنوحة للمستخدم (RBAC) -->
+                <div class="card border border-light-subtle rounded-4 p-3 p-md-4 mb-4 shadow-xs bg-light bg-opacity-40">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 mb-3 border-bottom">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                    <i class="bi bi-shield-check fs-5"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-0">الأدوار والصلاحيات الممنوحة للمستخدم</h5>
+                                    <p class="text-muted small mb-0">يمكنك اختيار أكثر من دور لتحديد مستوى الصلاحيات ومسار الحساب في المنصة</p>
+                                </div>
                             </div>
-                        {% endfor %}
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-white text-dark border px-3 py-2 fw-semibold shadow-xs" id="rolesCounterBadge">
+                                <i class="bi bi-check2-circle text-primary ms-1"></i><span id="selectedRolesCount">0</span> أدوار محددة
+                            </span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSelectAllRoles" title="تحديد جميع الأدوار">
+                                <i class="bi bi-check-all ms-1"></i>الكل
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnDeselectAllRoles" title="إلغاء تحديد جميع الأدوار">
+                                <i class="bi bi-x-circle ms-1"></i>إلغاء التحديد
+                            </button>
+                        </div>
+                    </div>
+
+                    {% if form.roles.errors %}
+                        <div class="alert alert-danger py-2 small mb-3">
+                            <i class="bi bi-exclamation-triangle ms-1"></i>{{ form.roles.errors[0] }}
+                        </div>
+                    {% endif %}
+
+                    <!-- 1. أدوار النظام والإدارة -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="fw-bold text-dark small d-flex align-items-center gap-2">
+                                <i class="bi bi-shield-shaded text-danger"></i>
+                                <span>صلاحيات النظام وإدارة المنصة</span>
+                            </span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 small px-2 py-1">
+                                تحكم إداري (Admin / Staff)
+                            </span>
+                        </div>
+                        <div class="row g-3">
+                            {% for role in system_roles %}
+                                <div class="col-md-6">
+                                    <label class="role-card h-100 p-3 rounded-3 border bg-white d-flex flex-column justify-content-between position-relative cursor-pointer transition-all {% if role.is_checked %}border-primary shadow-sm is-active{% else %}border-light-subtle{% endif %}" for="role_{{ role.id }}">
+                                        <div>
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="role-icon-box rounded-circle d-flex align-items-center justify-content-center bg-{{ role.color }} bg-opacity-10 text-{{ role.color }}" style="width: 38px; height: 38px; min-width: 38px;">
+                                                        <i class="bi {{ role.icon }} fs-5"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ role.title }}</div>
+                                                        <span class="badge bg-light text-secondary border font-monospace px-2 py-0" dir="ltr" style="font-size: 0.72rem;">{{ role.tag }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-check form-switch m-0 p-0 pe-2">
+                                                    <input class="form-check-input role-checkbox" type="checkbox" name="roles" value="{{ role.id }}" id="role_{{ role.id }}" {% if role.is_checked %}checked{% endif %} style="width: 2.2rem; height: 1.2rem; cursor: pointer;">
+                                                </div>
+                                            </div>
+                                            <p class="text-muted small mb-0 pe-1" style="font-size: 0.82rem; line-height: 1.55;">
+                                                {{ role.desc }}
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- 2. أدوار بيئة ومجتمع الابتكار -->
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="fw-bold text-dark small d-flex align-items-center gap-2">
+                                <i class="bi bi-diagram-3-fill text-primary"></i>
+                                <span>مسارات وأدوار مجتمع الابتكار</span>
+                            </span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 small px-2 py-1">
+                                مسارات الأعضاء (Community)
+                            </span>
+                        </div>
+                        <div class="row g-3">
+                            {% for role in community_roles %}
+                                <div class="col-md-6">
+                                    <label class="role-card h-100 p-3 rounded-3 border bg-white d-flex flex-column justify-content-between position-relative cursor-pointer transition-all {% if role.is_checked %}border-primary shadow-sm is-active{% else %}border-light-subtle{% endif %}" for="role_{{ role.id }}">
+                                        <div>
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="role-icon-box rounded-circle d-flex align-items-center justify-content-center bg-{{ role.color }} bg-opacity-10 text-{{ role.color }}" style="width: 38px; height: 38px; min-width: 38px;">
+                                                        <i class="bi {{ role.icon }} fs-5"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ role.title }}</div>
+                                                        <span class="badge bg-light text-secondary border font-monospace px-2 py-0" dir="ltr" style="font-size: 0.72rem;">{{ role.tag }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-check form-switch m-0 p-0 pe-2">
+                                                    <input class="form-check-input role-checkbox" type="checkbox" name="roles" value="{{ role.id }}" id="role_{{ role.id }}" {% if role.is_checked %}checked{% endif %} style="width: 2.2rem; height: 1.2rem; cursor: pointer;">
+                                                </div>
+                                            </div>
+                                            <p class="text-muted small mb-0 pe-1" style="font-size: 0.82rem; line-height: 1.55;">
+                                                {{ role.desc }}
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            {{ form.is_active(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="is_active">{{ form.is_active.label.text }}</label>
+                <!-- إعدادات وتصاريح الحساب -->
+                <div class="card border border-light-subtle rounded-4 p-3 mb-4 bg-light bg-opacity-40">
+                    <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-person-check text-primary fs-5"></i>
+                        <span>حالة الحساب والاعتماد الرسمي</span>
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="card h-100 p-3 rounded-3 border bg-white cursor-pointer transition-all status-card" for="is_active">
+                                <div class="form-check form-switch d-flex align-items-center justify-content-between p-0 m-0">
+                                    <div>
+                                        <div class="fw-bold text-dark small">{{ form.is_active.label.text }}</div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">السماح للمستخدم بتسجيل الدخول</small>
+                                    </div>
+                                    {{ form.is_active(class="form-check-input ms-2", style="width: 2.2rem; height: 1.2rem; cursor: pointer;") }}
+                                </div>
+                            </label>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            {{ form.is_verified(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="is_verified">{{ form.is_verified.label.text }}</label>
+                        <div class="col-md-4">
+                            <label class="card h-100 p-3 rounded-3 border bg-white cursor-pointer transition-all status-card" for="is_verified">
+                                <div class="form-check form-switch d-flex align-items-center justify-content-between p-0 m-0">
+                                    <div>
+                                        <div class="fw-bold text-dark small">{{ form.is_verified.label.text }}</div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">إظهار شارة التوثيق الرسمية</small>
+                                    </div>
+                                    {{ form.is_verified(class="form-check-input ms-2", style="width: 2.2rem; height: 1.2rem; cursor: pointer;") }}
+                                </div>
+                            </label>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            {{ form.is_approved_member(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="is_approved_member">{{ form.is_approved_member.label.text }}</label>
+                        <div class="col-md-4">
+                            <label class="card h-100 p-3 rounded-3 border bg-white cursor-pointer transition-all status-card" for="is_approved_member">
+                                <div class="form-check form-switch d-flex align-items-center justify-content-between p-0 m-0">
+                                    <div>
+                                        <div class="fw-bold text-dark small">{{ form.is_approved_member.label.text }}</div>
+                                        <small class="text-muted" style="font-size: 0.75rem;">قبول واعتماد الانضمام رسمياً</small>
+                                    </div>
+                                    {{ form.is_approved_member(class="form-check-input ms-2", style="width: 2.2rem; height: 1.2rem; cursor: pointer;") }}
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-4 p-3 bg-light border rounded-3">
-                    <div class="form-check">
-                        {{ form.send_confirmation_email(class="form-check-input") }}
-                        <label class="form-check-label fw-bold text-dark" for="send_confirmation_email">
-                            {{ form.send_confirmation_email.label.text }}
-                        </label>
-                        <small class="text-muted d-block">عند تحديد هذا الخيار واعتماد العضوية، سيتم إرسال بريد إلكتروني ترحيبي ورسمي للمستخدم فوراً.</small>
+                <!-- إشعار البريد الإلكتروني -->
+                <div class="mb-4 p-3 bg-white border border-light-subtle rounded-3 shadow-xs email-switch-card">
+                    <div class="form-check form-switch d-flex align-items-center gap-3">
+                        {{ form.send_confirmation_email(class="form-check-input", style="width: 2.2rem; height: 1.2rem; cursor: pointer;") }}
+                        <div>
+                            <label class="form-check-label fw-bold text-dark cursor-pointer mb-0" for="send_confirmation_email">
+                                {{ form.send_confirmation_email.label.text }}
+                            </label>
+                            <small class="text-muted d-block" style="font-size: 0.8rem;">عند تفعيل هذا الخيار واعتماد العضوية، سيتم إرسال بريد إلكتروني ترحيبي ورسمي للمستخدم فوراً.</small>
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                    <a href="{{ url_for('admin.users') }}" class="btn btn-light">إلغاء والعودة</a>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-light px-4">إلغاء والعودة</a>
                     {{ form.submit(class="btn btn-primary px-4") }}
                 </div>
             </form>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.role-checkbox');
+    const countSpan = document.getElementById('selectedRolesCount');
+    const btnSelectAll = document.getElementById('btnSelectAllRoles');
+    const btnDeselectAll = document.getElementById('btnDeselectAllRoles');
+
+    function updateCardState(checkbox) {
+        const card = checkbox.closest('.role-card');
+        if (card) {
+            if (checkbox.checked) {
+                card.classList.add('is-active', 'border-primary', 'shadow-sm');
+                card.classList.remove('border-light-subtle');
+            } else {
+                card.classList.remove('is-active', 'border-primary', 'shadow-sm');
+                card.classList.add('border-light-subtle');
+            }
+        }
+    }
+
+    function updateCounter() {
+        let count = 0;
+        checkboxes.forEach(function(cb) {
+            if (cb.checked) count++;
+            updateCardState(cb);
+        });
+        if (countSpan) {
+            countSpan.textContent = count;
+        }
+    }
+
+    checkboxes.forEach(function(cb) {
+        cb.addEventListener('change', updateCounter);
+    });
+
+    if (btnSelectAll) {
+        btnSelectAll.addEventListener('click', function(e) {
+            e.preventDefault();
+            checkboxes.forEach(function(cb) {
+                cb.checked = true;
+            });
+            updateCounter();
+        });
+    }
+
+    if (btnDeselectAll) {
+        btnDeselectAll.addEventListener('click', function(e) {
+            e.preventDefault();
+            checkboxes.forEach(function(cb) {
+                cb.checked = false;
+            });
+            updateCounter();
+        });
+    }
+
+    // تهيئة البطاقات التفاعلية للحالة
+    const statusCheckboxes = document.querySelectorAll('.status-card .form-check-input');
+    function updateStatusCard(checkbox) {
+        const card = checkbox.closest('.status-card');
+        if (card) {
+            if (checkbox.checked) {
+                card.classList.add('is-active', 'border-primary');
+            } else {
+                card.classList.remove('is-active', 'border-primary');
+            }
+        }
+    }
+
+    statusCheckboxes.forEach(function(scb) {
+        scb.addEventListener('change', function() {
+            updateStatusCard(scb);
+        });
+        updateStatusCard(scb);
+    });
+
+    // تهيئة أولية عند التحميل
+    updateCounter();
+});
+</script>
 {% endblock %}

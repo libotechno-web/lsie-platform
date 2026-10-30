@@ -120,7 +120,82 @@ def edit_user(user_id):
     form = UserManagementForm(obj=user)
     
     all_roles = Role.query.all()
-    form.roles.choices = [(r.id, f"{r.title_ar} ({r.name})") for r in all_roles]
+    form.roles.choices = [(r.id, r.title_ar) for r in all_roles]
+    
+    ROLE_METADATA = {
+        'admin': {
+            'title': 'مدير النظام',
+            'tag': 'Admin',
+            'is_system_group': True,
+            'icon': 'bi-shield-lock-fill',
+            'color': 'danger',
+            'desc': 'صلاحيات إدارية كاملة للمنصة وإعداداتها ومستخدميها والتحكم الشامل.'
+        },
+        'editor': {
+            'title': 'محرر محتوى',
+            'tag': 'Editor',
+            'is_system_group': True,
+            'icon': 'bi-pencil-square',
+            'color': 'primary',
+            'desc': 'إدارة وتحرير الأخبار والمقالات والفعاليات والصفحات التعريفية للمنصة.'
+        },
+        'reviewer': {
+            'title': 'مراجع ومقيم مشاريع',
+            'tag': 'Reviewer',
+            'is_system_group': True,
+            'icon': 'bi-clipboard-check-fill',
+            'color': 'warning',
+            'desc': 'مراجعة الأفكار والمشاريع الاستثمارية وتقييمها واعتماد انضمام الأعضاء.'
+        },
+        'member': {
+            'title': 'عضو الجمعية',
+            'tag': 'Member',
+            'is_system_group': True,
+            'icon': 'bi-person-badge-fill',
+            'color': 'success',
+            'desc': 'عضوية معتمدة ومسجلة رسمياً بالجمعية العلمية ومجتمع الابتكار.'
+        },
+        'innovator': {
+            'title': 'مبتكر / صاحب فكرة',
+            'tag': 'Innovator',
+            'is_system_group': False,
+            'icon': 'bi-lightbulb-fill',
+            'color': 'warning',
+            'desc': 'أصحاب الحلول الابتكارية وبراءات الاختراع والأفكار القابلة للتطبيق.'
+        },
+        'startup': {
+            'title': 'شركة ناشئة / رائد أعمال',
+            'tag': 'Startup',
+            'is_system_group': False,
+            'icon': 'bi-rocket-takeoff-fill',
+            'color': 'primary',
+            'desc': 'الشركات الناشئة ورواد الأعمال في مراحل التأسيس والنمو والاحتضان.'
+        },
+        'investor': {
+            'title': 'مستثمر / جهة تمويل',
+            'tag': 'Investor',
+            'is_system_group': False,
+            'icon': 'bi-cash-coin',
+            'color': 'success',
+            'desc': 'المستثمرون الأفراد وصناديق التمويل والاستثمار الجريء ودعم المشاريع.'
+        },
+        'expert': {
+            'title': 'خبير / موجه / مدرب',
+            'tag': 'Expert',
+            'is_system_group': False,
+            'icon': 'bi-mortarboard-fill',
+            'color': 'info',
+            'desc': 'الخبراء والاستشاريون في مجالات التوجيه والإرشاد والتدريب التخصصي.'
+        },
+        'partner_org': {
+            'title': 'مؤسسة داعمة / جامعة',
+            'tag': 'Partner',
+            'is_system_group': False,
+            'icon': 'bi-buildings-fill',
+            'color': 'secondary',
+            'desc': 'الجامعات وحاضنات الأعمال ومراكز البحوث والمؤسسات الشريكة للجمعية.'
+        }
+    }
     
     if request.method == 'GET':
         form.roles.data = [r.id for r in user.roles]
@@ -170,7 +245,42 @@ def edit_user(user_id):
         log_audit_action('user_updated', 'user', user.id, f"تعديل بيانات المستخدم: {user.email}", current_user)
         return redirect(url_for('admin.users'))
         
-    return render_template('admin/user_edit.html', user=user, form=form)
+    current_selected_ids = set(form.roles.data or [])
+    system_roles = []
+    community_roles = []
+
+    for r in all_roles:
+        meta = ROLE_METADATA.get(r.name, {
+            'title': r.title_ar,
+            'tag': r.name.upper(),
+            'is_system_group': r.is_system,
+            'icon': 'bi-shield-check',
+            'color': 'secondary',
+            'desc': r.description or 'صلاحيات هذا الدور في المنصة.'
+        })
+        role_item = {
+            'id': r.id,
+            'name': r.name,
+            'title': meta['title'],
+            'tag': meta['tag'],
+            'icon': meta['icon'],
+            'color': meta['color'],
+            'desc': r.description or meta['desc'],
+            'is_system': r.is_system,
+            'is_checked': r.id in current_selected_ids
+        }
+        if meta.get('is_system_group', r.is_system):
+            system_roles.append(role_item)
+        else:
+            community_roles.append(role_item)
+
+    return render_template(
+        'admin/user_edit.html',
+        user=user,
+        form=form,
+        system_roles=system_roles,
+        community_roles=community_roles
+    )
 
 
 @admin_bp.route('/users/<int:user_id>/confirm-registration', methods=['POST'])

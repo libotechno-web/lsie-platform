@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, SubmitField, BooleanField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Optional
+from wtforms.widgets import ListWidget, CheckboxInput
 from flask_wtf.file import FileField, FileAllowed
 
 
@@ -94,5 +95,10 @@ class UserManagementForm(FlaskForm):
     is_verified = BooleanField('حساب موثق رسمياً')
     is_approved_member = BooleanField('عضوية معتمدة بالجمعية')
     send_confirmation_email = BooleanField('إرسال بريد إلكتروني للمستخدم بتأكيد التسجيل والاعتماد', default=True)
-    roles = SelectMultipleField('الأدوار والصلاحيات الممنوحة للمستخدم', coerce=int)
+    roles = SelectMultipleField(
+        'الأدوار والصلاحيات الممنوحة للمستخدم',
+        coerce=int,
+        widget=ListWidget(prefix_label=False),
+        option_widget=CheckboxInput()
+    )
     submit = SubmitField('تحديث بيانات المستخدم')
