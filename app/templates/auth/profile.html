@@ -59,9 +59,31 @@
                             {{ form.city(class="form-control") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark">{{ form.headline.label }}</label>
-                            {{ form.headline(class="form-control", placeholder="مثال: مهندس ذكاء اصطناعي ومؤسس مشروع ناشئ") }}
+                            <label class="form-label fw-bold text-dark">{{ form.current_job.label }}</label>
+                            {{ form.current_job(class="form-control", placeholder="مثال: مهندس ذكاء اصطناعي، باحث أكاديمي") }}
                         </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.headline.label }}</label>
+                            {{ form.headline(class="form-control", placeholder="العنوان أو المسمى التعريفي المختصر") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">{{ form.cv_file.label }}</label>
+                            {{ form.cv_file(class="form-control", accept=".pdf,.doc,.docx") }}
+                            {% if current_user.cv_file %}
+                                <div class="mt-1 small">
+                                    <span class="text-success fw-bold"><i class="bi bi-file-earmark-check ms-1"></i>السيرة الذاتية الحالية مرفوعة:</span>
+                                    <a href="{{ url_for('static', filename=current_user.cv_file) }}" target="_blank" class="text-primary text-decoration-none ms-1">معاينة / تنزيل الملف</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">{{ form.previous_activities.label }}</label>
+                        {{ form.previous_activities(class="form-control", rows=3, placeholder="أعمال ونشاطات سابقة في مجالات الابتكار، ريادة الأعمال، مسابقات، أبحاث تطبيقية...") }}
                     </div>
 
                     <div class="mb-3">
@@ -116,13 +138,6 @@
                     </div>
 
                     <div class="p-3 bg-light rounded-3 mb-4">
-                        <div class="form-check mb-2">
-                            {{ form.is_public_in_directory(class="form-check-input") }}
-                            <label class="form-check-label fw-bold text-dark" for="is_public_in_directory">
-                                {{ form.is_public_in_directory.label.text }}
-                            </label>
-                            <small class="text-muted d-block">إظهار ملفك العام في دليل الابتكار الليبي لإتاحة فرص التشبيك.</small>
-                        </div>
                         <div class="form-check">
                             {{ form.available_for_mentoring(class="form-check-input") }}
                             <label class="form-check-label fw-bold text-dark" for="available_for_mentoring">

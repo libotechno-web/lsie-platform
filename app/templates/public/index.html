@@ -62,26 +62,26 @@
             </div>
             <!-- مسار 2 -->
             <div class="col">
-                <a href="{{ url_for('public.directory', tab='startups') }}" class="quick-path-card">
+                <a href="{{ url_for('public.programs') }}" class="quick-path-card">
                     <div class="quick-path-icon"><i class="bi bi-rocket-takeoff"></i></div>
                     <h5 class="fw-bold fs-6 mb-1">لدي شركة ناشئة</h5>
-                    <small class="text-muted">انضم للدليل واستفد من فرص التوسع</small>
+                    <small class="text-muted">انضم لمسرعات الأعمال وبرامج الدعم والتوسع</small>
                 </a>
             </div>
             <!-- مسار 3 -->
             <div class="col">
-                <a href="{{ url_for('public.directory', tab='investors') }}" class="quick-path-card">
+                <a href="{{ url_for('public.opportunities') }}" class="quick-path-card">
                     <div class="quick-path-icon"><i class="bi bi-cash-stack"></i></div>
-                    <h5 class="fw-bold fs-6 mb-1">أبحث عن مستثمر</h5>
-                    <small class="text-muted">تواصل مع جهات التمويل والاستثمار الجريء</small>
+                    <h5 class="fw-bold fs-6 mb-1">أبحث عن تمويل أو منحة</h5>
+                    <small class="text-muted">استكشف برامج المنح والتمويل والاستثمار المتاحة</small>
                 </a>
             </div>
             <!-- مسار 4 -->
             <div class="col">
-                <a href="{{ url_for('public.directory', tab='experts') }}" class="quick-path-card">
+                <a href="{{ url_for('public.contact') }}" class="quick-path-card">
                     <div class="quick-path-icon"><i class="bi bi-person-check"></i></div>
                     <h5 class="fw-bold fs-6 mb-1">أبحث عن خبير أو موجه</h5>
-                    <small class="text-muted">احصل على جلسات إرشاد متخصصة</small>
+                    <small class="text-muted">تواصل للحصول على استشارات وإرشاد ريادي</small>
                 </a>
             </div>
             <!-- مسار 5 -->
@@ -211,47 +211,6 @@
     </div>
 </section>
 
-<!-- 5. قسم دليل الابتكار الليبي (Showcase) -->
-<section class="py-5" style="background-color: #f8fafc;">
-    <div class="container">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
-            <div>
-                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold mb-2">بيئة الابتكار</span>
-                <h2 class="fw-bold text-dark mb-0">نماذج من دليل الابتكار الليبي</h2>
-            </div>
-            <a href="{{ url_for('public.directory') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                <span>استكشف الدليل الوطني بالكامل</span>
-                <i class="bi bi-arrow-left"></i>
-            </a>
-        </div>
-
-        <div class="row g-4">
-            {% if featured_projects %}
-                {% for proj in featured_projects %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card card-custom h-100">
-                            <div class="p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary">{{ proj.sector }}</span>
-                                    <span class="badge bg-info bg-opacity-10 text-info"><i class="bi bi-geo-alt ms-1"></i>{{ proj.city }}</span>
-                                </div>
-                                <h5 class="fw-bold text-dark mb-2">{{ proj.title }}</h5>
-                                <p class="text-muted small leading-relaxed mb-3">{{ proj.summary[:130] }}...</p>
-                                <div class="small text-muted mb-2"><i class="bi bi-person ms-1"></i>صاحب المشروع: <strong>{{ proj.owner.full_name }}</strong></div>
-                                <div class="small text-muted"><i class="bi bi-flag ms-1"></i>المرحلة: <span class="badge bg-light text-dark border">{{ proj.stage_label_ar }}</span></div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-12 text-center py-4 text-muted">
-                    <i class="bi bi-shield-lock fs-3 d-block mb-2"></i>
-                    المشاريع المعتمدة تظهر في الدليل بعد موافقة أصحابها واللجنة الفنية بالجمعية.
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
 
 <!-- 6. قسم الأخبار والفعاليات (News & Events) -->
 <section class="py-5 bg-white">

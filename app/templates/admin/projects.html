@@ -53,7 +53,6 @@
                     <th>القطاع والمدينة</th>
                     <th>المرحلة</th>
                     <th>الحالة</th>
-                    <th>الظهور بالدليل</th>
                     <th>تاريخ التقديم</th>
                     <th>إجراءات</th>
                 </tr>
@@ -79,14 +78,6 @@
                                 {{ p.status_label_ar }}
                             </span>
                         </td>
-                        <td>
-                            <form method="POST" action="{{ url_for('admin.toggle_project_directory', project_id=p.id) }}">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn btn-sm {% if p.is_public_in_directory %}btn-success{% else %}btn-outline-secondary{% endif %} py-0 px-2" style="font-size: 0.75rem;">
-                                    {{ 'ظاهر' if p.is_public_in_directory else 'مخفي' }}
-                                </button>
-                            </form>
-                        </td>
                         <td class="small text-muted">{{ p.created_at.strftime('%Y-%m-%d') }}</td>
                         <td>
                             <a href="{{ url_for('admin.review_project', project_id=p.id) }}" class="btn btn-sm btn-primary py-1 px-3">
@@ -96,7 +87,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">لا توجد مشاريع مسجلة في هذا التصنيف.</td>
+                        <td colspan="7" class="text-center py-4 text-muted">لا توجد مشاريع مسجلة في هذا التصنيف.</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -80,6 +80,8 @@ class UserManagementForm(FlaskForm):
     email = StringField('البريد الإلكتروني', validators=[DataRequired()])
     phone = StringField('رقم الهاتف', validators=[Optional()])
     city = StringField('المدينة', validators=[Optional()])
+    current_job = StringField('الوظيفة الحالية / المسمى المهني', validators=[Optional(), Length(max=150)])
+    previous_activities = TextAreaField('أعمال ونشاطات سابقة في الابتكار وريادة الأعمال', validators=[Optional()])
     account_type = SelectField('نوع الحساب', choices=[
         ('member', 'عضو'),
         ('innovator', 'مبتكر'),
@@ -91,5 +93,6 @@ class UserManagementForm(FlaskForm):
     is_active = BooleanField('الحساب نشط')
     is_verified = BooleanField('حساب موثق رسمياً')
     is_approved_member = BooleanField('عضوية معتمدة بالجمعية')
+    send_confirmation_email = BooleanField('إرسال بريد إلكتروني للمستخدم بتأكيد التسجيل والاعتماد', default=True)
     roles = SelectMultipleField('الأدوار والصلاحيات الممنوحة للمستخدم', coerce=int)
     submit = SubmitField('تحديث بيانات المستخدم')

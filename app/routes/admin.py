@@ -24,6 +24,7 @@ from app.forms import (
 from app.utils.decorators import admin_required, reviewer_required, editor_required
 from app.utils.helpers import save_uploaded_file, slugify_text, log_audit_action, create_notification
 from app.utils.excel import create_excel_response
+from app.services.email_service import send_registration_confirmation_email
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -78,11 +79,12 @@ def index():
 # -------------------------------------------------------------
 @admin_bp.route('/users')
 @login_required
-@admin_required
+@reviewer_required
 def users():
     """قائمة وإدارة المستخدمين مع البحث والتصفية"""
     role_filter = request.args.get('role', '')
     account_filter = request.args.get('type', '')
+    status_filter = request.args.get('status', '') # pending, approved, suspended, all
     q = request.args.get('q', '').strip()
     
     query = User.query
@@ -90,6 +92,12 @@ def users():
         query = query.join(User.roles).filter(Role.name == role_filter)
     if account_filter:
         query = query.filter(User.account_type == account_filter)
+    if status_filter == 'pending':
+        query = query.filter(User.is_approved_member == False)
+    elif status_filter == 'approved':
+        query = query.filter(User.is_approved_member == True)
+    elif status_filter == 'suspended':
+        query = query.filter(User.is_active == False)
     if q:
         query = query.filter(or_(
             User.full_name.ilike(f'%{q}%'),
@@ -99,7 +107,8 @@ def users():
         
     users_list = query.order_by(User.created_at.desc()).all()
     all_roles = Role.query.all()
-    return render_template('admin/users.html', users=users_list, all_roles=all_roles, query=q)
+    pending_count = User.query.filter_by(is_approved_member=False).count()
+    return render_template('admin/users.html', users=users_list, all_roles=all_roles, query=q, status_filter=status_filter, pending_count=pending_count)
 
 
 @admin_bp.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
@@ -115,8 +124,12 @@ def edit_user(user_id):
     
     if request.method == 'GET':
         form.roles.data = [r.id for r in user.roles]
+        if user.profile:
+            form.current_job.data = user.profile.current_job or user.headline
+            form.previous_activities.data = user.profile.previous_activities
         
     if form.validate_on_submit():
+        was_approved = user.is_approved_member
         user.full_name = form.full_name.data.strip()
         user.phone = form.phone.data.strip() if form.phone.data else None
         user.city = form.city.data.strip() if form.city.data else None
@@ -125,16 +138,69 @@ def edit_user(user_id):
         user.is_verified = form.is_verified.data
         user.is_approved_member = form.is_approved_member.data
         
+        if form.current_job.data:
+            user.headline = form.current_job.data.strip()
+            
+        if not user.profile:
+            user.profile = UserProfile(user_id=user.id)
+            
+        user.profile.current_job = form.current_job.data.strip() if form.current_job.data else None
+        user.profile.previous_activities = form.previous_activities.data.strip() if form.previous_activities.data else None
+        
         # تحديث الأدوار الممنوحة
         selected_roles = Role.query.filter(Role.id.in_(form.roles.data)).all()
         user.roles = selected_roles
         
         db.session.commit()
+        
+        # إرسال بريد التأكيد إذا تم تأكيد الحساب
+        if (not was_approved and user.is_approved_member) or (user.is_approved_member and form.send_confirmation_email.data and not was_approved):
+            send_registration_confirmation_email(user)
+            create_notification(
+                user.id,
+                'تم تأكيد واعتماد انضمامك لمجتمع الابتكار!',
+                'تهانينا! تمت مراجعة واعتماد طلب انضمامك رسمياً من قبل إدارة الجمعية. يمكنك الآن الاستفادة من كافة برامج المنصة.',
+                link=url_for('dashboard.index'),
+                icon='bi-patch-check-fill'
+            )
+            flash(f'تم اعتماد حساب المستخدم {user.full_name} بنجاح وإرسال رسالة تأكيد رسمية إلى بريده الإلكتروني ({user.email}).', 'success')
+        else:
+            flash(f'تم تحديث بيانات المستخدم {user.full_name} بنجاح.', 'success')
+
         log_audit_action('user_updated', 'user', user.id, f"تعديل بيانات المستخدم: {user.email}", current_user)
-        flash(f'تم تحديث بيانات المستخدم {user.full_name} بنجاح.', 'success')
         return redirect(url_for('admin.users'))
         
     return render_template('admin/user_edit.html', user=user, form=form)
+
+
+@admin_bp.route('/users/<int:user_id>/confirm-registration', methods=['POST'])
+@login_required
+@reviewer_required
+def confirm_user_registration(user_id):
+    """تأكيد واعتماد تسجيل المستخدم في مجتمع الابتكار وإرسال رسالة التأكيد عبر البريد الإلكتروني"""
+    user = User.query.get_or_404(user_id)
+    
+    user.is_approved_member = True
+    user.is_active = True
+    user.is_verified = True
+    db.session.commit()
+    
+    # إرسال بريد التأكيد الرسمي
+    send_registration_confirmation_email(user)
+    
+    # إرسال إشعار داخلي في المنصة
+    create_notification(
+        user.id,
+        'تم تأكيد واعتماد انضمامك لمجتمع الابتكار!',
+        'تهانينا! تمت مراجعة واعتماد طلب انضمامك رسمياً لمجتمع الابتكار من قبل إدارة الجمعية. حسابك مفعل بالكامل الآن.',
+        link=url_for('dashboard.index'),
+        icon='bi-patch-check-fill'
+    )
+    
+    log_audit_action('user_registration_confirmed', 'user', user.id, f"تأكيد تسجيل العضو: {user.email} وإرسال بريد التأكيد", current_user)
+    
+    flash(f'تم تأكيد واعتماد تسجيل المستخدم {user.full_name} بنجاح، وتم إرسال رسالة التأكيد إلى بريده الإلكتروني ({user.email}).', 'success')
+    return redirect(request.referrer or url_for('admin.users'))
 
 
 @admin_bp.route('/users/<int:user_id>/toggle-status', methods=['POST'])
@@ -1206,7 +1272,7 @@ def export_report(report_type):
         title_text = "السجل الوطني للمشاريع والأفكار الابتكارية"
 
     elif report_type == 'users':
-        headers = ['#', 'المعرف', 'الاسم الكامل', 'البريد الإلكتروني', 'رقم الهاتف', 'المدينة', 'نوع الحساب', 'نشط', 'موثق', 'تاريخ التسجيل']
+        headers = ['#', 'المعرف', 'الاسم الكامل', 'البريد الإلكتروني', 'رقم الهاتف', 'المدينة', 'الوظيفة الحالية', 'نوع الحساب', 'عضوية معتمدة', 'سيرة ذاتية', 'نشط', 'موثق', 'تاريخ التسجيل']
         rows = []
         users_data = User.query.order_by(User.created_at.desc()).all()
         for idx, u in enumerate(users_data, 1):
@@ -1217,7 +1283,10 @@ def export_report(report_type):
                 u.email,
                 u.phone or '-',
                 u.city or '-',
+                u.current_job or u.headline or '-',
                 u.account_type,
+                'نعم (مؤكد)' if u.is_approved_member else 'قيد التأكيد',
+                'نعم' if u.cv_file else 'لا',
                 'نعم' if u.is_active else 'لا',
                 'نعم' if u.is_verified else 'لا',
                 u.created_at.strftime('%Y-%m-%d') if u.created_at else '-'

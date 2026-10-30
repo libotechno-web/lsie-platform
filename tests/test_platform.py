@@ -1,5 +1,6 @@
 import unittest
 import os
+import io
 from datetime import datetime, timedelta
 from app import create_app
 from app.extensions import db
@@ -74,6 +75,7 @@ class PlatformTestCase(unittest.TestCase):
             'phone': '0933333333',
             'city': 'طرابلس',
             'account_type': 'startup',
+            'current_job': 'مؤسس شركة تقنية ناشئة',
             'password': 'Password123!',
             'confirm_password': 'Password123!',
             'terms': True
@@ -83,6 +85,8 @@ class PlatformTestCase(unittest.TestCase):
         created_user = User.query.filter_by(email='new_entrepreneur@test.ly').first()
         self.assertIsNotNone(created_user)
         self.assertTrue(created_user.check_password('Password123!'))
+        self.assertFalse(created_user.is_approved_member) # بانتظار تأكيد الأدمن
+        self.assertEqual(created_user.current_job, 'مؤسس شركة تقنية ناشئة')
 
         # تسجيل الخروج
         logout_res = self.client.get('/auth/logout', follow_redirects=True)
@@ -166,33 +170,12 @@ class PlatformTestCase(unittest.TestCase):
         res = self.client.get('/')
         self.assertIn('الجمعية الليبية للابتكار والتكنولوجيا'.encode('utf-8'), res.data)
 
-    def test_directory_search_and_filters(self):
-        """5. اختبار البحث والتصفية في دليل الابتكار الليبي"""
-        # إضافة مشروع مقبول
-        p = InnovationProject(
-            user_id=self.user.id,
-            title='تطبيق توصيل الأدوية السريع',
-            slug='medicine-delivery-ly',
-            summary='تطبيق يربط الصيدليات بالمرضى',
-            problem_statement='صعوبة الحصول على الأدوية النادرة',
-            proposed_solution='شبكة صيدليات رقمية موحدة',
-            sector='التقنيات الصحية والطبية',
-            city='بنغازي',
-            status='accepted',
-            is_public_in_directory=True
-        )
-        db.session.add(p)
-        db.session.commit()
-
-        # بحث باسم الدواء
-        res = self.client.get('/directory?q=الأدوية')
-        self.assertEqual(res.status_code, 200)
-        self.assertIn('تطبيق توصيل الأدوية السريع'.encode('utf-8'), res.data)
-
-        # بحث بمدينة بنغازي
-        res_city = self.client.get('/directory?city=بنغازي')
-        self.assertEqual(res_city.status_code, 200)
-        self.assertIn('تطبيق توصيل الأدوية السريع'.encode('utf-8'), res_city.data)
+    def test_directory_removed_and_redirects(self):
+        """5. اختبار إزالة دليل الابتكار وإعادة توجيه مساراته إلى الرئيسية"""
+        res = self.client.get('/directory')
+        self.assertEqual(res.status_code, 302)
+        res_followed = self.client.get('/directory', follow_redirects=True)
+        self.assertEqual(res_followed.status_code, 200)
 
     def test_networking_matchmaking(self):
         """6. اختبار طلبات التشبيك والتوجيه والإرشاد"""
@@ -283,7 +266,7 @@ class PlatformTestCase(unittest.TestCase):
             '/about',
             '/services',
             '/programs',
-            '/directory',
+            '/opportunities',
             '/training',
             '/news',
             '/events',
@@ -448,6 +431,61 @@ class PlatformTestCase(unittest.TestCase):
         self.assertIn('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', res_opp_excel.content_type)
         self.assertTrue(res_opp_excel.data.startswith(b'PK\x03\x04'))
         res_opp_excel.headers.get('Content-Disposition').encode('latin-1')
+
+    def test_community_registration_with_cv_and_admin_confirmation(self):
+        """11. اختبار التسجيل بمجتمع الابتكار بالوظيفة الحالية ورفع السيرة الذاتية والنشاطات السابقة، وتأكيد التسجيل من قبل الأدمن وإرسال البريد"""
+        # تسجيل عضو جديد مع رفع ملف السيرة الذاتية وإدخال الوظيفة الحالية والنشاطات السابقة
+        cv_content = b"%PDF-1.4 Mock CV Content for Libyan Innovator"
+        data = {
+            'full_name': 'مبتكر ومخترع ليبي',
+            'email': 'innovator_candidate@test.ly',
+            'phone': '0944444444',
+            'city': 'غريان',
+            'account_type': 'innovator',
+            'current_job': 'باحث في الذكاء الاصطناعي والطاقة المتجددة',
+            'previous_activities': 'الفوز بالمركز الأول في مسابقة الابتكار الوطني لعام 2025 وتطوير براءة اختراع.',
+            'cv_file': (io.BytesIO(cv_content), 'innovator_cv.pdf'),
+            'password': 'SecureCandidate123!',
+            'confirm_password': 'SecureCandidate123!',
+            'terms': True
+        }
+        res = self.client.post('/auth/register', data=data, content_type='multipart/form-data', follow_redirects=True)
+        self.assertEqual(res.status_code, 200)
+
+        # التحقق من إنشاء المستخدم وحفظ كافة الحقول
+        candidate = User.query.filter_by(email='innovator_candidate@test.ly').first()
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate.current_job, 'باحث في الذكاء الاصطناعي والطاقة المتجددة')
+        self.assertEqual(candidate.headline, 'باحث في الذكاء الاصطناعي والطاقة المتجددة')
+        self.assertFalse(candidate.is_approved_member) # لم يُعتمد بعد
+        self.assertIsNotNone(candidate.profile)
+        self.assertEqual(candidate.profile.previous_activities, 'الفوز بالمركز الأول في مسابقة الابتكار الوطني لعام 2025 وتطوير براءة اختراع.')
+        self.assertIsNotNone(candidate.cv_file)
+        self.assertTrue(candidate.cv_file.endswith('.pdf'))
+
+        # محاولة تأكيد التسجيل من مستخدم عادي غير مصرح له (يجب أن يُرفض 403)
+        self.login_user('innovator@test.ly', 'Secret123!')
+        res_unauth = self.client.post(f'/admin/users/{candidate.id}/confirm-registration')
+        self.assertEqual(res_unauth.status_code, 403)
+
+        # تسجيل الخروج ثم تسجيل الدخول كأدمن رئيسي لتأكيد واعتماد التسجيل
+        self.client.get('/auth/logout', follow_redirects=True)
+        self.login_user('admin@test.ly', 'AdminSecret123!')
+        
+        # التأكد من إظهار المستخدم في قائمة بانتظار التأكيد
+        res_pending_list = self.client.get('/admin/users?status=pending')
+        self.assertEqual(res_pending_list.status_code, 200)
+        self.assertIn('innovator_candidate@test.ly', res_pending_list.get_data(as_text=True))
+
+        # تأكيد واعتماد التسجيل
+        res_confirm = self.client.post(f'/admin/users/{candidate.id}/confirm-registration', follow_redirects=True)
+        self.assertEqual(res_confirm.status_code, 200)
+
+        # التحقق من تغيير حالة الحساب إلى معتمد
+        db.session.refresh(candidate)
+        self.assertTrue(candidate.is_approved_member)
+        self.assertTrue(candidate.is_verified)
+        self.assertTrue(candidate.is_active)
 
 
 if __name__ == '__main__':

@@ -62,7 +62,7 @@ class ProjectSubmissionForm(FlaskForm):
     cover_image = FileField('صورة معبرة عن المشروع', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg', 'webp'], 'يُسمح بالصور فقط')])
     pitch_deck = FileField('العرض التقديمي للمشروع (Pitch Deck / ملف PDF)', validators=[Optional(), FileAllowed(['pdf', 'pptx', 'ppt', 'docx', 'zip'], 'ملفات PDF أو Presentation أو مستندات فقط')])
     
-    is_public_in_directory = BooleanField('أوافق على ظهور فكرتي/مشروعي في دليل الابتكار بعد اعتماده')
+    is_public_in_directory = BooleanField('الموافقة على النشر العام للمشروع بعد اعتماده', default=False)
     terms = BooleanField('أتعهد بأن الفكرة أصيلة ومملوكة لي وللفريق وأوافق على سياسة التقييم بالجمعية', validators=[DataRequired(message='يجب الموافقة على التعهد للمتابعة')])
     
     submit = SubmitField('إرسال الفكرة والمشروع للاعتماد')

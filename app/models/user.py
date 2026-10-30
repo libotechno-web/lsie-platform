@@ -93,6 +93,20 @@ class User(UserMixin, db.Model):
             return self.roles[0].title_ar
         return 'عضو'
 
+    @property
+    def current_job(self):
+        if self.profile and self.profile.current_job:
+            return self.profile.current_job
+        return self.headline or 'عضو'
+
+    @property
+    def cv_file(self):
+        return self.profile.cv_file if self.profile else None
+
+    @property
+    def previous_activities(self):
+        return self.profile.previous_activities if self.profile else None
+
     def __repr__(self):
         return f'<User {self.email}>'
 
@@ -108,7 +122,9 @@ class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), unique=True, nullable=False)
     
-    # مهارات وخبرات
+    # مهارات وخبرات وبيانات الانضمام
+    current_job = db.Column(db.String(200), nullable=True) # الوظيفة الحالية / المسمى المهني
+    previous_activities = db.Column(db.Text, nullable=True) # أعمال ونشاطات سابقة في الابتكار وريادة الأعمال
     skills = db.Column(db.String(255), nullable=True) # مفصولة بفواصل
     interests = db.Column(db.String(255), nullable=True) # مجالات الاهتمام
     experience_years = db.Column(db.Integer, nullable=True, default=0)

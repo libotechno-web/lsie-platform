@@ -143,10 +143,9 @@ def seed_database():
             ("خدماتنا", "Services", "/services", "bi-grid", 3),
             ("البرامج والمبادرات", "Programs", "/programs", "bi-trophy", 4),
             ("الفرص والمنح", "Opportunities", "/opportunities", "bi-gift", 5),
-            ("دليل الابتكار الليبي", "Directory", "/directory", "bi-compass", 6),
-            ("التدريب والأكاديمية", "Training", "/training", "bi-mortarboard", 7),
-            ("الأخبار والفعاليات", "News & Events", "/news", "bi-newspaper", 8),
-            ("تواصل معنا", "Contact", "/contact", "bi-envelope", 9)
+            ("التدريب والأكاديمية", "Training", "/training", "bi-mortarboard", 6),
+            ("الأخبار والفعاليات", "News & Events", "/news", "bi-newspaper", 7),
+            ("تواصل معنا", "Contact", "/contact", "bi-envelope", 8)
         ]
         if NavigationItem.query.count() == 0:
             for t_ar, t_en, url, icon, ord_idx in nav_data:

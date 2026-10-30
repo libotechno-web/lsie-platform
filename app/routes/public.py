@@ -29,16 +29,7 @@ def index():
         Opportunity.status.in_(['open', 'upcoming'])
     ).order_by(Opportunity.deadline.asc()).limit(3).all()
     
-    # 3. نماذج من دليل الابتكار المعتمدة وظاهرة للعامة
-    featured_startups = Organization.query.filter_by(
-        is_public_in_directory=True, is_verified=True
-    ).limit(3).all()
-    
-    featured_projects = InnovationProject.query.filter_by(
-        status='accepted', is_public_in_directory=True
-    ).order_by(InnovationProject.updated_at.desc()).limit(3).all()
-    
-    # 4. آخر الأخبار والفعاليات
+    # 3. آخر الأخبار والفعاليات
     latest_news = Article.query.filter_by(
         status='published'
     ).order_by(Article.published_at.desc()).limit(3).all()
@@ -48,15 +39,15 @@ def index():
         Event.start_time >= datetime.utcnow()
     ).order_by(Event.start_time.asc()).limit(3).all()
     
-    # 5. الشركاء المعتمدون
+    # 4. الشركاء المعتمدون
     partners = Partner.query.filter_by(is_active=True).order_by(Partner.order_index).all()
     
-    # 6. مؤشرات الأثر الحقيقية من قاعدة البيانات (Real Data-Driven Metrics - no hardcoded fake numbers)
+    # 5. مؤشرات الأثر الحقيقية من قاعدة البيانات (Real Data-Driven Metrics - no hardcoded fake numbers)
     stats = {
         'members_count': User.query.filter_by(is_active=True).count(),
         'projects_count': InnovationProject.query.filter(InnovationProject.status.in_(['accepted', 'under_evaluation', 'under_review'])).count(),
         'accepted_projects_count': InnovationProject.query.filter_by(status='accepted').count(),
-        'startups_count': Organization.query.filter_by(is_public_in_directory=True).count(),
+        'startups_count': Organization.query.count(),
         'opportunities_count': Opportunity.query.filter(Opportunity.status.in_(['open', 'upcoming'])).count(),
         'events_count': Event.query.filter_by(is_published=True).count(),
         'training_courses_count': TrainingCourse.query.count()
@@ -65,8 +56,6 @@ def index():
     return render_template(
         'public/index.html',
         opportunities=opportunities,
-        featured_startups=featured_startups,
-        featured_projects=featured_projects,
         latest_news=latest_news,
         upcoming_events=upcoming_events,
         partners=partners,
@@ -97,115 +86,20 @@ def programs():
 
 @public_bp.route('/directory')
 def directory():
-    """دليل الابتكار الليبي: مبتكرون، شركات ناشئة، مستثمرون، خبراء، جامعات"""
-    tab = request.args.get('tab', 'all')
-    city = request.args.get('city', '')
-    sector = request.args.get('sector', '')
-    q = request.args.get('q', '').strip()
-    
-    # استعلام الشركات الناشئة
-    startups_query = Organization.query.filter_by(is_public_in_directory=True)
-    if city:
-        startups_query = startups_query.filter(Organization.city == city)
-    if sector:
-        startups_query = startups_query.filter(Organization.sector == sector)
-    if q:
-        startups_query = startups_query.filter(or_(
-            Organization.name.ilike(f'%{q}%'),
-            Organization.description.ilike(f'%{q}%')
-        ))
-    startups = startups_query.all()
-    
-    # استعلام الخبراء والموجهين
-    experts_query = User.query.join(UserProfile).filter(
-        User.is_active == True,
-        UserProfile.is_public_in_directory == True,
-        User.account_type.in_(['expert', 'mentor'])
-    )
-    if city:
-        experts_query = experts_query.filter(User.city == city)
-    if q:
-        experts_query = experts_query.filter(or_(
-            User.full_name.ilike(f'%{q}%'),
-            User.headline.ilike(f'%{q}%'),
-            UserProfile.skills.ilike(f'%{q}%')
-        ))
-    experts = experts_query.all()
-    
-    # استعلام المستثمرين
-    investors_query = User.query.join(UserProfile).filter(
-        User.is_active == True,
-        UserProfile.is_public_in_directory == True,
-        User.account_type == 'investor'
-    )
-    if city:
-        investors_query = investors_query.filter(User.city == city)
-    if q:
-        investors_query = investors_query.filter(or_(
-            User.full_name.ilike(f'%{q}%'),
-            User.headline.ilike(f'%{q}%')
-        ))
-    investors = investors_query.all()
-    
-    # استعلام المشاريع المبتكرة المعتمدة المنشورة
-    projects_query = InnovationProject.query.filter_by(status='accepted', is_public_in_directory=True)
-    if city:
-        projects_query = projects_query.filter(InnovationProject.city == city)
-    if sector:
-        projects_query = projects_query.filter(InnovationProject.sector == sector)
-    if q:
-        projects_query = projects_query.filter(or_(
-            InnovationProject.title.ilike(f'%{q}%'),
-            InnovationProject.summary.ilike(f'%{q}%')
-        ))
-    projects = projects_query.all()
-    
-    # المدن المتاحة للتصفية
-    cities = ['غريان', 'طرابلس', 'بنغازي', 'مصراتة', 'الزاوية', 'سبها', 'طبرق', 'زليتن', 'سرت', 'درنة', 'البيضاء']
-    sectors = [
-        'تقنية المعلومات والذكاء الاصطناعي', 'التقنيات المالية (FinTech)', 'التقنيات الصحية والطبية',
-        'الزراعة والأمن الغذائي', 'الطاقة المتجددة والاستدامة', 'التعليم وتكنولوجيا المعرفة (EdTech)',
-        'التجارة الإلكترونية والخدمات اللوجستية', 'الصناعة والتصنيع المحلي'
-    ]
-    
-    return render_template(
-        'public/directory.html',
-        tab=tab,
-        startups=startups,
-        experts=experts,
-        investors=investors,
-        projects=projects,
-        cities=cities,
-        sectors=sectors,
-        selected_city=city,
-        selected_sector=sector,
-        query=q
-    )
+    """إعادة توجيه الدليل إلى الصفحة الرئيسية"""
+    return redirect(url_for('public.index'))
 
 
 @public_bp.route('/directory/user/<int:user_id>')
 def user_profile_public(user_id):
-    """الملف التعريفي العام لعضو / خبير / مستثمر في الدليل"""
-    user = User.query.get_or_404(user_id)
-    if not user.is_active:
-        abort(404)
-    # التحقق من إذن الظهور العام
-    if not user.profile or not user.profile.is_public_in_directory:
-        if not (current_user.is_authenticated and (current_user.is_admin or current_user.id == user.id)):
-            abort(403)
-            
-    public_projects = InnovationProject.query.filter_by(
-        user_id=user.id, status='accepted', is_public_in_directory=True
-    ).all()
-    
-    return render_template('public/profile_detail.html', user=user, public_projects=public_projects)
+    """إعادة توجيه ملف الدليل إلى الصفحة الرئيسية"""
+    return redirect(url_for('public.index'))
 
 
 @public_bp.route('/directory/organization/<slug>')
 def organization_detail(slug):
-    """صفحة تفاصيل الشركة الناشئة أو المؤسسة الداعمة"""
-    org = Organization.query.filter_by(slug=slug, is_public_in_directory=True).first_or_404()
-    return render_template('public/organization_detail.html', org=org)
+    """إعادة توجيه تفاصيل المنظمة إلى الصفحة الرئيسية"""
+    return redirect(url_for('public.index'))
 
 
 @public_bp.route('/opportunities')
@@ -431,7 +325,7 @@ def connect_request(recipient_id):
     recipient = User.query.get_or_404(recipient_id)
     if recipient.id == current_user.id:
         flash('لا يمكنك إرسال طلب تواصل لنفسك.', 'warning')
-        return redirect(url_for('public.directory'))
+        return redirect(url_for('dashboard.networking_requests'))
         
     form = NetworkingRequestForm()
     if request.method == 'GET':
@@ -460,7 +354,7 @@ def connect_request(recipient_id):
         )
         
         flash('تم إرسال طلب التشبيك والتواصل بنجاح! سيتم إشعار الطرف الآخر.', 'success')
-        return redirect(url_for('public.user_profile_public', user_id=recipient.id))
+        return redirect(url_for('dashboard.networking_requests'))
         
     return render_template('public/connect_modal.html', recipient=recipient, form=form)
 

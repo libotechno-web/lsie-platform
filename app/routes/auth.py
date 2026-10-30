@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app.extensions import db
 from app.models import User, Role, UserProfile
 from app.forms import LoginForm, RegisterForm, ProfileForm
-from app.utils.helpers import save_uploaded_file, log_audit_action
+from app.utils.helpers import save_uploaded_file, log_audit_action, create_notification
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -40,20 +40,32 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """إنشاء حساب جديد بالمنصة"""
+    """إنشاء حساب جديد بالمنصة والانضمام لمجتمع الابتكار"""
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.index'))
         
     form = RegisterForm()
     if form.validate_on_submit():
+        # رفع السيرة الذاتية إذا تم تزويدها
+        cv_path = None
+        if form.cv_file.data:
+            try:
+                cv_path = save_uploaded_file(form.cv_file.data, 'cvs')
+            except ValueError as e:
+                flash(str(e), 'danger')
+                return render_template('auth/register.html', form=form)
+
+        current_job_text = form.current_job.data.strip() if form.current_job.data else ''
         user = User(
             email=form.email.data.strip().lower(),
             full_name=form.full_name.data.strip(),
             phone=form.phone.data.strip(),
             city=form.city.data,
             account_type=form.account_type.data,
+            headline=current_job_text,
             is_active=True,
-            is_verified=False
+            is_verified=False,
+            is_approved_member=False  # التسجيل يخضع لمراجعة واعتماد الأدمن الرئيسي أو من له الصلاحية
         )
         user.set_password(form.password.data)
         
@@ -67,17 +79,29 @@ def register():
         db.session.add(user)
         db.session.flush() # للحصول على user.id
         
-        # إنشاء ملف تعريفي مرتبط
+        # إنشاء ملف تعريفي مرتبط ببيانات الوظيفة والسيرة الذاتية والنشاطات السابقة
         profile = UserProfile(
             user_id=user.id,
-            is_public_in_directory=True
+            current_job=current_job_text,
+            cv_file=cv_path,
+            previous_activities=form.previous_activities.data.strip() if form.previous_activities.data else None,
+            is_public_in_directory=False
         )
         db.session.add(profile)
         db.session.commit()
         
         login_user(user)
-        log_audit_action('user_registered', 'user', user.id, f"تسجيل حساب جديد: {user.email} بدور {user.account_type}", user)
-        flash('تم إنشاء حسابك بنجاح! أهلاً بك في المنصة الوطنية للابتكار وريادة الأعمال.', 'success')
+        log_audit_action('user_registered', 'user', user.id, f"تسجيل حساب جديد: {user.email} بدور {user.account_type} بانتظار التأكيد", user)
+        
+        create_notification(
+            user.id,
+            'مرحباً بك في مجتمع الابتكار!',
+            'تم استلام طلب انضمامك بنجاح. طلبك قيد المراجعة والاعتماد من قبل إدارة الجمعية، وستصلك رسالة تأكيد على بريدك الإلكتروني فور الاعتماد.',
+            link=url_for('dashboard.index'),
+            icon='bi-hourglass-split'
+        )
+        
+        flash('تم استلام طلب انضمامك إلى مجتمع الابتكار بنجاح! طلبك قيد المراجعة والاعتماد من قبل إدارة الجمعية، وستصلك رسالة تأكيد رسمية على بريدك الإلكتروني فور الاعتماد.', 'info')
         return redirect(url_for('dashboard.index'))
         
     return render_template('auth/register.html', form=form)
@@ -101,6 +125,8 @@ def profile():
     profile_record = current_user.profile or UserProfile(user_id=current_user.id)
     
     if request.method == 'GET':
+        form.current_job.data = profile_record.current_job or current_user.headline
+        form.previous_activities.data = profile_record.previous_activities
         form.skills.data = profile_record.skills
         form.interests.data = profile_record.interests
         form.experience_years.data = profile_record.experience_years
@@ -116,7 +142,10 @@ def profile():
         current_user.full_name = form.full_name.data.strip()
         current_user.phone = form.phone.data.strip() if form.phone.data else None
         current_user.city = form.city.data.strip() if form.city.data else None
-        current_user.headline = form.headline.data.strip() if form.headline.data else None
+        if form.current_job.data:
+            current_user.headline = form.current_job.data.strip()
+        elif form.headline.data:
+            current_user.headline = form.headline.data.strip()
         current_user.bio = form.bio.data.strip() if form.bio.data else None
         
         if form.avatar.data:
@@ -126,8 +155,17 @@ def profile():
             except ValueError as e:
                 flash(str(e), 'danger')
                 return render_template('auth/profile.html', form=form)
+
+        if form.cv_file.data:
+            try:
+                profile_record.cv_file = save_uploaded_file(form.cv_file.data, 'cvs')
+            except ValueError as e:
+                flash(str(e), 'danger')
+                return render_template('auth/profile.html', form=form)
                 
         # تحديث بيانات الملف
+        profile_record.current_job = form.current_job.data.strip() if form.current_job.data else None
+        profile_record.previous_activities = form.previous_activities.data.strip() if form.previous_activities.data else None
         profile_record.skills = form.skills.data.strip() if form.skills.data else None
         profile_record.interests = form.interests.data.strip() if form.interests.data else None
         profile_record.experience_years = form.experience_years.data

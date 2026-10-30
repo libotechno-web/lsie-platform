@@ -42,10 +42,13 @@ class RegisterForm(FlaskForm):
         ('expert', 'خبير / موجه / مدرب'),
         ('partner_org', 'جامعة / حاضنة / مؤسسة داعمة')
     ], default='innovator')
+    current_job = StringField('الوظيفة الحالية / المسمى المهني', validators=[DataRequired(message='يرجى إدخال الوظيفة الحالية'), Length(min=2, max=150, message='يجب أن تكون الوظيفة الحالية بين 2 و 150 حرفاً')])
+    cv_file = FileField('تحميل السيرة الذاتية (CV)', validators=[Optional(), FileAllowed(['pdf', 'doc', 'docx'], 'يُسمح بملفات PDF أو Word فقط (pdf, doc, docx)')])
+    previous_activities = TextAreaField('أعمال ونشاطات سابقة لها علاقة بالابتكار وريادة الأعمال', validators=[Optional(), Length(max=3000, message='يجب ألا يتجاوز النص 3000 حرف')])
     password = PasswordField('كلمة المرور', validators=[DataRequired(message='يرجى إدخال كلمة المرور'), Length(min=8, message='يجب ألا تقل كلمة المرور عن 8 أحرف')])
     confirm_password = PasswordField('تأكيد كلمة المرور', validators=[DataRequired(message='يرجى تأكيد كلمة المرور'), EqualTo('password', message='كلمتا المرور غير متطابقتين')])
     terms = BooleanField('أوافق على الشروط والأحكام وسياسة الخصوصية الخاصة بالجمعية', validators=[DataRequired(message='يجب الموافقة على الشروط للمتابعة')])
-    submit = SubmitField('إنشاء الحساب')
+    submit = SubmitField('تقديم طلب الانضمام')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.strip().lower()).first():
@@ -57,8 +60,11 @@ class ProfileForm(FlaskForm):
     phone = StringField('رقم الهاتف', validators=[Optional()])
     city = StringField('المدينة', validators=[Optional()])
     headline = StringField('العنوان المهني / المسمى', validators=[Optional(), Length(max=200)])
+    current_job = StringField('الوظيفة الحالية', validators=[Optional(), Length(max=150)])
     bio = TextAreaField('نبذة تعريفية شخصية', validators=[Optional()])
     avatar = FileField('تحديث الصورة الشخصية', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg', 'webp'], 'يُسمح بالصور فقط')])
+    cv_file = FileField('تحديث السيرة الذاتية (CV)', validators=[Optional(), FileAllowed(['pdf', 'doc', 'docx'], 'يُسمح بملفات PDF أو Word فقط')])
+    previous_activities = TextAreaField('أعمال ونشاطات سابقة في الابتكار وريادة الأعمال', validators=[Optional(), Length(max=3000)])
     
     # بيانات الملف الإضافية
     skills = StringField('المهارات والخبرات (مفصولة بفواصل)', validators=[Optional()])
@@ -71,6 +77,6 @@ class ProfileForm(FlaskForm):
     website_url = StringField('الموقع الشخصي أو الرابط المهني', validators=[Optional()])
     
     available_for_mentoring = BooleanField('مستعد لتقديم التوجيه والإرشاد للمبتكرين')
-    is_public_in_directory = BooleanField('إظهار بياناتي في دليل الابتكار الليبي العام')
+    is_public_in_directory = BooleanField('إظهار الملف الشخصي للعامة', default=False)
     
     submit = SubmitField('حفظ التعديلات')

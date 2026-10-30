@@ -107,12 +107,6 @@
                         <div class="text-muted">الدعم المطلوب:</div>
                         <div class="fw-bold text-primary">{{ project.needed_support or 'غير محدد' }}</div>
                     </li>
-                    <li>
-                        <div class="text-muted">الظهور في دليل الابتكار:</div>
-                        <div class="fw-bold text-{% if project.is_public_in_directory %}success{% else %}secondary{% endif %}">
-                            {{ 'موافق على الظهور' if project.is_public_in_directory else 'خاص فقط' }}
-                        </div>
-                    </li>
                 </ul>
             </div>
 

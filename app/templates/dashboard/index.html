@@ -18,7 +18,14 @@
                     {% endif %}
                 </div>
                 <h5 class="fw-bold text-dark mb-1">{{ current_user.full_name }}</h5>
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-2">{{ current_user.primary_role_title }}</span>
+                <div class="d-flex justify-content-center gap-1 mb-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ current_user.primary_role_title }}</span>
+                    {% if current_user.is_approved_member %}
+                        <span class="badge bg-success bg-opacity-10 text-success"><i class="bi bi-patch-check-fill ms-1"></i>معتمد</span>
+                    {% else %}
+                        <span class="badge bg-warning bg-opacity-20 text-dark"><i class="bi bi-clock-history ms-1"></i>بانتظار التأكيد</span>
+                    {% endif %}
+                </div>
                 <small class="text-muted d-block">{{ current_user.city }}</small>
             </div>
 
@@ -57,6 +64,28 @@
                     </a>
                 </div>
             </div>
+
+            <!-- إشعار حالة تأكيد العضوية والانضمام -->
+            {% if not current_user.is_approved_member %}
+                <div class="card card-custom border-warning border-2 p-3 mb-4 bg-warning bg-opacity-10 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-warning bg-opacity-20 text-warning-emphasis d-flex align-items-center justify-content-center p-3 fs-3">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">طلب انضمامك لمجتمع الابتكار قيد المراجعة والاعتماد</h6>
+                            <p class="text-secondary small mb-0">
+                                تم استلام بياناتك بنجاح بما فيها وظيفتك الحالية وسيرتك الذاتية. سيقوم الأدمن الرئيسي أو من له الصلاحية بمراجعة طلبك وتأكيده، وستصلك رسالة تأكيد رسمية مباشرة على بريدك الإلكتروني (<strong>{{ current_user.email }}</strong>).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-success d-flex align-items-center gap-2 py-2 px-3 small rounded-3 mb-4 shadow-sm">
+                    <i class="bi bi-patch-check-fill fs-5 text-success"></i>
+                    <span><strong>عضوية معتمدة:</strong> تم تأكيد واعتماد انضمامك رسمياً لمجتمع الابتكار الليبي. كافة خدمات المنصة وبرامجها مفعلة لك بالكامل.</span>
+                </div>
+            {% endif %}
 
             <!-- إحصاءات المستخدم السريعة -->
             <div class="row g-3 mb-4">
